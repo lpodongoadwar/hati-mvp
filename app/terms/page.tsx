@@ -1,15 +1,23 @@
+"use client";
+
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function TermsPage() {
+  const router = useRouter();
+
   return (
     <main className="min-h-screen bg-background text-foreground pb-20">
       {/* Top Navigation */}
       <div className="bg-card border-b border-border/80">
         <div className="max-w-3xl mx-auto px-6 py-4">
-        <Link href="/dashboard" className="...">
-  <ArrowLeft className="mr-2 size-4" /> Back to Dashboard
-</Link>
+          <button 
+            onClick={() => router.back()} 
+            className="flex items-center text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ArrowLeft className="mr-2 size-4" /> Back
+          </button>
         </div>
       </div>
 
