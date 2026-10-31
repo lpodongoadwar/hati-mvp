@@ -106,6 +106,12 @@ export default function IdeatorPage() {
       {/* Application Form */}
       <div className="max-w-3xl mx-auto px-6">
         <form onSubmit={handleSubmit} className="space-y-8">
+
+                  <div className="pt-4 pb-8">
+          <Link href="/ideator/submit" className="inline-flex items-center justify-center rounded-md bg-[#1b4a3a] px-8 py-3 text-sm font-semibold text-white hover:bg-[#153a2e] transition-colors">
+            Submit Your Pitch Now
+          </Link>
+        </div>
           
           {/* Section 1: The Founder */}
           <section className="bg-card p-8 rounded-2xl border border-border/80 shadow-sm space-y-6">

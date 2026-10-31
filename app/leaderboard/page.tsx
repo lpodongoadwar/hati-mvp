@@ -98,7 +98,7 @@ export default async function LeaderboardPage() {
     <main className="mx-auto w-full max-w-3xl px-4 py-10 sm:py-14">
            <div className="flex items-center justify-between mb-8">
         <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
-          Hati Campus Blitz
+          Hati Ambassadors Program
         </h1>
         <Link
           href="/dashboard"
@@ -183,7 +183,7 @@ export default async function LeaderboardPage() {
           Ambassador Hub
         </h2>
         <p className="text-sm text-muted-foreground mb-4">
-          Invite friends to Hati and earn rewards as they join.
+          Invite friends to Hati. Earn rewards, become an Ideator and participate in the Sartup Show.
         </p>
 
         {/* Progress Bar */}

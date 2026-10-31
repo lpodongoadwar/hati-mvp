@@ -104,7 +104,7 @@ export default function DashboardPage() {
                 </li>
                 <li>
                   <Link href="/leaderboard" className="transition-colors hover:text-foreground">
-                    Hati Campus Blitz
+                    Hati Ambassadors Program
                   </Link>
                 </li>
                 <li>

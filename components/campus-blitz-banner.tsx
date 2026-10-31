@@ -21,7 +21,7 @@ export function CampusBlitzBanner() {
             className="h-6 w-fit border-primary-foreground/25 bg-primary-foreground/10 px-3 text-[10px] font-semibold tracking-[0.18em] text-primary-foreground"
             variant="outline"
           >
-            CAMPUS BLITZ
+            HATI AMBASSADORS PROGRAM
           </Badge>
           <CardTitle
             aria-level={2}
@@ -29,7 +29,7 @@ export function CampusBlitzBanner() {
             id="campus-blitz-title"
             role="heading"
           >
-            Compete in the Campus Blitz
+            Compete in the Hati Ambassadors Program 
           </CardTitle>
           <CardDescription className="max-w-xl text-sm leading-6 text-primary-foreground/75 sm:text-base">
             Bring your skills together and turn bold ideas into campus momentum.
