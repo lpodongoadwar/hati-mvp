@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 export function CampusBlitzBanner() {
   return (
     <section aria-labelledby="campus-blitz-title" className="space-y-4">
-      <Card className="overflow-hidden rounded-[26px] border-transparent bg-[#0a1f17] text-white shadow-[0_24px_70px_-44px_rgba(31,70,48,0.5)] sm:[--card-spacing:--spacing(8)]">
+      <Card className="overflow-hidden rounded-[26px] border-transparent bg-[#1b4a3a] text-white shadow-[0_24px_70px_-44px_rgba(31,70,48,0.5)] sm:[--card-spacing:--spacing(8)]">
         <CardHeader className="gap-3 px-6 sm:px-8">
           <Badge
             className="h-6 w-fit border-white/20 text-[10px] tracking-[0.16em] text-white"

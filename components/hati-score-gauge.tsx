@@ -9,11 +9,11 @@ const MAX_SCORE = 850
 const scoreChartConfig = {
   score: {
     label: 'Hati Score',
-    color: 'var(--chart-1)',
+    color: '#1b4a3a', // Updated to Hati Green
   },
   remaining: {
     label: 'Remaining',
-    color: 'var(--chart-4)',
+    color: '#e5e1d8', // A light cream/grey for the empty part of the gauge
   },
 } satisfies ChartConfig
 
@@ -61,7 +61,7 @@ export function HatiScoreGauge({ score }: { score: number }) {
               nameKey="name"
               outerRadius={114}
               startAngle={225}
-              stroke="[1b4a3a]"
+              stroke="none"
             />
           </PieChart>
         </ChartContainer>
