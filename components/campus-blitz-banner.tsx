@@ -23,7 +23,7 @@ export function CampusBlitzBanner() {
             Compete in the Ambassadors Program
           </CardTitle>
           <CardDescription className="max-w-xl text-sm text-white/80">
-            Bring your skills together and turn bold ideas into campus momentum.
+            Bring your skills together and turn bold ideas into momentum for financial literacy and inclusion.
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-6 px-6 pb-8 sm:px-8">
