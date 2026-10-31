@@ -61,7 +61,7 @@ export function HatiScoreGauge({ score }: { score: number }) {
               nameKey="name"
               outerRadius={114}
               startAngle={225}
-              stroke="none"
+              stroke="[1b4a3a]"
             />
           </PieChart>
         </ChartContainer>
