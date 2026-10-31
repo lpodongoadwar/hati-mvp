@@ -78,7 +78,7 @@ export default function LearnMorePage() {
           </section>
         </div>
 
-        <div className="bg-[#0a1f17] text-white p-8 rounded-2xl shadow-md space-y-4 text-center">
+        <div className="bg-[#1b4a3a] text-white p-8 rounded-2xl shadow-md space-y-4 text-center">
           <TrendingUp className="size-10 text-[#c4f080] mx-auto" />
           <h2 className="text-2xl font-bold">Your Credit Score Unlocks It All</h2>
           <p className="text-white/80 text-sm max-w-lg mx-auto">
