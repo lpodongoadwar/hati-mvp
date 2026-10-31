@@ -69,7 +69,7 @@ export default function AboutPage() {
 
         <div className="pt-8 border-t border-border/80 flex justify-center">
           <Link href="/participate" className="inline-flex items-center justify-center rounded-md bg-[#1b4a3a] px-8 py-4 text-lg font-semibold text-white hover:bg-[#153a2e] transition-colors">
-            Join Us
+            Learn More 
           </Link>
         </div>
       </div>

@@ -14,7 +14,7 @@ export default function ParticipatePage() {
 
       <div className="max-w-3xl mx-auto px-6 pt-12 space-y-12">
         <div>
-          <h1 className="text-4xl font-bold tracking-tight text-[#1b4a3a]">How to Participate</h1>
+          <h1 className="text-4xl font-bold tracking-tight text-[#1b4a3a]">How to Build Your Score</h1>
           <p className="mt-2 text-lg text-gray-600">Choose your path to build your credit score and unlock rewards.</p>
         </div>
 
