@@ -153,7 +153,7 @@ export default function DashboardPage() {
                   </svg>
                 </a>
                 <a
-                  href="https://instagram.com/hati.net"
+                  href="https://www.instagram.com/hati.inc?rpxt=b2U2Zmd3N2lvbDlh"
                   target="_blank"
                   rel="noreferrer"
                   aria-label="Hati on Instagram"
