@@ -229,7 +229,7 @@ export default function IdeatorPage() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">If you win the $100K, what is the first thing you will spend it on?</label>
+              <label className="text-sm font-medium text-foreground">If you win the $100K, what is the immediate problem you will solve?</label>
               <input required name="spendFirst" onChange={handleChange} type="text" className="w-full h-11 px-3 rounded-md border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all" placeholder="e.g. Hiring 2 senior engineers..." />
             </div>
           </section>
