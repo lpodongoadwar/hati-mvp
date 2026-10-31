@@ -174,7 +174,7 @@ export default async function LeaderboardPage() {
 
       {/* Ambassadors Hub */}
       <section className="mt-8 rounded-lg border border-neutral-200 p-5 dark:border-neutral-800 mb-8 bg-card">
-        <h2 className="text-lg font-semibold mb-4">Referral Program & Ambassador Hub</h2>
+        <h2 className="text-lg font-semibold mb-4">Ambassador Hub</h2>
         <p className="text-sm text-muted-foreground mb-4">Invite friends to Hati and earn rewards as they join.</p>
         
         <div className="mb-4">
