@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeft, Lightbulb, ClipboardList, BookOpen, Target, History, TrendingUp, ArrowRight } from "lucide-react";
+import { ArrowLeft, ClipboardList, BookOpen, Target, History, TrendingUp } from "lucide-react";
 
 export default function ParticipatePage() {
   return (
@@ -62,23 +62,11 @@ export default function ParticipatePage() {
           </div>
         </section>
 
-        {/* Section 3: The Tools */}
+        {/* Section 3: The Tools (Quiz Button Removed, 2-Column Grid) */}
         <section className="space-y-6">
           <h2 className="text-2xl font-semibold text-foreground">Start Building Now</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             
-            {/* Quiz */}
-            <div className="flex flex-col items-center text-center p-6 bg-card border border-border/80 rounded-xl shadow-sm space-y-3">
-              <div className="bg-[#c4f080] p-3 rounded-full text-[#0a1f17]">
-                <Lightbulb className="size-6" />
-              </div>
-              <h4 className="font-semibold text-foreground text-lg">Take a Quiz</h4>
-              <p className="text-xs text-gray-600 flex-1">Test your financial knowledge to earn immediate points.</p>
-              <Link href="/quiz-example" className="w-full inline-flex items-center justify-center rounded-md bg-[#1b4a3a] px-4 py-2 text-sm font-medium text-white hover:bg-[#153a2e] transition-colors mt-4">
-                Start Quiz
-              </Link>
-            </div>
-
             {/* Survey */}
             <div className="flex flex-col items-center text-center p-6 bg-card border border-border/80 rounded-xl shadow-sm space-y-3">
               <div className="bg-[#c4f080] p-3 rounded-full text-[#0a1f17]">
@@ -86,9 +74,9 @@ export default function ParticipatePage() {
               </div>
               <h4 className="font-semibold text-foreground text-lg">Take a Survey</h4>
               <p className="text-xs text-gray-600 flex-1">Share your spending habits to refine your profile and score.</p>
-              <Link href="/survey-example" className="w-full inline-flex items-center justify-center rounded-md bg-[#1b4a3a] px-4 py-2 text-sm font-medium text-white hover:bg-[#153a2e] transition-colors mt-4">
-                Start Survey
-              </Link>
+             <Link href="/survey" className="...">
+  Start Survey
+</Link>
             </div>
 
             {/* Module */}
@@ -98,9 +86,9 @@ export default function ParticipatePage() {
               </div>
               <h4 className="font-semibold text-foreground text-lg">Complete a Module</h4>
               <p className="text-xs text-gray-600 flex-1">Learn how to manage money and build long-term wealth.</p>
-              <Link href="/module-example" className="w-full inline-flex items-center justify-center rounded-md bg-[#1b4a3a] px-4 py-2 text-sm font-medium text-white hover:bg-[#153a2e] transition-colors mt-4">
-                Start Module
-              </Link>
+             <Link href="/curriculum" className="...">
+  Start Module
+</Link>
             </div>
 
           </div>

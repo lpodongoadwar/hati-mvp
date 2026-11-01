@@ -29,7 +29,7 @@ export default function DashboardPage() {
           <Link
             aria-label="Hati home"
             className="inline-flex items-center gap-2.5 rounded-lg focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#1b4a3a]/25"
-            href="/dashboard"
+            href="/participate"
           >
             <Image
               alt="Hati"

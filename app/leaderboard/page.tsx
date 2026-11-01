@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase";
-import { ArrowLeft, Lightbulb, ClipboardList, BookOpen } from "lucide-react";
+import { ArrowLeft, ClipboardList, BookOpen } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -98,7 +98,7 @@ export default async function LeaderboardPage() {
               The Hati Ambassadors Program is built on one core belief: <strong>financial literacy without capital is just an opinion.</strong> We are here to promote financial inclusion by helping you build a verified credit score, unlock access to formal credit, and learn how to manage wealth. 
             </p>
             <p className="text-sm text-gray-700 leading-relaxed">
-              By climbing the Mobilizer leaderboard, you are not just earning rewards—you are proving your financial discipline while promoting financial literacy and inclusion  by expanding the network of the financially literate and creditworthy. The top Mobilizers (Club Champions, Top Public Votes, and University Nominees) will unlock the <strong>Ideator</strong> status, giving them a direct pathway to pitch for VC funding.
+              By climbing the Mobilizer leaderboard, you are not just earning rewards—you are proving your financial discipline while promoting financial literacy and inclusion by expanding the network of the financially literate and creditworthy. The top Mobilizers (Club Champions, Top Public Votes, and University Nominees) will unlock the <strong>Ideator</strong> status, giving them a direct pathway to pitch for VC funding.
             </p>
           </div>
 
@@ -202,19 +202,17 @@ export default async function LeaderboardPage() {
       <section className="mt-8 mb-8">
         <h2 className="text-lg font-semibold">Boost your score</h2>
         <p className="text-sm text-muted-foreground mb-4">Learn and earn points along the way.</p>
-        <div className="grid grid-cols-3 gap-2">
-          <button className="flex flex-col items-center justify-center gap-2 rounded-xl bg-[#0a1f17] p-4 text-white hover:bg-[#0d2a1f]">
-            <div className="rounded-full bg-[#c4f080] p-2 text-[#0a1f17]"><Lightbulb className="size-5" /></div>
-            <span className="text-xs font-medium">Take Quiz</span>
-          </button>
-          <button className="flex flex-col items-center justify-center gap-2 rounded-xl bg-[#0a1f17] p-4 text-white hover:bg-[#0d2a1f]">
-            <div className="rounded-full bg-[#c4f080] p-2 text-[#0a1f17]"><ClipboardList className="size-5" /></div>
-            <span className="text-xs font-medium">Take Survey</span>
-          </button>
-          <button className="flex flex-col items-center justify-center gap-2 rounded-xl bg-[#0a1f17] p-4 text-white hover:bg-[#0d2a1f]">
-            <div className="rounded-full bg-[#c4f080] p-2 text-[#0a1f17]"><BookOpen className="size-5" /></div>
-            <span className="text-xs font-medium">Complete Module</span>
-          </button>
+        <div className="grid grid-cols-2 gap-2">
+          <Link href="/survey" className="flex flex-col items-center justify-center gap-2 rounded-xl bg-[#0a1f17] p-4 text-white hover:bg-[#0d2a1f] transition-colors">
+  <div className="rounded-full bg-[#c4f080] p-2 text-[#0a1f17]">
+    <ClipboardList className="size-5" />
+  </div>
+  <span className="text-xs font-medium">Take Survey</span>
+</Link>
+         <Link href="/curriculum" className="flex flex-col items-center justify-center gap-2 rounded-xl bg-[#0a1f17] p-4 text-white hover:bg-[#0d2a1f]">
+  <div className="rounded-full bg-[#c4f080] p-2 text-[#0a1f17]"><BookOpen className="size-5" /></div>
+  <span className="text-xs font-medium">Complete Module</span>
+</Link>
         </div>
       </section>
 
