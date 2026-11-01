@@ -29,7 +29,7 @@ export default function LearnMorePage() {
             <h2 className="text-2xl font-semibold text-foreground">The Justification</h2>
           </div>
           <p className="text-gray-700 leading-relaxed">
-            Financial literacy without capital is just an opinion. We realized that giving someone a credit score is only step one. To actually change their financial trajectory, they need places to save, tools to protect their wealth, and rewards for their discipline. The Hati Trust Score is the engine, but the ecosystem is the vehicle.
+            Financial literacy must be combined with capital. We realized that giving someone a credit score is only step one. To actually change their financial trajectory, they need places to save, tools to protect their wealth, and rewards for their discipline. The Hati Trust Score is the engine, but the ecosystem is the vehicle.
           </p>
         </section>
 

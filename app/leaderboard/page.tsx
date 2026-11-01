@@ -98,7 +98,7 @@ export default async function LeaderboardPage() {
               The Hati Ambassadors Program is built on one core belief: <strong>financial literacy without capital is just an opinion.</strong> We are here to promote financial inclusion by helping you build a verified credit score, unlock access to formal credit, and learn how to manage wealth. 
             </p>
             <p className="text-sm text-gray-700 leading-relaxed">
-              By climbing the Mobilizer leaderboard, you are not just earning rewards—you are proving your financial discipline while promoting financial literacy and inclusion. The top Mobilizers (Club Champions, Top Public Votes, and University Nominees) will unlock the <strong>Ideator</strong> status, giving them a direct pathway to pitch for VC funding.
+              By climbing the Mobilizer leaderboard, you are not just earning rewards—you are proving your financial discipline while promoting financial literacy and inclusion  by expanding the network of the financially literate and creditworthy. The top Mobilizers (Club Champions, Top Public Votes, and University Nominees) will unlock the <strong>Ideator</strong> status, giving them a direct pathway to pitch for VC funding.
             </p>
           </div>
 

@@ -175,7 +175,7 @@ if (!error) {
       </label>
 
       <button
-        className="group flex min-h-14 w-full items-center justify-between gap-3 rounded-xl bg-primary px-4 py-3.5 text-left text-sm font-semibold text-primary-foreground shadow-[0_10px_22px_-12px_rgba(31,70,48,0.65)] transition hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/25 focus-visible:ring-offset-2 active:translate-y-px sm:px-5 sm:text-base"
+        className="group flex min-h-14 w-full items-center justify-between gap-3 rounded-xl bg-primary px-4 py-3.5 text-left text-sm font-semibold text-primary-foreground shadow-[#1b4a3a] transition hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/25 focus-visible:ring-offset-2 active:translate-y-px sm:px-5 sm:text-base"
         type="submit"
       >
         <span>Unlock Score for UGX 2,000.</span>
