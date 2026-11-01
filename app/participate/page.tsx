@@ -74,7 +74,7 @@ export default function ParticipatePage() {
               </div>
               <h4 className="font-semibold text-foreground text-lg">Take a Survey</h4>
               <p className="text-xs text-gray-600 flex-1">Share your spending habits to refine your profile and score.</p>
-             <Link href="/survey" className="...">
+             <Link href="/survey" className="w-full inline-flex items-center justify-center rounded-md bg-[#1b4a3a] px-4 py-2 text-sm font-medium text-white hover:bg-[#153a2e] transition-colors mt-4">
   Start Survey
 </Link>
             </div>
@@ -86,7 +86,7 @@ export default function ParticipatePage() {
               </div>
               <h4 className="font-semibold text-foreground text-lg">Complete a Module</h4>
               <p className="text-xs text-gray-600 flex-1">Learn how to manage money and build long-term wealth.</p>
-             <Link href="/curriculum" className="...">
+             <Link href="/curriculum" className="w-full inline-flex items-center justify-center rounded-md bg-[#1b4a3a] px-4 py-2 text-sm font-medium text-white hover:bg-[#153a2e] transition-colors mt-4">
   Start Module
 </Link>
             </div>
