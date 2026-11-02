@@ -18,7 +18,7 @@ export default function IdeatorLandingPage() {
         {/* Hero Section */}
         <div className="space-y-6 text-center">
           <h1 className="text-4xl font-bold tracking-tight text-[#1b4a3a] sm:text-5xl">
-            Hati Startup Show: Pitch to Top VCs
+            Hati Startup Show: Pitch to Top Venture Capitalists and Angel Investors
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Top 20 Ideas Receive Funding on Fixed Terms. Next Top 30 Ideas Receive Funding on Dynamic Terms.
