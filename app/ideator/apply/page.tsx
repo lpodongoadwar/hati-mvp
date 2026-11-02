@@ -1,14 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { ArrowLeft, CheckCircle2, ChevronRight } from "lucide-react";
 import { createClient } from "@/lib/supabase";
+
+type Idea = {
+  id: string | number;
+  startup_name: string;
+  full_name: string;
+  votes: number;
+};
 
 export default function ApplyPage() {
   const supabase = createClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+
+  // State for the Top 10 Ideas leaderboard
+  const [ideas, setIdeas] = useState<Idea[]>([]);
+  const [loadingIdeas, setLoadingIdeas] = useState(true);
+  const [votingId, setVotingId] = useState<Idea["id"] | null>(null);
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -33,6 +45,24 @@ export default function ApplyPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Fetch Top 10 Ideas
+  const loadIdeas = useCallback(async () => {
+    const { data, error } = await supabase
+      .from("ideas")
+      .select("id, startup_name, full_name, votes")
+      .order("votes", { ascending: false })
+      .limit(10);
+
+    if (!error) {
+      setIdeas((data ?? []) as Idea[]);
+    }
+    setLoadingIdeas(false);
+  }, [supabase]);
+
+  useEffect(() => {
+    loadIdeas();
+  }, [loadIdeas]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -52,6 +82,28 @@ export default function ApplyPage() {
       alert("Something went wrong. Please try again.");
     } else {
       setIsSuccess(true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      loadIdeas(); // Refresh the leaderboard
+    }
+  };
+
+  const handleVote = async (idea: Idea) => {
+    setVotingId(idea.id);
+    const { data, error } = await supabase
+      .from("ideas")
+      .update({ votes: idea.votes + 1 })
+      .eq("id", idea.id)
+      .select("votes")
+      .single();
+
+    setVotingId(null);
+
+    if (!error && data) {
+      setIdeas((current) =>
+        current
+          .map((i) => (i.id === idea.id ? { ...i, votes: data.votes } : i))
+          .sort((a, b) => b.votes - a.votes)
+      );
     }
   };
 
@@ -77,7 +129,7 @@ export default function ApplyPage() {
       <div className="bg-card border-b border-border/80">
         <div className="max-w-3xl mx-auto px-6 py-4">
           <Link href="/ideator" className="flex items-center text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-            <ArrowLeft className="mr-2 size-4" /> Back to Startup Show info
+            <ArrowLeft className="mr-2 size-4" /> Back to Startup Show 
           </Link>
         </div>
       </div>
@@ -230,6 +282,47 @@ export default function ApplyPage() {
             {isSubmitting ? "Submitting..." : "Submit Application"} <ChevronRight className="size-5" />
           </button>
         </form>
+
+        {/* Top 10 Ideas Section (Merged from second code) */}
+        <section className="mt-16 border-t border-border/80 pt-8">
+          <h2 className="text-2xl font-bold text-[#1b4a3a] mb-4">Top 10 Ideas</h2>
+
+          {loadingIdeas ? (
+            <p className="text-sm text-muted-foreground">Loading ideas...</p>
+          ) : ideas.length === 0 ? (
+            <p className="text-sm text-muted-foreground">No ideas yet. Be the first to apply.</p>
+          ) : (
+            <ol className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {ideas.map((idea, i) => (
+                <li
+                  key={idea.id}
+                  className="flex flex-col justify-between rounded-xl border border-border/80 bg-card p-5 shadow-sm"
+                >
+                  <div>
+                    <p className="text-xs font-semibold text-muted-foreground tabular-nums">#{i + 1}</p>
+                    <h3 className="mt-1 text-lg font-semibold text-foreground">{idea.startup_name}</h3>
+                    <p className="text-sm text-gray-600">by {idea.full_name}</p>
+                  </div>
+
+                  <div className="mt-5 flex items-center justify-between border-t border-border/50 pt-4">
+                    <span className="text-sm font-medium tabular-nums text-muted-foreground">
+                      {idea.votes} {idea.votes === 1 ? "vote" : "votes"}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleVote(idea)}
+                      disabled={votingId === idea.id}
+                      className="rounded-md border border-[#1b4a3a] text-[#1b4a3a] px-4 py-1.5 text-sm font-medium transition hover:bg-[#1b4a3a] hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      Vote
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          )}
+        </section>
+
       </div>
     </main>
   );
