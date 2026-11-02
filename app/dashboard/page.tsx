@@ -1,4 +1,4 @@
-import { User, Mail, Phone, ArrowRight } from 'lucide-react'
+import { User, Mail, Phone, ArrowRight, HelpCircle } from 'lucide-react'
 import { siInstagram, siX, siTiktok } from 'simple-icons'
 import type { Metadata } from 'next'
 import Image from 'next/image'
@@ -63,16 +63,23 @@ export default function DashboardPage() {
           
           <section aria-labelledby="score-title">
             <Card className="h-full rounded-[26px] border-border/80 bg-card shadow-[0_24px_70px_-44px_rgba(27,74,58,0.3)] sm:[--card-spacing:--spacing(6)] flex flex-col">
-              <CardHeader>
-                <CardTitle
-                  aria-level={2}
-                  className="text-xl font-semibold tracking-[-0.04em]"
-                  id="score-title"
-                  role="heading"
-                >
-                  Hati Trust Score
-                </CardTitle>
-              </CardHeader>
+             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+  <CardTitle
+    aria-level={2}
+    className="text-xl font-semibold tracking-[-0.04em]"
+    id="score-title"
+    role="heading"
+  >
+    Hati Trust Score
+  </CardTitle>
+  <Link 
+    href="/score-guide" 
+    className="text-muted-foreground hover:text-[#1b4a3a] transition-colors"
+    aria-label="Learn more about your Hati Score"
+  >
+    <HelpCircle className="size-5" />
+  </Link>
+</CardHeader>
               <CardContent className="pb-6 flex-1 flex flex-col justify-between">
                 <HatiScoreGauge score={score} />
                 
