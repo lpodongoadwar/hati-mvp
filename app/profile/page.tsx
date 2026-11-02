@@ -10,7 +10,7 @@ export default function ProfilePage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <Link href="/dashboard" className="flex items-center text-sm font-medium text-muted-foreground hover:text-foreground">
-            <ArrowLeft className="mr-2 size-4" /> Back to Score
+            <ArrowLeft className="mr-2 size-4" /> Back to Dashboard
           </Link>
           <h1 className="text-xl font-semibold">My Profile</h1>
         </div>
