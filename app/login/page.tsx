@@ -42,6 +42,11 @@ const router = useRouter(); // Correct: Inside the function component body
     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" 
   />
 </div>
+<div className="flex justify-end">
+  <Link href="/forgot-password" className="text-sm font-medium text-[#1b4a3a] hover:underline">
+    Forgot Password?
+  </Link>
+</div>
           <button 
             type="submit" 
             className="w-full bg-[#1b4a3a] text-white hover:bg-[#153a2e] h-10 px-4 py-2 rounded-md font-medium"
