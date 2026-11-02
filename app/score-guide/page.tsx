@@ -60,7 +60,7 @@ export default function ScoreGuidePage() {
               <h3 className="text-xl font-bold text-foreground">Tier II <span className="text-sm font-normal text-muted-foreground ml-2">(500 - 649)</span></h3>
             </div>
             <p className="text-sm text-gray-700"><strong>How to qualify:</strong> Consistently save via the "Save With Every Purchase" model, complete all surveys, and maintain a high leaderboard ranking.</p>
-            <p className="text-sm text-gray-700"><strong>Benefits:</strong> Unlock micro-loans from partner banks, qualify for Hati Travel rewards, and get access to financial coaching.</p>
+            <p className="text-sm text-gray-700"><strong>Benefits:</strong> All the above + Unlock micro-loans from partner banks, qualify for Hati Travel rewards, and get access to financial coaching.</p>
           </div>
 
           {/* Tier 3 */}
@@ -72,7 +72,7 @@ export default function ScoreGuidePage() {
               <h3 className="text-xl font-bold text-foreground">Tier III <span className="text-sm font-normal text-muted-foreground ml-2">(650 - 850)</span></h3>
             </div>
             <p className="text-sm text-gray-700"><strong>How to qualify:</strong> Prove you have multiple income streams (e.g., a job + a side business), complete the full curriculum, and maintain high financial discipline.</p>
-            <p className="text-sm text-gray-700"><strong>Benefits:</strong> Unlock the <strong>Ideator Status</strong>. You can pitch your business on the Hati Startup Show for up to $100K in VC funding, and access larger enterprise loans.</p>
+            <p className="text-sm text-gray-700"><strong>Benefits:</strong> All the above + Unlock the <strong>Ideator Status</strong>. You can pitch your business on the Hati Startup Show for up to $100K in VC funding, and access larger enterprise loans.</p>
           </div>
         </section>
 
