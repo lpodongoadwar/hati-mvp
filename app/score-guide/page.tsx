@@ -45,7 +45,7 @@ export default function ScoreGuidePage() {
               <div className="bg-gray-100 p-2 rounded-lg text-gray-600">
                 <Lock className="size-6" />
               </div>
-              <h3 className="text-xl font-bold text-foreground">Tier I: Foundation <span className="text-sm font-normal text-muted-foreground ml-2">(0 - 499)</span></h3>
+              <h3 className="text-xl font-bold text-foreground">Tier I <span className="text-sm font-normal text-muted-foreground ml-2">(0 - 499)</span></h3>
             </div>
             <p className="text-sm text-gray-700"><strong>How to qualify:</strong> Sign up, verify your NIN, and complete your first financial literacy modules.</p>
             <p className="text-sm text-gray-700"><strong>Benefits:</strong> Access to the Hati Ambassadors Program to earn rewards, and a clear roadmap to build your financial identity.</p>
@@ -57,7 +57,7 @@ export default function ScoreGuidePage() {
               <div className="bg-blue-100 p-2 rounded-lg text-blue-700">
                 <TrendingUp className="size-6" />
               </div>
-              <h3 className="text-xl font-bold text-foreground">Tier II: Growth <span className="text-sm font-normal text-muted-foreground ml-2">(500 - 649)</span></h3>
+              <h3 className="text-xl font-bold text-foreground">Tier II <span className="text-sm font-normal text-muted-foreground ml-2">(500 - 649)</span></h3>
             </div>
             <p className="text-sm text-gray-700"><strong>How to qualify:</strong> Consistently save via the "Save With Every Purchase" model, complete all surveys, and maintain a high leaderboard ranking.</p>
             <p className="text-sm text-gray-700"><strong>Benefits:</strong> Unlock micro-loans from partner banks, qualify for Hati Travel rewards, and get access to financial coaching.</p>
@@ -69,7 +69,7 @@ export default function ScoreGuidePage() {
               <div className="bg-green-100 p-2 rounded-lg text-green-700">
                 <Building2 className="size-6" />
               </div>
-              <h3 className="text-xl font-bold text-foreground">Tier III: Enterprise <span className="text-sm font-normal text-muted-foreground ml-2">(650 - 850)</span></h3>
+              <h3 className="text-xl font-bold text-foreground">Tier III <span className="text-sm font-normal text-muted-foreground ml-2">(650 - 850)</span></h3>
             </div>
             <p className="text-sm text-gray-700"><strong>How to qualify:</strong> Prove you have multiple income streams (e.g., a job + a side business), complete the full curriculum, and maintain high financial discipline.</p>
             <p className="text-sm text-gray-700"><strong>Benefits:</strong> Unlock the <strong>Ideator Status</strong>. You can pitch your business on the Hati Startup Show for up to $100K in VC funding, and access larger enterprise loans.</p>
