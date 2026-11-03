@@ -51,8 +51,8 @@ export default function Survey1Page() {
           <p className="text-muted-foreground">
             Thank you for sharing your financial habits. You have successfully completed the Hati Financial Identity curriculum and earned your points.
           </p>
-          <Link href="/participate" className="mt-6 inline-block w-full bg-[#1b4a3a] text-white py-3 rounded-lg font-medium hover:bg-[#153a2e] transition-colors">
-            Back to Participate
+          <Link href="/survey" className="mt-6 inline-block w-full bg-[#1b4a3a] text-white py-3 rounded-lg font-medium hover:bg-[#153a2e] transition-colors">
+            Back to Survey
           </Link>
         </div>
       </main>
