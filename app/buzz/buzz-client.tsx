@@ -10,8 +10,15 @@ type BuzzEvent = {
   created_at: string;
 };
 
+type UserResponse = {
+  data: {
+    user: {
+      id: string;
+    } | null;
+  };
+};
+
 export function BuzzClient({ question }: { question: string }) {
-  // 1. Move supabase inside the component
   const supabase = createClient();
 
   const [userId, setUserId] = useState<string | null>(null);
@@ -47,15 +54,15 @@ export function BuzzClient({ question }: { question: string }) {
       .eq("id", event.user_id)
       .maybeSingle();
 
-    setWinnerName(profile?.full_name ?? null);
-  }, [supabase]); // Add supabase as a dependency
+    setWinnerName((profile as { full_name: string } | null)?.full_name ?? null);
+  }, [supabase]);
 
   useEffect(() => {
     let active = true;
 
-    supabase.auth.getUser().then(({ data }: { data: any }) => {
+    supabase.auth.getUser().then((response: UserResponse) => {
       if (!active) return;
-      setUserId(data.user?.id ?? null);
+      setUserId(response.data.user?.id ?? null);
       setAuthChecked(true);
     });
 
@@ -74,7 +81,7 @@ export function BuzzClient({ question }: { question: string }) {
       active = false;
       supabase.removeChannel(channel);
     };
-  }, [loadFirst, supabase]); // Add supabase as a dependency
+  }, [loadFirst, supabase]);
 
   async function handleBuzz() {
     if (!userId) return;
