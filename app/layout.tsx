@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     'Get a clearer view of your credit profile with Hati and follow practical steps toward your next financial milestone.',
   generator: 'v0.app',
   icons: {
-    icon: '/icon.svg',
+    icon: '/icon.png',
   },
 }
 
