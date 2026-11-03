@@ -53,7 +53,7 @@ export function BuzzClient({ question }: { question: string }) {
   useEffect(() => {
     let active = true;
 
-    supabase.auth.getUser().then(({ data }) => {
+    supabase.auth.getUser().then(({ data }: { data: any }) => {
       if (!active) return;
       setUserId(data.user?.id ?? null);
       setAuthChecked(true);
