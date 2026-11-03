@@ -1,13 +1,11 @@
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
 export function createClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  // If keys are missing (during Vercel prerendering), return a dummy object
   if (!supabaseUrl || !supabaseAnonKey) {
-    if (typeof window !== 'undefined') {
-      throw new Error('Supabase URL and Key are missing.');
-    }
     return {
       from: () => ({
         select: () => ({ eq: () => ({ single: () => ({ data: null, error: null }) }), order: () => ({ limit: () => ({ data: [], error: null }) }) }),
