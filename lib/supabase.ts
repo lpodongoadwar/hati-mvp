@@ -5,7 +5,6 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
 export function createClient() {
   // If keys are missing (e.g., during build prerendering), return a dummy client
-  // that will throw a user-friendly error if actually called.
   if (!supabaseUrl || !supabaseAnonKey) {
     if (typeof window !== 'undefined') {
       throw new Error('Supabase URL and Key are missing. Check your environment variables.');
