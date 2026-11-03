@@ -1,196 +1,186 @@
-'use client'
+"use client";
 
-import { useRouter } from 'next/navigation'
-import { type FormEvent } from 'react'
-import { ArrowUpRight, LockKeyhole } from 'lucide-react'
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase";
 
-const inputClassName =
-  'h-12 w-full rounded-xl border border-input bg-background px-4 text-sm text-foreground shadow-sm outline-none transition placeholder:text-muted-foreground/70 focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-ring/15'
-  import { createClient } from '@/lib/supabase';
-// The Hati Trust Score Logic
-function calculateHatiScore(nin: string, hasUsername: boolean) {
-  let score = 200; // Base Score
-
-  // Pillar 1: Identity & Security (Max 150)
-  if (nin.length > 10) score += 75; // NIN Verified
-  score += 75; // Owns SIM (Assuming they checked the box, we will hook this up next)
-
-  // Pillar 2: Financial Commitment (Max 300)
-  // We assume they are paying the 2,000 fee to submit
-  score += 100; // Paid fee
-
-  return score;
-}
 export function CreditScoreForm() {
-  const router = useRouter()
-const supabase = createClient();
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    const calculatedScore = calculateHatiScore("12345678901234", true);
-    // (We will pass the real NIN state here later)
-    // Save to Supabase
-const { error } = await supabase
-  .from('profiles')
-  .insert([
-    { 
-      full_name: "Test User", // We will connect the real input later
-      team: 'red', 
-      referral_count: 0 
-    }
-  ]);
+  const router = useRouter();
+  const supabase = createClient();
+  
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Form states
+  const [phone, setPhone] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [nin, setNin] = useState("");
+  const [socialHandle, setSocialHandle] = useState("");
 
-if (!error) {
-  router.push('/dashboard');
-} else {
-  console.error(error);
-  alert("Something went wrong saving your profile.");
-}
-    router.push('/dashboard')
-  }
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    // 1. Calculate a dummy score for now (Base 200)
+    const initialScore = 200;
+
+    // 2. Insert into Supabase
+    const { error } = await supabase
+      .from('profiles')
+      .insert([
+        { 
+          phone: phone,
+          username: username,
+          email: email,
+          nin: nin,
+          social_handle: socialHandle,
+          score: initialScore,
+          team: 'red', // Default team for now
+          referral_count: 0
+        }
+      ]);
+
+    setIsSubmitting(false);
+
+    // 3. Handle Success or Error
+    if (error) {
+      console.error(error);
+      // THIS WILL SHOW US EXACTLY WHY IT FAILED
+      alert(`Database Error: ${error.message}\nDetails: ${error.details}\nHint: ${error.hint}`);
+    } else {
+      router.push('/dashboard');
+    }
+  };
 
   return (
-    <form
-      aria-label="Credit score request"
-      autoComplete="off"
-      className="flex flex-col gap-5"
-      onSubmit={handleSubmit}
-    >
-      <div>
-        <label
-          className="mb-2 block text-sm font-medium text-foreground"
-          htmlFor="phone-number"
-        >
-          Phone number
-        </label>
-        <div className="flex h-12 overflow-hidden rounded-xl border border-input bg-background shadow-sm transition focus-within:border-primary focus-within:ring-4 focus-within:ring-ring/15">
-          <span
-            aria-hidden="true"
-            className="inline-flex shrink-0 items-center border-r border-border px-3.5 text-sm font-medium text-muted-foreground"
-          >
+    <form onSubmit={handleSubmit} className="space-y-6">
+      
+      {/* Phone Number */}
+      <div className="space-y-2">
+        <label className="text-sm font-medium">Phone number</label>
+        <div className="flex h-11 w-full rounded-md border border-input bg-background text-sm overflow-hidden">
+          <div className="flex items-center px-3 border-r border-input bg-muted/50 text-muted-foreground">
             +256
-          </span>
-          <input
-            autoComplete="tel-national"
-            className="min-w-0 flex-1 border-0 bg-transparent px-3.5 text-sm text-foreground outline-none placeholder:text-muted-foreground/70"
-            id="phone-number"
-            inputMode="tel"
-            placeholder="7XX XXX XXX"
+          </div>
+          <input 
+            type="tel" 
+            placeholder="7XX XXX XXX" 
+            className="flex-1 bg-transparent px-3 py-2 focus:outline-none"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
             required
-            type="tel"
           />
         </div>
       </div>
-<div className="space-y-2">
-  <label className="text-sm font-medium">Username</label>
-  <input 
-    type="text" 
-    placeholder="Choose a username" 
-    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" 
-  />
-</div>
-<div className="space-y-2">
-  <label className="text-sm font-medium">Password</label>
-  <input 
-    type="password" 
-    placeholder="Create a password" 
-    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" 
-  />
-</div>
-      <div>
-        <label
-          className="mb-2 block text-sm font-medium text-foreground"
-          htmlFor="email-address"
-        >
-          Email
-        </label>
-        <input
-          autoComplete="email"
-          className={inputClassName}
-          id="email-address"
-          inputMode="email"
-          placeholder="you@example.com"
+
+      {/* Username */}
+      <div className="space-y-2">
+        <label className="text-sm font-medium">Username</label>
+        <input 
+          type="text" 
+          placeholder="Choose a username" 
+          className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
           required
-          type="email"
         />
       </div>
 
-      <div>
-        <label
-          className="mb-2 block text-sm font-medium text-foreground"
-          htmlFor="national-id"
-        >
-          National Identification Number (NIN)
-        </label>
-        <input
-          autoComplete="off"
-          className={inputClassName}
-          id="national-id"
-          placeholder="Enter your NIN"
+      {/* Password */}
+      <div className="space-y-2">
+        <label className="text-sm font-medium">Password</label>
+        <input 
+          type="password" 
+          placeholder="Create a password" 
+          className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           required
-          spellCheck={false}
-          type="text"
         />
       </div>
-      <div className="space-y-2 mt-4">
-  <label className="text-sm font-medium">Upload Mini Statement (PDF)</label>
-  <input 
-    type="file" 
-    accept=".pdf" 
-    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium" 
-    required
-  />
-  <p className="text-xs text-muted-foreground">
-    Dial *165*8*4*2# and select duration (choose 90 days or more) / download from the MoMo App (MTN) OR *185*10*3# and select duration (choose 90 days or more) / download from the MyAirtel App (Airtel) and to get this PDF.
-  </p>
-</div>
-<div className="space-y-2 mt-4">
-      <label className="text-sm font-medium">Social Media Handle (optional, add as many as you like)</label>
-      <input 
-        type="text" 
-        placeholder="@yourhandle or link (X, TikTok, IG)" 
-        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" 
-      />
-      <p className="text-xs text-muted-foreground">
-        We'll follow you.
-      </p>
-    </div>  
-<div className="flex items-center gap-2 mt-2">
-  <input
-  className="mt-0.5 size-[18px] shrink-0 cursor-pointer rounded border-primary accent-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/25 focus-visible:ring-offset-2" 
-  required 
-  type="checkbox" 
-  id="terms"
-/>
-  <label htmlFor="terms" className="text-sm text-muted-foreground">
-    I agree to the <a href="/terms" className="underline font-medium text-[#1b4a3a]">Terms & Conditions</a>
-  </label>
-</div>
-      <label className="flex cursor-pointer items-start gap-3 text-sm leading-5 text-foreground">
-        <input
-          className="mt-0.5 size-[18px] shrink-0 cursor-pointer accent-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/25 focus-visible:ring-offset-2"
-          required
-          type="checkbox"
-        />
-        <span>I confirm I control this phone number</span>
-      </label>
 
-      <button
-        className="group flex min-h-14 w-full items-center justify-between gap-3 rounded-xl bg-primary px-4 py-3.5 text-left text-sm font-semibold text-primary-foreground shadow-[#1b4a3a] transition hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/25 focus-visible:ring-offset-2 active:translate-y-px sm:px-5 sm:text-base"
-        type="submit"
+      {/* Email */}
+      <div className="space-y-2">
+        <label className="text-sm font-medium">Email</label>
+        <input 
+          type="email" 
+          placeholder="you@example.com" 
+          className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+      </div>
+
+      {/* NIN */}
+      <div className="space-y-2">
+        <label className="text-sm font-medium">National Identification Number (NIN)</label>
+        <input 
+          type="text" 
+          placeholder="Enter your NIN" 
+          className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+          value={nin}
+          onChange={(e) => setNin(e.target.value)}
+          required
+        />
+      </div>
+
+      {/* Upload Mini Statement */}
+      <div className="space-y-2">
+        <label className="text-sm font-medium">Upload Mini Statement (PDF)</label>
+        <input 
+          type="file" 
+          accept=".pdf"
+          className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium"
+          required
+        />
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          Dial *165# (MTN) or *185# (Airtel) and select "Mini Statement" to get this PDF.
+        </p>
+      </div>
+
+      {/* Social Media */}
+      <div className="space-y-2">
+        <label className="text-sm font-medium">Social Media Handle (optional, add as many as you like)</label>
+        <input 
+          type="text" 
+          placeholder="@yourhandle or link (X, TikTok, IG)" 
+          className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+          value={socialHandle}
+          onChange={(e) => setSocialHandle(e.target.value)}
+        />
+        <p className="text-xs text-muted-foreground">We'll follow you.</p>
+      </div>
+
+      {/* Checkboxes */}
+      <div className="space-y-4 pt-2">
+        <div className="flex items-center gap-2">
+          <input type="checkbox" id="terms" className="rounded border-gray-300" required />
+          <label htmlFor="terms" className="text-sm text-muted-foreground">
+            I agree to the <Link href="/terms" className="underline text-primary">Terms & Conditions</Link>
+          </label>
+        </div>
+        <div className="flex items-center gap-2">
+          <input type="checkbox" id="sim" className="rounded border-gray-300" required />
+          <label htmlFor="sim" className="text-sm text-muted-foreground">
+            I confirm I control this phone number
+          </label>
+        </div>
+      </div>
+
+      {/* Submit Button */}
+      <button 
+        type="submit" 
+        disabled={isSubmitting}
+        className="w-full bg-[#1b4a3a] text-white hover:bg-[#153a2e] h-12 rounded-lg font-semibold text-lg flex items-center justify-between px-6 transition-colors disabled:opacity-50"
       >
-        <span>Unlock Score for UGX 2,000.</span>
-        <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary-foreground/10 transition-transform group-hover:translate-x-0.5">
-          <ArrowUpRight aria-hidden="true" className="size-[18px]" />
-        </span>
+        <span>{isSubmitting ? "Saving..." : "Unlock Score for UGX 2,000."}</span>
+        <div className="bg-white/20 rounded-full p-1">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
       </button>
-<div className="text-center text-sm mt-6">
-  <p className="text-muted-foreground">
-    Already have an account?{" "}
-    <a href="/login" className="font-semibold underline text-[#1b4a3a]">
-      Log in
-    </a>
-  </p>
-</div>
-</form>
+    </form>
   );
 }
