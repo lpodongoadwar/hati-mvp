@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, CheckCircle2, ChevronRight } from "lucide-react";
-import { createClient } from "@/lib/supabase";
+import { createClient } from "@/lib/db";
 
 export default function Survey1Page() {
   const supabase = createClient();

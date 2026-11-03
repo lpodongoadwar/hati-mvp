@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { createClient } from "@/lib/supabase";
+import { createClient } from "@/lib/db";
 import { ArrowLeft, ClipboardList, BookOpen } from "lucide-react";
 
 export const dynamic = "force-dynamic";

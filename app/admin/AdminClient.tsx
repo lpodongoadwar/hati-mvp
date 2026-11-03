@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { ArrowLeft, ShieldAlert, Users, Lightbulb, TrendingUp, CheckCircle2, ChevronRight } from "lucide-react";
-import { createClient } from "@/lib/supabase";
+import { createClient } from "@/lib/db";
 
 // Define types for our data
 type Profile = {

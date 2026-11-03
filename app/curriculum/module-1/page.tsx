@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, CheckCircle2, ChevronRight, HelpCircle } from "lucide-react";
-import { createClient } from "@/lib/supabase";
+import { createClient } from "@/lib/db";
 
 export default function Module1Page() {
   const supabase = createClient();

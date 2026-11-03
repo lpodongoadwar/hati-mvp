@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, BookOpen, Lock, CheckCircle2, ChevronRight } from "lucide-react";
-import { createClient } from "@/lib/supabase";
+import { createClient } from "@/lib/db";
 
 export default function CurriculumPage() {
   const supabase = createClient();
