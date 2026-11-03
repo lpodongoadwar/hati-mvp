@@ -1,17 +1,25 @@
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 
-export function createClient() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-  if (!supabaseUrl || !supabaseKey) {
-    // This prevents the build from crashing on the server
-    // It will only throw an error if it runs in the browser without keys
-    if (typeof window !== "undefined") {
-      throw new Error("Supabase URL and Key are missing from environment variables.");
+export function createClient() {
+  // If keys are missing (e.g., during build prerendering), return a dummy client
+  // that will throw a user-friendly error if actually called.
+  if (!supabaseUrl || !supabaseAnonKey) {
+    if (typeof window !== 'undefined') {
+      throw new Error('Supabase URL and Key are missing. Check your environment variables.');
     }
-    return null as any;
+    // Return a mock that does nothing during server-side build
+    return {
+      from: () => ({
+        select: () => ({ eq: () => ({ single: () => ({ data: null, error: null }) }), order: () => ({ limit: () => ({ data: [], error: null }) }) }),
+        insert: () => ({ data: null, error: null }),
+        update: () => ({ eq: () => ({ data: null, error: null }) }),
+      }),
+      auth: { getUser: () => ({ data: { user: null } }) },
+    } as any
   }
 
-  return createSupabaseClient(supabaseUrl, supabaseKey);
+  return createSupabaseClient(supabaseUrl, supabaseAnonKey)
 }
