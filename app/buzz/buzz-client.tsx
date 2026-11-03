@@ -4,8 +4,6 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/db";
 
-const supabase = createClient();
-
 type BuzzEvent = {
   id: string | number;
   user_id: string;
@@ -13,6 +11,9 @@ type BuzzEvent = {
 };
 
 export function BuzzClient({ question }: { question: string }) {
+  // 1. Move supabase inside the component
+  const supabase = createClient();
+
   const [userId, setUserId] = useState<string | null>(null);
   const [authChecked, setAuthChecked] = useState(false);
   const [first, setFirst] = useState<BuzzEvent | null>(null);
@@ -20,8 +21,6 @@ export function BuzzClient({ question }: { question: string }) {
   const [buzzing, setBuzzing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // The earliest buzz is the winner. Ordering by the database timestamp keeps
-  // this fair even if two people press at nearly the same moment.
   const loadFirst = useCallback(async () => {
     const { data, error } = await supabase
       .from("buzz_events")
@@ -49,7 +48,7 @@ export function BuzzClient({ question }: { question: string }) {
       .maybeSingle();
 
     setWinnerName(profile?.full_name ?? null);
-  }, []);
+  }, [supabase]); // Add supabase as a dependency
 
   useEffect(() => {
     let active = true;
@@ -62,7 +61,6 @@ export function BuzzClient({ question }: { question: string }) {
 
     loadFirst();
 
-    // Re-check whenever anyone buzzes (or the table is cleared for a new round).
     const channel = supabase
       .channel("buzz-events")
       .on(
@@ -76,14 +74,13 @@ export function BuzzClient({ question }: { question: string }) {
       active = false;
       supabase.removeChannel(channel);
     };
-  }, [loadFirst]);
+  }, [loadFirst, supabase]); // Add supabase as a dependency
 
   async function handleBuzz() {
     if (!userId) return;
     setError(null);
     setBuzzing(true);
 
-    // created_at is filled in by the database (default now()).
     const { error } = await supabase.from("buzz_events").insert({ user_id: userId });
 
     setBuzzing(false);
@@ -104,7 +101,6 @@ export function BuzzClient({ question }: { question: string }) {
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-2xl flex-col items-center justify-center gap-10 px-4 py-12">
-      {/* Question bubble */}
       <div className="relative w-full rounded-3xl border border-neutral-200 bg-white p-8 text-center shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
         <p className="text-xs font-semibold uppercase tracking-widest text-neutral-500">
           Question
@@ -112,14 +108,12 @@ export function BuzzClient({ question }: { question: string }) {
         <p className="mt-3 text-2xl font-semibold leading-snug sm:text-3xl">
           {question}
         </p>
-        {/* Bubble tail */}
         <span
           aria-hidden
           className="absolute -bottom-2 left-1/2 h-4 w-4 -translate-x-1/2 rotate-45 border-b border-r border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900"
         />
       </div>
 
-      {/* Buzz button */}
       <button
         type="button"
         onClick={handleBuzz}
@@ -129,7 +123,6 @@ export function BuzzClient({ question }: { question: string }) {
         {buzzing ? "…" : "BUZZ IN"}
       </button>
 
-      {/* Status */}
       <div className="min-h-12 text-center" aria-live="polite">
         {someoneBuzzed ? (
           <p className="text-lg font-semibold">
