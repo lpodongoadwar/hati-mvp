@@ -74,8 +74,8 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ success: true, score, data: parsedData });
 
-   } catch (error: any) {
+    } catch (error: any) {
     console.error('PDF Parsing Error:', error);
-    // This will send the exact error message back to the frontend
-    return NextResponse.json({ success: false, error: error.message || 'Failed to parse PDF' }, { status: 500 });
+    return NextResponse.json({ success: false, error: error.message || 'Unknown error' }, { status: 500 });
   }
+}
