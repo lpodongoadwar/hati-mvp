@@ -3,6 +3,8 @@ import { siInstagram, siX, siTiktok } from 'simple-icons'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
+import { createClient } from "@/lib/db";
+import { redirect } from "next/navigation";
 
 import { CampusBlitzBanner } from '@/components/campus-blitz-banner'
 import { DashboardRoadmap } from '@/components/dashboard-roadmap'
@@ -19,8 +21,24 @@ export const metadata: Metadata = {
     'View an illustrative Hati Score and the tiered steps that follow.',
 }
 
-export default function DashboardPage() {
-  const score = 450
+export default async function DashboardPage() {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  // If no user is logged in, kick them to login
+  if (!user) {
+    redirect('/login');
+  }
+
+  // Fetch the profile from the database
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('score, full_name, team')
+    .eq('id', user.id)
+    .single();
+
+  // Use the real score, or fallback to 0 if it's missing
+  const score = profile?.score || 0;
 
   return (
     <main className="min-h-screen bg-background text-foreground">
@@ -81,6 +99,7 @@ export default function DashboardPage() {
   </Link>
 </CardHeader>
               <CardContent className="pb-6 flex-1 flex flex-col justify-between">
+                {/* Now displays the real score fetched from Supabase */}
                 <HatiScoreGauge score={score} />
                 
                 {/* The Button Inside the Bubble */}
