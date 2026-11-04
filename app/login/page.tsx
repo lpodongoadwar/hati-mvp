@@ -16,20 +16,18 @@ export default function LoginPage() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // TEMPORARY: Send a magic link instead of password login
-    const { error } = await supabase.auth.signInWithOtp({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email: email,
-      options: {
-        emailRedirectTo: window.location.origin + '/dashboard',
-      },
+      password: password,
     });
 
     setIsSubmitting(false);
 
     if (error) {
-      alert(`Magic Link Error: ${error.message}`);
-    } else {
-      alert("Check your email for a login link!");
+      alert(`Login Error: ${error.message}`);
+    } else if (data.session) {
+      // Force a full page reload to ensure the middleware/session syncs
+      window.location.href = "/dashboard";
     }
   };
 
@@ -62,9 +60,8 @@ export default function LoginPage() {
               className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" 
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              // REMOVED THE required ATTRIBUTE HERE
+              required
             />
-            <p className="text-xs text-muted-foreground text-center pt-2">For now, leave the password blank. We are testing Magic Links.</p>
           </div>
           
           <div className="flex justify-end">
@@ -78,7 +75,7 @@ export default function LoginPage() {
             disabled={isSubmitting}
             className="w-full bg-[#1b4a3a] text-white hover:bg-[#153a2e] h-10 px-4 py-2 rounded-md font-medium disabled:opacity-50"
           >
-            {isSubmitting ? "Sending Link..." : "Send Magic Link"}
+            {isSubmitting ? "Logging in..." : "Log In"}
           </button>
         </form>
 
