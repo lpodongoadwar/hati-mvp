@@ -87,7 +87,7 @@ export function CreditScoreForm() {
           nin: nin,
           social_handle: socialHandle,
           score: calculatedScore, 
-          team: 'red', 
+          team: 'individual', // default team for new users
           referral_count: 0,
           completed_modules: []
         }
