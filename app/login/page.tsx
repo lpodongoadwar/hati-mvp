@@ -12,11 +12,11 @@ export default function LoginPage() {
   const router = useRouter();
   const supabase = createClient();
 
-  const handleLogin = async (e: React.FormEvent) => {
+   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
       email: email,
       password: password,
     });
@@ -25,8 +25,8 @@ export default function LoginPage() {
 
     if (error) {
       alert(`Login Error: ${error.message}`);
-    } else if (data.session) {
-      // Force a full page reload to ensure the middleware/session syncs
+    } else {
+      // Send them to the dashboard
       window.location.href = "/dashboard";
     }
   };
