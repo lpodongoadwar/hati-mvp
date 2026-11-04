@@ -3,25 +3,39 @@
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { createClient } from "@/lib/db"; // Make sure this path is correct
 
 export default function LoginPage() {
-  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState(""); // Changed from phone to email for Supabase Auth
+  const [password, setPassword] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
+  const supabase = createClient();
 
   useEffect(() => {
-    // This traps the back button on the login page
+    // Trap the back button
     window.history.pushState(null, "", window.location.href);
     window.onpopstate = function () {
       window.history.pushState(null, "", window.location.href);
     };
   }, []);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
-    // TODO: Connect to Supabase auth here later. 
-    // Currently, this just simulates a successful login and redirects.
-    router.push("/dashboard");
+    const { error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password,
+    });
+
+    setIsSubmitting(false);
+
+    if (error) {
+      alert(error.message);
+    } else {
+      router.push("/dashboard");
+    }
   };
 
   return (
@@ -34,13 +48,13 @@ export default function LoginPage() {
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium">Phone Number</label>
+            <label className="text-sm font-medium">Email Address</label>
             <input 
-              type="text" 
-              placeholder="+256 700 000 000" 
+              type="email" 
+              placeholder="you@example.com" 
               className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
@@ -51,6 +65,8 @@ export default function LoginPage() {
               type="password" 
               placeholder="Enter your password" 
               className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>
@@ -63,9 +79,10 @@ export default function LoginPage() {
 
           <button 
             type="submit" 
-            className="w-full bg-[#1b4a3a] text-white hover:bg-[#153a2e] h-10 px-4 py-2 rounded-md font-medium"
+            disabled={isSubmitting}
+            className="w-full bg-[#1b4a3a] text-white hover:bg-[#153a2e] h-10 px-4 py-2 rounded-md font-medium disabled:opacity-50"
           >
-            Log In
+            {isSubmitting ? "Logging in..." : "Log In"}
           </button>
         </form>
 

@@ -23,35 +23,46 @@ export function CreditScoreForm() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // 1. Calculate a dummy score for now (Base 200)
     const initialScore = 200;
 
-    // 2. Insert into Supabase
-    const { error } = await supabase
-      .from('profiles')
-      .insert([
-        { 
-          phone: phone,
-          username: username,
-          email: email,
-          nin: nin,
-          social_handle: socialHandle,
-          score: initialScore,
-          team: 'red', // Default team for now
-          referral_count: 0
-        }
-      ]);
+    // 1. Create the Auth User
+    const { data: authData, error: authError } = await supabase.auth.signUp({
+      email: email,
+      password: password,
+    });
 
-    setIsSubmitting(false);
-
-    // 3. Handle Success or Error
-    if (error) {
-      console.error(error);
-      // THIS WILL SHOW US EXACTLY WHY IT FAILED
-      alert(`Database Error: ${error.message}\nDetails: ${error.details}\nHint: ${error.hint}`);
-    } else {
-      router.push('/dashboard');
+    if (authError) {
+      alert(`Auth Error: ${authError.message}`);
+      setIsSubmitting(false);
+      return;
     }
+
+    // 2. Insert into the profiles table
+    if (authData.user) {
+      const { error: dbError } = await supabase
+        .from('profiles')
+        .insert([
+          { 
+            id: authData.user.id, // Link the profile to the Auth User ID
+            phone: phone,
+            username: username,
+            email: email,
+            nin: nin,
+            social_handle: socialHandle,
+            score: initialScore,
+            team: 'red', 
+            referral_count: 0,
+            completed_modules: []
+          }
+        ]);
+
+      if (dbError) {
+        alert(`Database Error: ${dbError.message}\nDetails: ${dbError.details}`);
+      } else {
+        router.push('/dashboard');
+      }
+    }
+    setIsSubmitting(false);
   };
 
   return (
@@ -181,7 +192,8 @@ export function CreditScoreForm() {
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </div>
       </button>
-            {/* Login Link */}
+      
+      {/* Login Link */}
       <div className="text-center text-sm mt-6">
         <p className="text-muted-foreground">
           Already have an account?{" "}
