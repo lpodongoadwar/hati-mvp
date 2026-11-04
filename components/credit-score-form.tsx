@@ -43,10 +43,10 @@ export function CreditScoreForm() {
         if (data.success) {
           calculatedScore = data.score; 
         }
-      } catch (err) {
+           } catch (err) {
         console.error("Failed to parse PDF, using base score.", err);
+        alert("AI Parsing Failed. Using base score. Check Vercel logs.");
       }
-    }
 
     // 2. Create the Auth User
     const { data: authData, error: authError } = await supabase.auth.signUp({

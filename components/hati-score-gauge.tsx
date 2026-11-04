@@ -38,7 +38,7 @@ export function HatiScoreGauge({ score }: { score: number }) {
       name: 'remaining',
       value: MAX_SCORE - currentScore,
       fill: 'var(--color-remaining)',
-    },
+    }, 
   ]
 
   return (
