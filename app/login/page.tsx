@@ -20,7 +20,7 @@ export default function LoginPage() {
     };
   }, []);
 
-   const handleLogin = async (e: React.FormEvent) => {
+     const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
@@ -29,16 +29,14 @@ export default function LoginPage() {
       password: password,
     });
 
+    setIsSubmitting(false);
+
     if (error) {
       alert(`Login Error: ${error.message}`);
-      setIsSubmitting(false);
     } else {
-      // This ensures the session is fully saved before redirecting
-      router.refresh();
-      router.push("/dashboard");
+      window.location.href = "/dashboard"; 
     }
   };
-
   return (
     <main className="min-h-screen bg-background flex flex-col items-center justify-center p-6">
       <div className="w-full max-w-md space-y-6">
