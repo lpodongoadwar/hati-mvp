@@ -12,7 +12,7 @@ export default function LoginPage() {
   const router = useRouter();
   const supabase = createClient();
 
-   const handleLogin = async (e: React.FormEvent) => {
+     const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
@@ -26,11 +26,10 @@ export default function LoginPage() {
     if (error) {
       alert(`Login Error: ${error.message}`);
     } else {
-      // Send them to the dashboard
+      router.refresh(); // Force Next.js to sync
       window.location.href = "/dashboard";
     }
   };
-
   return (
     <main className="min-h-screen bg-background flex flex-col items-center justify-center p-6">
       <div className="w-full max-w-md space-y-6">
