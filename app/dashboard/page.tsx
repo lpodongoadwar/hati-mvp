@@ -123,7 +123,7 @@ export default function DashboardPage() {
             </Card>
           </section>
           
-          <DashboardRoadmap />
+         <DashboardRoadmap score={score} />
           
           <CampusBlitzBanner />
         </div>
