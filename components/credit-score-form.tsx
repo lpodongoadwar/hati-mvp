@@ -55,40 +55,45 @@ export function CreditScoreForm() {
     });
 
     if (authError) {
-      alert(`Auth Error: ${authError.message}`);
+      alert(`AUTH ERROR: ${authError.message}`); // <-- THIS WILL SHOW THE EXACT REASON
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (!authData.user) {
+      alert("No user returned from Auth. Please check your Supabase logs.");
       setIsSubmitting(false);
       return;
     }
 
     // 3. Insert into the profiles table (Using Upsert & Deep Error Logging)
-    if (authData.user) {
-      const { error: dbError } = await supabase
-        .from('profiles')
-        .upsert([ 
-          { 
-            id: authData.user.id, 
-            full_name: fullName,
-            phone: phone,
-            username: username,
-            email: email,
-            nin: nin,
-            social_handle: socialHandle,
-            score: calculatedScore, 
-            team: 'red', 
-            referral_count: 0,
-            completed_modules: []
-          }
-        ]);
+    const { error: dbError } = await supabase
+      .from('profiles')
+      .upsert([ 
+        { 
+          id: authData.user.id, 
+          full_name: fullName,
+          phone: phone,
+          username: username,
+          email: email,
+          nin: nin,
+          social_handle: socialHandle,
+          score: calculatedScore, 
+          team: 'red', 
+          referral_count: 0,
+          completed_modules: []
+        }
+      ]);
 
-      if (dbError) {
-        alert(`Profile Save Error: ${dbError.message}\nCode: ${dbError.code}\nDetails: ${dbError.details}`);
-        setIsSubmitting(false);
-        return; 
-      } 
-      
-      // If successful, go to dashboard using a hard reload to sync the session
-      window.location.href = '/dashboard';
-    }
+    if (dbError) {
+      alert(`Profile Save Error: ${dbError.message}\nCode: ${dbError.code}\nDetails: ${dbError.details}`);
+      setIsSubmitting(false);
+      return; 
+    } 
+    
+    // If successful, go to dashboard using a hard reload to sync the session
+    window.location.href = '/dashboard';
+    
     setIsSubmitting(false);
   };
 
