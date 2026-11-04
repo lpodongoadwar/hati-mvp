@@ -10,9 +10,10 @@ export function CreditScoreForm() {
   const supabase = createClient();
   
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null); // Added for PDF upload
+  const fileInputRef = useRef<HTMLInputElement>(null); 
   
   // Form states
+  const [fullName, setFullName] = useState(""); // NEW STATE
   const [phone, setPhone] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -24,7 +25,7 @@ export function CreditScoreForm() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    let calculatedScore = 200; // Default fallback
+    let calculatedScore = 200; 
 
     // 1. Parse the PDF if a file is selected
     const file = fileInputRef.current?.files?.[0];
@@ -40,7 +41,7 @@ export function CreditScoreForm() {
         const data = await res.json();
         
         if (data.success) {
-          calculatedScore = data.score; // Use the score from Gemini AI
+          calculatedScore = data.score; 
         }
       } catch (err) {
         console.error("Failed to parse PDF, using base score.", err);
@@ -59,19 +60,20 @@ export function CreditScoreForm() {
       return;
     }
 
-    // 3. Insert into the profiles table with the calculated score
+    // 3. Insert into the profiles table
     if (authData.user) {
       const { error: dbError } = await supabase
         .from('profiles')
         .insert([
           { 
-            id: authData.user.id,
+            id: authData.user.id, 
+            full_name: fullName, // SAVING FULL NAME HERE
             phone: phone,
             username: username,
             email: email,
             nin: nin,
             social_handle: socialHandle,
-            score: calculatedScore, // <--- USE THE AI SCORE HERE
+            score: calculatedScore, 
             team: 'red', 
             referral_count: 0,
             completed_modules: []
@@ -90,6 +92,20 @@ export function CreditScoreForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       
+      {/* Full Name */}
+      <div className="space-y-2">
+        <label className="text-sm font-medium">Full Name</label>
+        <input 
+          type="text" 
+          placeholder="As it appears on your National ID" 
+          className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+          value={fullName}
+          onChange={(e) => setFullName(e.target.value)}
+          required
+        />
+        <p className="text-xs text-muted-foreground">Must match your National ID exactly.</p>
+      </div>
+
       {/* Phone Number */}
       <div className="space-y-2">
         <label className="text-sm font-medium">Phone number</label>
@@ -166,7 +182,7 @@ export function CreditScoreForm() {
         <input 
           type="file" 
           accept=".pdf"
-          ref={fileInputRef} // <--- ADDED THE REF HERE
+          ref={fileInputRef} 
           className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium"
           required
         />
