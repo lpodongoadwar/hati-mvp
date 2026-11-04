@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/db";
@@ -10,6 +10,7 @@ export function CreditScoreForm() {
   const supabase = createClient();
   
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null); // Added for PDF upload
   
   // Form states
   const [phone, setPhone] = useState("");
@@ -23,9 +24,30 @@ export function CreditScoreForm() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const initialScore = 200;
+    let calculatedScore = 200; // Default fallback
 
-    // 1. Create the Auth User
+    // 1. Parse the PDF if a file is selected
+    const file = fileInputRef.current?.files?.[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const res = await fetch('/api/parse-pdf', {
+          method: 'POST',
+          body: formData,
+        });
+        const data = await res.json();
+        
+        if (data.success) {
+          calculatedScore = data.score; // Use the score from Gemini AI
+        }
+      } catch (err) {
+        console.error("Failed to parse PDF, using base score.", err);
+      }
+    }
+
+    // 2. Create the Auth User
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email: email,
       password: password,
@@ -37,19 +59,19 @@ export function CreditScoreForm() {
       return;
     }
 
-    // 2. Insert into the profiles table
+    // 3. Insert into the profiles table with the calculated score
     if (authData.user) {
       const { error: dbError } = await supabase
         .from('profiles')
         .insert([
           { 
-            id: authData.user.id, // Link the profile to the Auth User ID
+            id: authData.user.id,
             phone: phone,
             username: username,
             email: email,
             nin: nin,
             social_handle: socialHandle,
-            score: initialScore,
+            score: calculatedScore, // <--- USE THE AI SCORE HERE
             team: 'red', 
             referral_count: 0,
             completed_modules: []
@@ -144,6 +166,7 @@ export function CreditScoreForm() {
         <input 
           type="file" 
           accept=".pdf"
+          ref={fileInputRef} // <--- ADDED THE REF HERE
           className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium"
           required
         />
@@ -187,7 +210,7 @@ export function CreditScoreForm() {
         disabled={isSubmitting}
         className="w-full bg-[#1b4a3a] text-white hover:bg-[#153a2e] h-12 rounded-lg font-semibold text-lg flex items-center justify-between px-6 transition-colors disabled:opacity-50"
       >
-        <span>{isSubmitting ? "Saving..." : "Unlock Score for UGX 2,000."}</span>
+        <span>{isSubmitting ? "Analyzing & Saving..." : "Unlock Score for UGX 2,000."}</span>
         <div className="bg-white/20 rounded-full p-1">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </div>
