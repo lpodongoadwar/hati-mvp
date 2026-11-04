@@ -192,21 +192,6 @@ export function CreditScoreForm() {
         />
       </div>
 
-      {/* Upload Mini Statement */}
-      <div className="space-y-2">
-        <label className="text-sm font-medium">Upload Mini Statement (PDF)</label>
-        <input 
-          type="file" 
-          accept=".pdf"
-          ref={fileInputRef} 
-          className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium"
-          required
-        />
-        <p className="text-xs text-muted-foreground leading-relaxed">
-          Dial *165# (MTN) or *185# (Airtel) and select "Mini Statement" to get this PDF.
-        </p>
-      </div>
-
       {/* Social Media */}
       <div className="space-y-2">
         <label className="text-sm font-medium">Social Media Handle (optional, add as many as you like)</label>

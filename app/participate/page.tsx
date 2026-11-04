@@ -1,7 +1,69 @@
+"use client";
+
 import Link from "next/link";
-import { ArrowLeft, ClipboardList, BookOpen, Target, History, TrendingUp } from "lucide-react";
+import { useState, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { ArrowLeft, ClipboardList, BookOpen, Target, History, TrendingUp, UploadCloud } from "lucide-react";
+import { createClient } from "@/lib/db";
 
 export default function ParticipatePage() {
+  const router = useRouter();
+  const supabase = createClient();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  const [uploading, setUploading] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const handleUpload = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const file = fileInputRef.current?.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    setMessage("Analyzing your statement...");
+
+    // 1. Send PDF to AI
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch("/api/parse-pdf", { method: "POST", body: formData });
+      const data = await res.json();
+
+      if (!data.success) {
+        setMessage(`AI Error: ${data.error}`);
+        setUploading(false);
+        return;
+      }
+
+      // 2. Get the user
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setMessage("You must be logged in.");
+        setUploading(false);
+        return;
+      }
+
+      // 3. Update the profile score
+      const { error: dbError } = await supabase
+        .from("profiles")
+        .update({ score: data.score })
+        .eq("id", user.id);
+
+      if (dbError) {
+        setMessage(`Database Error: ${dbError.message}`);
+      } else {
+        setMessage(`Success! Your new Hati Score is ${data.score}.`);
+        // Force a refresh of the dashboard data
+        router.refresh();
+      }
+    } catch (err: any) {
+      setMessage(`Network Error: ${err.message}`);
+    }
+    
+    setUploading(false);
+  };
+
   return (
     <main className="min-h-screen bg-background text-foreground pb-20 font-sans">
       <div className="bg-card border-b border-border/80">
@@ -62,10 +124,10 @@ export default function ParticipatePage() {
           </div>
         </section>
 
-        {/* Section 3: The Tools (Quiz Button Removed, 2-Column Grid) */}
+        {/* Section 3: The Tools (3-Column Grid) */}
         <section className="space-y-6">
           <h2 className="text-2xl font-semibold text-foreground">Start Building Now</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             
             {/* Survey */}
             <div className="flex flex-col items-center text-center p-6 bg-card border border-border/80 rounded-xl shadow-sm space-y-3">
@@ -74,9 +136,9 @@ export default function ParticipatePage() {
               </div>
               <h4 className="font-semibold text-foreground text-lg">Take a Survey</h4>
               <p className="text-xs text-gray-600 flex-1">Share your spending habits to refine your profile and score.</p>
-             <Link href="/survey" className="w-full inline-flex items-center justify-center rounded-md bg-[#1b4a3a] px-4 py-2 text-sm font-medium text-white hover:bg-[#153a2e] transition-colors mt-4">
-  Start Survey
-</Link>
+              <Link href="/survey" className="w-full inline-flex items-center justify-center rounded-md bg-[#1b4a3a] px-4 py-2 text-sm font-medium text-white hover:bg-[#153a2e] transition-colors mt-4">
+                Start Survey
+              </Link>
             </div>
 
             {/* Module */}
@@ -86,9 +148,37 @@ export default function ParticipatePage() {
               </div>
               <h4 className="font-semibold text-foreground text-lg">Complete a Module</h4>
               <p className="text-xs text-gray-600 flex-1">Learn how to manage money and build long-term wealth.</p>
-             <Link href="/curriculum" className="w-full inline-flex items-center justify-center rounded-md bg-[#1b4a3a] px-4 py-2 text-sm font-medium text-white hover:bg-[#153a2e] transition-colors mt-4">
-  Start Module
-</Link>
+              <Link href="/curriculum" className="w-full inline-flex items-center justify-center rounded-md bg-[#1b4a3a] px-4 py-2 text-sm font-medium text-white hover:bg-[#153a2e] transition-colors mt-4">
+                Start Module
+              </Link>
+            </div>
+
+            {/* Transaction History (Upload) */}
+            <div className="flex flex-col items-center text-center p-6 bg-card border border-border/80 rounded-xl shadow-sm space-y-3">
+              <div className="bg-[#c4f080] p-3 rounded-full text-[#0a1f17]">
+                <History className="size-6" />
+              </div>
+              <h4 className="font-semibold text-foreground text-lg">Upload Statement</h4>
+              <p className="text-xs text-gray-600 flex-1">Prove your financial ability with your Mobile Money Mini Statement.</p>
+              
+              <form onSubmit={handleUpload} className="w-full mt-4 space-y-2">
+                <input 
+                  type="file" 
+                  accept=".pdf"
+                  ref={fileInputRef}
+                  required
+                  className="block w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-[#1b4a3a]/10 file:text-[#1b4a3a] hover:file:bg-[#1b4a3a]/20"
+                />
+                <button 
+                  type="submit" 
+                  disabled={uploading}
+                  className="w-full inline-flex items-center justify-center gap-2 rounded-md bg-[#1b4a3a] px-4 py-2 text-sm font-medium text-white hover:bg-[#153a2e] transition-colors disabled:opacity-50"
+                >
+                  <UploadCloud className="size-4" />
+                  {uploading ? "Analyzing..." : "Upload"}
+                </button>
+                {message && <p className="text-xs font-medium text-[#1b4a3a]">{message}</p>}
+              </form>
             </div>
 
           </div>
