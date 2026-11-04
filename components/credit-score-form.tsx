@@ -99,9 +99,9 @@ export function CreditScoreForm() {
       return; 
     } 
     
-    // If successful, go to dashboard using a hard reload to sync the session
+      // SUCCESS! Force a hard redirect to the dashboard
+    console.log("Signup successful! Redirecting to dashboard...");
     window.location.href = '/dashboard';
-    
     setIsSubmitting(false);
   };
 
