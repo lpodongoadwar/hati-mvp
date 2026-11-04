@@ -32,11 +32,10 @@ export default function LoginPage() {
     setIsSubmitting(false);
 
     if (error) {
-      alert(`Login Error: ${error.message}`); // Shows exact error
+      alert(`Login Error: ${error.message}`);
     } else {
-      // Use window.location instead of router.push to force a full page reload
-      // This ensures the Middleware and Supabase session sync up perfectly
-      window.location.href = "/dashboard"; 
+      // Force a full window reload to the dashboard
+      window.location.replace("/dashboard"); 
     }
   };
 

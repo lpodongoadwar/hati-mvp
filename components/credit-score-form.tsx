@@ -40,13 +40,21 @@ export function CreditScoreForm() {
         });
         const data = await res.json();
         
+        // DEBUG ALERTS
+        if (!res.ok) {
+          alert(`AI Error: ${data.error}`);
+        }
+
         if (data.success) {
           calculatedScore = data.score; 
+        } else {
+          alert("AI could not calculate a score. Using base score.");
         }
-           } catch (err) {
+      } catch (err) {
         console.error("Failed to parse PDF, using base score.", err);
-        alert("AI Parsing Failed. Using base score. Check Vercel logs.");
+        alert("Network error trying to reach the AI.");
       }
+    }
 
     // 2. Create the Auth User
     const { data: authData, error: authError } = await supabase.auth.signUp({
@@ -55,7 +63,7 @@ export function CreditScoreForm() {
     });
 
     if (authError) {
-      alert(`AUTH ERROR: ${authError.message}`); // <-- THIS WILL SHOW THE EXACT REASON
+      alert(`AUTH ERROR: ${authError.message}`);
       setIsSubmitting(false);
       return;
     }
@@ -66,7 +74,7 @@ export function CreditScoreForm() {
       return;
     }
 
-    // 3. Insert into the profiles table (Using Upsert & Deep Error Logging)
+    // 3. Insert into the profiles table
     const { error: dbError } = await supabase
       .from('profiles')
       .upsert([ 
