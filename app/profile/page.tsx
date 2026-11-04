@@ -1,8 +1,19 @@
 "use client";
+
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { User, Camera, MessageCircle, HelpCircle, Mail, Phone, Lock, ShieldCheck, Scale, LogOut, ArrowLeft } from "lucide-react";
+import { createClient } from "@/lib/db";
 
 export default function ProfilePage() {
+  const router = useRouter();
+  const supabase = createClient();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut(); // Kills the Supabase session
+    router.replace("/login");      // 'replace' prevents going back to the profile via Back button
+  };
+
   return (
     <main className="min-h-screen bg-background p-6">
       <div className="mx-auto max-w-md space-y-8">
@@ -78,13 +89,13 @@ export default function ProfilePage() {
 
         {/* Log Out Button */}
         <div className="pt-4">
-          <Link 
-            href="/" 
+          <button 
+            onClick={handleLogout}
             className="flex w-full items-center justify-center gap-2 rounded-xl bg-red-50 p-4 text-red-600 font-semibold hover:bg-red-100 transition-colors border border-red-200"
           >
             <LogOut className="size-5" />
             Log Out
-          </Link>
+          </button>
         </div>
 
       </div>

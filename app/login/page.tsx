@@ -1,17 +1,27 @@
-"use client"; // Ensure this line exists at the top of the file to enable client-side rendering
+"use client";
+
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
 export default function LoginPage() {
   const [phone, setPhone] = useState("");
-const router = useRouter(); // Correct: Inside the function component body
+  const router = useRouter();
+
+  useEffect(() => {
+    // This traps the back button on the login page
+    window.history.pushState(null, "", window.location.href);
+    window.onpopstate = function () {
+      window.history.pushState(null, "", window.location.href);
+    };
+  }, []);
+
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // TODO: Connect to Supabase auth here later. For now, let's simulate a successful login and redirect to the dashboard.
+    // TODO: Connect to Supabase auth here later. 
+    // Currently, this just simulates a successful login and redirects.
     router.push("/dashboard");
-    // We will connect this to Supabase auth later
-    alert("Login logic coming soon for: " + phone);
   };
 
   return (
@@ -34,19 +44,23 @@ const router = useRouter(); // Correct: Inside the function component body
               required
             />
           </div>
+          
           <div className="space-y-2 mt-4">
-  <label className="text-sm font-medium">Password</label>
-  <input 
-    type="password" 
-    placeholder="Enter your password" 
-    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" 
-  />
-</div>
-<div className="flex justify-end">
-  <Link href="/forgot-password" className="text-sm font-medium text-[#1b4a3a] hover:underline">
-    Forgot Password?
-  </Link>
-</div>
+            <label className="text-sm font-medium">Password</label>
+            <input 
+              type="password" 
+              placeholder="Enter your password" 
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" 
+              required
+            />
+          </div>
+          
+          <div className="flex justify-end">
+            <Link href="/forgot-password" className="text-sm font-medium text-[#1b4a3a] hover:underline">
+              Forgot Password?
+            </Link>
+          </div>
+
           <button 
             type="submit" 
             className="w-full bg-[#1b4a3a] text-white hover:bg-[#153a2e] h-10 px-4 py-2 rounded-md font-medium"
