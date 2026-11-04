@@ -20,12 +20,14 @@ export async function POST(req: Request) {
     const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
     const prompt = `
-      You are a financial analyst. I am providing you with a Mobile Money Mini Statement PDF.
-      Please analyze it and return ONLY a JSON object with the following structure (no markdown, no extra text):
+      You are a financial analyst for Hati, a credit scoring platform in Uganda.
+      Analyze this Mobile Money Mini Statement PDF and return ONLY a valid JSON object with the following fields (no markdown, no explanation, just the raw JSON):
       {
-        "averageMonthlyInflow": <number>, 
-        "totalTransactions": <number>,
-        "loanRepayments": <number>
+        "totalTransactions": <number of total transactions>,
+        "averageMonthlyInflow": <number in UGX>,
+        "averageMonthlyOutflow": <number in UGX>,
+        "hasLoanRepayments": <boolean true/false>,
+        "incomeConsistency": <"high", "medium", or "low">
       }
     `;
 
@@ -44,11 +46,31 @@ export async function POST(req: Request) {
     const cleanJson = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
     const parsedData = JSON.parse(cleanJson);
 
-    // Calculate Score based on the parsed data
-    let score = 200; // Base score
-    if (parsedData.totalTransactions > 50) score += 100;
-    if (parsedData.averageMonthlyInflow > 500000) score += 150;
-    if (parsedData.loanRepayments > 0) score += 50;
+    // --- HATI TRUST SCORE CALCULATION (Out of 850) ---
+    // Base Score for signing up and verifying identity
+    let score = 200;
+
+    // Pillar 1: Financial Activity (Max 200 pts)
+    // We award points for volume of transactions
+    if (parsedData.totalTransactions > 10) score += 50;
+    if (parsedData.totalTransactions > 50) score += 50;
+    if (parsedData.totalTransactions > 100) score += 100;
+
+    // Pillar 2: Income Capacity (Max 250 pts)
+    // Based on average monthly inflow
+    if (parsedData.averageMonthlyInflow > 100000) score += 50;
+    if (parsedData.averageMonthlyInflow > 500000) score += 100;
+    if (parsedData.averageMonthlyInflow > 2000000) score += 100;
+
+    // Pillar 3: Financial Discipline (Max 150 pts)
+    // Consistency of income and loan repayment history
+    if (parsedData.incomeConsistency === "medium") score += 50;
+    if (parsedData.incomeConsistency === "high") score += 100;
+    
+    if (parsedData.hasLoanRepayments) score += 50;
+
+    // Cap the score at 850 max
+    if (score > 850) score = 850;
 
     return NextResponse.json({ success: true, score, data: parsedData });
 
