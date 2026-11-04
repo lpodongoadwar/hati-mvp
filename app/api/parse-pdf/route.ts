@@ -17,7 +17,7 @@ export async function POST(req: Request) {
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
     
     // Using 1.5-flash which is the most stable for PDF parsing
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+   const model = genAI.getGenerativeModel({ model: 'gemini-3.8-flash' });
 
     const prompt = `
       You are a financial analyst for Hati, a credit scoring platform in Uganda.
