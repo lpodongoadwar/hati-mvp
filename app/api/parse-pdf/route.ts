@@ -17,8 +17,7 @@ export async function POST(req: Request) {
 
     // Initialize Gemini
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
- const model = genAI.getGenerativeModel({ model: 'gemini-3.8-flash' });
-
+    
     const prompt = `
       You are a financial analyst for Hati, a credit scoring platform in Uganda.
       Analyze this Mobile Money Mini Statement PDF and return ONLY a valid JSON object with the following fields (no markdown, no explanation, just the raw JSON):
@@ -31,39 +30,59 @@ export async function POST(req: Request) {
       }
     `;
 
-    const result = await model.generateContent([
-      prompt,
-      {
-        inlineData: {
-          data: base64Pdf,
-          mimeType: 'application/pdf',
+    // Try 3.8-flash first, fallback to 3.5-flash if it's busy
+    let model = genAI.getGenerativeModel({ model: 'gemini-3.8-flash' });
+    let result;
+
+    try {
+      result = await model.generateContent([
+        prompt,
+        {
+          inlineData: {
+            data: base64Pdf,
+            mimeType: 'application/pdf',
+          },
         },
-      },
-    ]);
+      ]);
+    } catch (e: any) {
+      // If 3.8-flash is overloaded (503), switch to 3.5-flash
+      if (e.message.includes('503')) {
+        console.log('3.8-flash is busy, falling back to 3.5-flash...');
+        model = genAI.getGenerativeModel({ model: 'gemini-3.5-flash' });
+        result = await model.generateContent([
+          prompt,
+          {
+            inlineData: {
+              data: base64Pdf,
+              mimeType: 'application/pdf',
+            },
+          },
+        ]);
+      } else {
+        throw e;
+      }
+    }
 
     const responseText = result.response.text();
+    
     // Clean up any potential markdown formatting from Gemini's response
     const cleanJson = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
     const parsedData = JSON.parse(cleanJson);
 
     // --- HATI TRUST SCORE CALCULATION (Out of 850) ---
-    // Base Score for signing up and verifying identity
     let score = 200;
 
     // Pillar 1: Financial Activity (Max 200 pts)
-    // We award points for volume of transactions
     if (parsedData.totalTransactions > 10) score += 50;
     if (parsedData.totalTransactions > 50) score += 50;
     if (parsedData.totalTransactions > 100) score += 100;
 
     // Pillar 2: Income Capacity (Max 250 pts)
-    // Based on average monthly inflow
     if (parsedData.averageMonthlyInflow > 100000) score += 50;
     if (parsedData.averageMonthlyInflow > 500000) score += 100;
     if (parsedData.averageMonthlyInflow > 2000000) score += 100;
 
     // Pillar 3: Financial Discipline (Max 150 pts)
-    // Consistency of income and loan repayment history
     if (parsedData.incomeConsistency === "medium") score += 50;
     if (parsedData.incomeConsistency === "high") score += 100;
     
@@ -74,7 +93,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ success: true, score, data: parsedData });
 
-    } catch (error: any) {
+  } catch (error: any) {
     console.error('PDF Parsing Error:', error);
     return NextResponse.json({ success: false, error: error.message || 'Unknown error' }, { status: 500 });
   }
