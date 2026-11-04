@@ -20,7 +20,7 @@ export default function LoginPage() {
     };
   }, []);
 
-  const handleLogin = async (e: React.FormEvent) => {
+   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
@@ -29,13 +29,13 @@ export default function LoginPage() {
       password: password,
     });
 
-    setIsSubmitting(false);
-
     if (error) {
       alert(`Login Error: ${error.message}`);
+      setIsSubmitting(false);
     } else {
-      // Force a full window reload to the dashboard
-      window.location.replace("/dashboard"); 
+      // This ensures the session is fully saved before redirecting
+      router.refresh();
+      router.push("/dashboard");
     }
   };
 
