@@ -20,21 +20,24 @@ export default function LoginPage() {
     };
   }, []);
 
-     const handleLogin = async (e: React.FormEvent) => {
+      const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const { error } = await supabase.auth.signInWithPassword({
+    // TEMPORARY: Send a magic link instead of password login
+    const { error } = await supabase.auth.signInWithOtp({
       email: email,
-      password: password,
+      options: {
+        emailRedirectTo: window.location.origin + '/dashboard',
+      },
     });
 
     setIsSubmitting(false);
 
     if (error) {
-      alert(`Login Error: ${error.message}`);
+      alert(`Magic Link Error: ${error.message}`);
     } else {
-      window.location.href = "/dashboard"; 
+      alert("Check your email for a login link!");
     }
   };
   return (
