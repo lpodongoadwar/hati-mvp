@@ -3,10 +3,10 @@
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { createClient } from "@/lib/db"; // Make sure this path is correct
+import { createClient } from "@/lib/db";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState(""); // Changed from phone to email for Supabase Auth
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
@@ -32,9 +32,11 @@ export default function LoginPage() {
     setIsSubmitting(false);
 
     if (error) {
-      alert(error.message);
+      alert(`Login Error: ${error.message}`); // Shows exact error
     } else {
-      router.push("/dashboard");
+      // Use window.location instead of router.push to force a full page reload
+      // This ensures the Middleware and Supabase session sync up perfectly
+      window.location.href = "/dashboard"; 
     }
   };
 

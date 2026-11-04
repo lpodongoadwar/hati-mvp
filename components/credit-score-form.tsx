@@ -13,7 +13,7 @@ export function CreditScoreForm() {
   const fileInputRef = useRef<HTMLInputElement>(null); 
   
   // Form states
-  const [fullName, setFullName] = useState(""); // NEW STATE
+  const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -60,14 +60,14 @@ export function CreditScoreForm() {
       return;
     }
 
-    // 3. Insert into the profiles table
+    // 3. Insert into the profiles table (Using Upsert & Deep Error Logging)
     if (authData.user) {
       const { error: dbError } = await supabase
         .from('profiles')
-        .insert([
+        .upsert([ 
           { 
             id: authData.user.id, 
-            full_name: fullName, // SAVING FULL NAME HERE
+            full_name: fullName,
             phone: phone,
             username: username,
             email: email,
@@ -81,10 +81,13 @@ export function CreditScoreForm() {
         ]);
 
       if (dbError) {
-        alert(`Database Error: ${dbError.message}\nDetails: ${dbError.details}`);
-      } else {
-        router.push('/dashboard');
-      }
+        alert(`Profile Save Error: ${dbError.message}\nCode: ${dbError.code}\nDetails: ${dbError.details}`);
+        setIsSubmitting(false);
+        return; 
+      } 
+      
+      // If successful, go to dashboard using a hard reload to sync the session
+      window.location.href = '/dashboard';
     }
     setIsSubmitting(false);
   };
