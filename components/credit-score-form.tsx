@@ -181,6 +181,16 @@ export function CreditScoreForm() {
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </div>
       </button>
+            {/* Login Link */}
+      <div className="text-center text-sm mt-6">
+        <p className="text-muted-foreground">
+          Already have an account?{" "}
+          <a href="/login" className="font-semibold underline text-[#1b4a3a]">
+            Log in
+          </a>
+        </p>
+      </div>
+
     </form>
   );
 }
