@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { createClient } from "@/lib/db";
 
 export default function LoginPage() {
@@ -12,15 +12,7 @@ export default function LoginPage() {
   const router = useRouter();
   const supabase = createClient();
 
-  useEffect(() => {
-    // Trap the back button
-    window.history.pushState(null, "", window.location.href);
-    window.onpopstate = function () {
-      window.history.pushState(null, "", window.location.href);
-    };
-  }, []);
-
-      const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
@@ -40,6 +32,7 @@ export default function LoginPage() {
       alert("Check your email for a login link!");
     }
   };
+
   return (
     <main className="min-h-screen bg-background flex flex-col items-center justify-center p-6">
       <div className="w-full max-w-md space-y-6">
@@ -69,8 +62,9 @@ export default function LoginPage() {
               className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" 
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              required
+              // REMOVED THE required ATTRIBUTE HERE
             />
+            <p className="text-xs text-muted-foreground text-center pt-2">For now, leave the password blank. We are testing Magic Links.</p>
           </div>
           
           <div className="flex justify-end">
@@ -84,7 +78,7 @@ export default function LoginPage() {
             disabled={isSubmitting}
             className="w-full bg-[#1b4a3a] text-white hover:bg-[#153a2e] h-10 px-4 py-2 rounded-md font-medium disabled:opacity-50"
           >
-            {isSubmitting ? "Logging in..." : "Log In"}
+            {isSubmitting ? "Sending Link..." : "Send Magic Link"}
           </button>
         </form>
 
