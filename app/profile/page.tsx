@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { User, Camera, MessageCircle, HelpCircle, Mail, Phone, Lock, ShieldCheck, Scale, LogOut, ArrowLeft } from "lucide-react";
@@ -8,10 +9,66 @@ import { createClient } from "@/lib/db";
 export default function ProfilePage() {
   const router = useRouter();
   const supabase = createClient();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+
+  // Fetch the current avatar on load
+  useEffect(() => {
+    async function getProfile() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data } = await supabase.from('profiles').select('avatar_url').eq('id', user.id).single();
+        if (data?.avatar_url) setAvatarUrl(data.avatar_url);
+      }
+    }
+    getProfile();
+  }, [supabase]);
 
   const handleLogout = async () => {
-    await supabase.auth.signOut(); // Kills the Supabase session
-    router.replace("/login");      // 'replace' prevents going back to the profile via Back button
+    await supabase.auth.signOut();
+    router.replace("/login");
+  };
+
+  const handleUploadAvatar = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("No user found");
+
+      // 1. Upload file to Supabase Storage
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user.id}-${Date.now()}.${fileExt}`;
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(fileName, file);
+
+      if (uploadError) throw uploadError;
+
+      // 2. Get the public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(fileName);
+
+      // 3. Save URL to profile
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ avatar_url: publicUrl })
+        .eq('id', user.id);
+
+      if (updateError) throw updateError;
+
+      setAvatarUrl(publicUrl);
+    } catch (error: any) {
+      alert(`Error uploading image: ${error.message}`);
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (
@@ -28,13 +85,36 @@ export default function ProfilePage() {
 
         {/* Profile Picture */}
         <div className="flex flex-col items-center space-y-2">
-          <div className="relative flex size-24 items-center justify-center rounded-full bg-muted">
-            <span className="text-2xl text-muted-foreground">DP</span>
-            <button className="absolute bottom-0 right-0 rounded-full bg-[#1b4a3a] p-2 text-white">
+          <div className="relative flex size-24 items-center justify-center rounded-full bg-muted overflow-hidden">
+            
+            {/* Show Image if exists, otherwise show DP text */}
+            {avatarUrl ? (
+              <img src={avatarUrl} alt="Profile" className="h-full w-full object-cover" />
+            ) : (
+              <span className="text-2xl text-muted-foreground">DP</span>
+            )}
+
+            {/* Hidden File Input */}
+            <input 
+              type="file" 
+              accept="image/*" 
+              ref={fileInputRef} 
+              onChange={handleUploadAvatar} 
+              className="hidden" 
+            />
+
+            {/* Camera Button */}
+            <button 
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploading}
+              className="absolute bottom-0 right-0 rounded-full bg-[#1b4a3a] p-2 text-white hover:bg-[#153a2e] transition-colors disabled:opacity-50"
+            >
               <Camera className="size-4" />
             </button>
           </div>
-          <p className="text-sm text-muted-foreground">Tap to change photo</p>
+          <p className="text-sm text-muted-foreground">
+            {uploading ? "Uploading..." : "Tap to change photo"}
+          </p>
         </div>
 
         {/* Verification Button */}
@@ -80,7 +160,6 @@ export default function ProfilePage() {
             <span>Help Center</span>
           </button>
 
-          {/* New Legal Section */}
           <Link href="/legal" className="flex w-full items-center gap-3 rounded-lg p-2 hover:bg-muted text-sm font-medium">
             <Scale className="size-5 text-[#1b4a3a]" />
             <span>Legal & Compliance</span>
