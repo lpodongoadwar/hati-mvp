@@ -17,20 +17,21 @@ export async function POST(req: Request) {
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
     
+    // The AI now ONLY extracts raw data. It does not calculate the score.
     const prompt = `
-      You are a financial analyst for Hati, a credit scoring platform in Uganda.
+      You are a financial data extractor for Hati, a credit scoring platform in Uganda.
       Analyze this Mobile Money Mini Statement PDF and return ONLY a valid JSON object with the following fields (no markdown, no explanation, just the raw JSON):
       {
-        "totalTransactions": <number of total transactions>,
-        "averageMonthlyInflow": <number in UGX>,
-        "averageMonthlyOutflow": <number in UGX>,
-        "hasLoanRepayments": <boolean true/false>,
-        "incomeConsistency": <"high", "medium", or "low">
+        "totalInflow": <number, sum of all positive amounts in UGX>,
+        "totalCashOut": <number, sum of all negative amounts in UGX (absolute value)>,
+        "averageBalance": <number, average of the Balance column in UGX>,
+        "uniqueSenders": <number, count of unique phone numbers/names that sent money TO the user>,
+        "totalTransactions": <number, total number of rows/transactions>
       }
     `;
 
     // The list of models to try, from most capable to most stable
-    const modelsToTry = ['gemini-3.8-flash', 'gemini-3.5-flash', 'gemini-3.5-flash-lite'];
+    const modelsToTry = ['gemini-1.5-pro', 'gemini-1.5-flash', 'gemini-1.5-flash-8b'];
     let result = null;
     let lastError = null;
 
@@ -66,30 +67,46 @@ export async function POST(req: Request) {
     const responseText = result.response.text();
     // Clean up any potential markdown formatting from Gemini's response
     const cleanJson = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
-    const parsedData = JSON.parse(cleanJson);
+    const stats = JSON.parse(cleanJson);
 
-    // --- HATI TRUST SCORE CALCULATION (Out of 850) ---
-    let score = 200;
+    // --- HATI TRUST SCORE CALCULATION (Strict Mathematical Formula) ---
+    const calculateScore = (data: any) => {
+      const base = 200;
+      
+      // Fallbacks in case the AI returns null/undefined for a field
+      const inflow = Number(data.totalInflow) || 0;
+      const cashOut = Number(data.totalCashOut) || 0;
+      const avgBalance = Number(data.averageBalance) || 0;
+      const senders = Number(data.uniqueSenders) || 0;
+      const transactions = Number(data.totalTransactions) || 0;
 
-    // Pillar 1: Financial Activity
-    if (parsedData.totalTransactions > 10) score += 50;
-    if (parsedData.totalTransactions > 50) score += 50;
-    if (parsedData.totalTransactions > 100) score += 100;
+      // 1. Inflow (Max 200 points)
+      const inflowPoints = Math.min((inflow / 50000) * 10, 200);
+      
+      // 2. Avg Balance (Max 150 points)
+      const balancePoints = Math.min((avgBalance / 10000) * 15, 150);
+      
+      // 3. Unique Senders (Max 100 points)
+      const diversityPoints = Math.min(senders * 20, 100);
+      
+      // 4. Velocity (Max 100 points)
+      const velocityPoints = Math.min((transactions / 5) * 10, 100);
+      
+      // 5. Discipline (Max 100 points)
+      // Prevent division by zero if inflow is 0
+      const cashOutRatio = inflow > 0 ? (cashOut / inflow) : 1;
+      // If they cash out 100% of what comes in, they get 0 points. 
+      const disciplinePoints = Math.max(0, 100 - (cashOutRatio * 100));
 
-    // Pillar 2: Income Capacity
-    if (parsedData.averageMonthlyInflow > 100000) score += 50;
-    if (parsedData.averageMonthlyInflow > 500000) score += 100;
-    if (parsedData.averageMonthlyInflow > 2000000) score += 100;
+      const finalScore = Math.round(base + inflowPoints + balancePoints + diversityPoints + velocityPoints + disciplinePoints);
 
-    // Pillar 3: Financial Discipline
-    if (parsedData.incomeConsistency === "medium") score += 50;
-    if (parsedData.incomeConsistency === "high") score += 100;
-    if (parsedData.hasLoanRepayments) score += 50;
+      // Cap the score at 850 max
+      return Math.min(finalScore, 850);
+    };
 
-    // Cap the score at 850 max
-    if (score > 850) score = 850;
+    const finalScore = calculateScore(stats);
 
-    return NextResponse.json({ success: true, score, data: parsedData });
+    return NextResponse.json({ success: true, score: finalScore, data: stats });
 
   } catch (error: any) {
     console.error('All AI models failed to parse PDF:', error);
