@@ -23,6 +23,30 @@ export function CreditScoreForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+        // Trigger Pesapal
+    try {
+      const pesapalRes = await fetch('/api/pesapal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: 2000,
+          email: email,
+          phone: phone,
+          name: fullName
+        })
+      });
+      const pesapalData = await pesapalRes.json();
+      
+      if (pesapalData.success) {
+        // If successful, redirect the user to Pesapal's payment page
+        window.location.href = pesapalData.redirect_url;
+        return; // Stop the rest of the form from executing
+      } else {
+        alert(`Payment Error: ${pesapalData.error}`);
+      }
+    } catch (err) {
+      console.error("Failed to reach Pesapal", err);
+    }
     setIsSubmitting(true);
 
     let calculatedScore = 200; 
