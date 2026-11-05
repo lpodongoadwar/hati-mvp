@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { User, Mail, Phone, ArrowRight, HelpCircle } from 'lucide-react'
 import { siInstagram, siX, siTiktok } from 'simple-icons'
 import Image from 'next/image'
@@ -16,15 +16,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 const logoSource = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/file_0000000026b481f4ac4092f29fa586e7%20%281%29.png-aEG4UagFYjCgRKM7hpezKdtI5qDLCJ.jpeg'
 
-// Note: NO default export here. Only the named export.
-export function DashboardContent() {
+export default function DashboardPage() {
   const router = useRouter();
-  const searchParams = useSearchParams(); 
   const supabase = createClient();
   const [score, setScore] = useState(0);
   const [loading, setLoading] = useState(true);
-
-  const refreshParam = searchParams.get('refresh');
 
   useEffect(() => {
     async function loadUser() {
@@ -45,7 +41,7 @@ export function DashboardContent() {
       setLoading(false);
     }
     loadUser();
-  }, [router, supabase, refreshParam]); 
+  }, [router, supabase]);
 
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center bg-background text-foreground">Loading your profile...</div>;
