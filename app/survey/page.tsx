@@ -37,8 +37,8 @@ export default function SurveyHubPage() {
     <main className="min-h-screen bg-background text-foreground pb-20 font-sans">
       <div className="bg-card border-b border-border/80">
         <div className="max-w-3xl mx-auto px-6 py-4">
-          <Link href="/curriculum" className="flex items-center text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-            <ArrowLeft className="mr-2 size-4" /> Back to Curriculum
+          <Link href="/participate" className="flex items-center text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+            <ArrowLeft className="mr-2 size-4" /> Back to Participate
           </Link>
         </div>
       </div>
