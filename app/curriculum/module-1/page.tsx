@@ -2,39 +2,49 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, CheckCircle2, ChevronRight, HelpCircle } from "lucide-react";
+import { ArrowLeft, CheckCircle2, ChevronRight, HelpCircle, Loader2 } from "lucide-react";
 import { createClient } from "@/lib/db";
 
 export default function Module1Page() {
   const supabase = createClient();
+  
   const [showQuiz, setShowQuiz] = useState(false);
+  const [loadingQuiz, setLoadingQuiz] = useState(false);
+  const [quizQuestions, setQuizQuestions] = useState<any[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(0);
   const [quizFinished, setQuizFinished] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
-  const [isSaving, setIsSaving] = useState(false);
 
-  const quizQuestions = [
-    {
-      question: "What percentage of Ugandans borrow informally (from friends, family, or unregulated lenders)?",
-      options: ["20%", "50%", "77%"],
-      correct: 2, // Index of "77%"
-    },
-    {
-      question: "Why do traditional banks usually reject informal sector borrowers?",
-      options: ["They don't like youth", "They lack traditional collateral and formal credit history", "They have too much money"],
-      correct: 1,
-    },
-    {
-      question: "What is the main danger of borrowing from predatory money lenders?",
-      options: ["High interest rates trap you in a cycle of debt", "They report you to the Bank of Uganda", "They give you free money"],
-      correct: 0,
+  // Fetch dynamic quiz from AI
+  const startQuiz = async () => {
+    setShowQuiz(true);
+    setLoadingQuiz(true);
+    
+    try {
+      const res = await fetch('/api/generate-quiz', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ topic: "The Credit Gap in Uganda (why informal borrowing is risky, why banks reject youth, and why collateral is needed)" })
+      });
+      const data = await res.json();
+      
+      if (data.success && data.quiz.length > 0) {
+        setQuizQuestions(data.quiz);
+      } else {
+        alert("Failed to load quiz. Please refresh.");
+        setShowQuiz(false);
+      }
+    } catch (err) {
+      alert("Network error loading quiz.");
+      setShowQuiz(false);
     }
-  ];
+    setLoadingQuiz(false);
+  };
 
   const handleAnswer = (index: number) => {
     setSelectedAnswer(index);
-    if (index === quizQuestions[currentQuestion].correct) {
+    if (index === quizQuestions[currentQuestion].correctAnswerIndex) {
       setScore(score + 1);
     }
   };
@@ -46,31 +56,6 @@ export default function Module1Page() {
     } else {
       setQuizFinished(true);
     }
-  };
-
-  const saveProgressAndReturn = async () => {
-    setIsSaving(true);
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (user) {
-      // 1. Fetch current completed modules
-      const { data } = await supabase
-        .from("profiles")
-        .select("completed_modules")
-        .eq("id", user.id)
-        .single();
-      
-      const currentModules = data?.completed_modules || [];
-      
-      // 2. Add module-1 to the array if it's not already there
-      if (!currentModules.includes("module-1")) {
-        await supabase
-          .from("profiles")
-          .update({ completed_modules: [...currentModules, "module-1"] })
-          .eq("id", user.id);
-      }
-    }
-    setIsSaving(false);
   };
 
   return (
@@ -92,53 +77,53 @@ export default function Module1Page() {
 
         {/* Lesson Content */}
         <section className="bg-card p-8 rounded-2xl border border-border/80 shadow-sm prose prose-sm max-w-none text-gray-700">
-          <p>
-            East Africa has one of the fastest-growing populations in the world. Every year, millions of young people graduate from universities and technical schools, eager to start businesses and build their futures.
-          </p>
-          <p>
-            But the financial system is not built for them. 
-          </p>
-          <p>
-            In Uganda, <strong>over 77% of people borrow money informally</strong>. This means they rely on friends, family, or unregulated money lenders when they need capital. Why? Because traditional banks require collateral—like land, a car, or a formal payslip—that most young people and informal workers simply do not have.
-          </p>
-          <p>
-            When you cannot access formal credit, you are forced into the informal market. And while informal lenders can be helpful in an emergency, they often charge exorbitant interest rates. A small loan can quickly turn into a debt trap that consumes your entire income, leaving you worse off than when you started.
-          </p>
-          <p className="font-semibold text-foreground">
-            The core problem isn't that young Ugandans are bad with money. The problem is that they have no way to prove their financial discipline to formal lenders. They are invisible to the system.
-          </p>
+          <p>East Africa has one of the fastest-growing populations in the world...</p>
+          <p>In Uganda, <strong>over 77% of people borrow money informally</strong>...</p>
+          <p className="font-semibold text-foreground">The core problem isn't that young Ugandans are bad with money...</p>
         </section>
 
-        {/* Quiz Section */}
+        {/* Dynamic Quiz Section */}
         {!showQuiz ? (
           <div className="flex justify-center pt-4">
             <button 
-              onClick={() => setShowQuiz(true)}
+              onClick={startQuiz}
               className="inline-flex items-center justify-center gap-2 rounded-md bg-[#1b4a3a] px-8 py-3 text-lg font-semibold text-white hover:bg-[#153a2e] transition-colors"
             >
-              <HelpCircle className="size-5" /> Take the Module Quiz
+              <HelpCircle className="size-5" /> Generate My Unique Quiz
             </button>
           </div>
         ) : (
           <section className="bg-[#fcfaf6] p-8 rounded-2xl border border-[#e5e1d8] shadow-sm space-y-6">
-            {!quizFinished ? (
+            
+            {/* Loading State */}
+            {loadingQuiz && (
+              <div className="flex flex-col items-center justify-center py-10 space-y-3">
+                <Loader2 className="size-8 animate-spin text-[#1b4a3a]" />
+                <p className="text-sm font-medium text-gray-600">AI is generating your personalized questions...</p>
+              </div>
+            )}
+
+            {/* Active Quiz */}
+            {!loadingQuiz && !quizFinished && quizQuestions.length > 0 && (
               <>
                 <div className="flex items-center justify-between border-b border-[#e5e1d8] pb-4 mb-4">
                   <h3 className="text-xl font-bold text-[#1b4a3a]">Knowledge Check</h3>
                   <span className="text-sm font-medium text-gray-500">Question {currentQuestion + 1} of {quizQuestions.length}</span>
                 </div>
                 
-                <p className="text-lg font-medium text-foreground mb-4">{quizQuestions[currentQuestion].question}</p>
+                <p className="text-lg font-medium text-foreground mb-4">
+                  {quizQuestions[currentQuestion].question}
+                </p>
                 
                 <div className="space-y-3">
-                  {quizQuestions[currentQuestion].options.map((option, index) => (
+                  {quizQuestions[currentQuestion].options.map((option: string, index: number) => (
                     <button
                       key={index}
                       onClick={() => handleAnswer(index)}
                       disabled={selectedAnswer !== null}
                       className={`w-full text-left p-4 rounded-xl border transition-colors ${
                         selectedAnswer === index 
-                          ? index === quizQuestions[currentQuestion].correct 
+                          ? index === quizQuestions[currentQuestion].correctAnswerIndex 
                             ? 'bg-green-100 border-green-500 text-green-900' 
                             : 'bg-red-100 border-red-500 text-red-900'
                           : 'bg-white border-gray-200 hover:border-[#1b4a3a]'
@@ -160,24 +145,34 @@ export default function Module1Page() {
                   </div>
                 )}
               </>
-            ) : (
-              /* THE FIXED SUCCESS SCREEN */
+            )}
+
+            {/* Quiz Finished */}
+            {!loadingQuiz && quizFinished && (
               <div className="text-center space-y-4 py-4">
                 <CheckCircle2 className="size-16 text-[#1b4a3a] mx-auto" />
                 <h3 className="text-2xl font-bold text-foreground">Quiz Complete!</h3>
                 <p className="text-gray-600">
                   You scored <strong>{score} out of {quizQuestions.length}</strong>.
                 </p>
-                <p className="text-sm text-gray-500 max-w-md mx-auto">
-                  Great job! You have successfully completed Module 1. You can now unlock the next module.
-                </p>
                 <div className="pt-4 flex flex-col sm:flex-row justify-center gap-4">
                   <Link 
                     href="/curriculum" 
-                    onClick={saveProgressAndReturn}
+                    onClick={async () => {
+                      const { data: { user } } = await supabase.auth.getUser();
+                      if (user) {
+                        const { data } = await supabase.from('profiles').select('completed_modules').eq('id', user.id).single();
+                        const currentModules = data?.completed_modules || [];
+                        if (!currentModules.includes('module-1')) {
+                          await supabase.from('profiles').update({
+                            completed_modules: [...currentModules, 'module-1']
+                          }).eq('id', user.id);
+                        }
+                      }
+                    }}
                     className="inline-flex items-center justify-center gap-2 rounded-md bg-[#1b4a3a] px-8 py-3 text-lg font-semibold text-white hover:bg-[#153a2e] transition-colors"
                   >
-                    {isSaving ? "Saving..." : "Go to Next Module"} <ChevronRight className="size-5" />
+                    Go to Next Module <ChevronRight className="size-5" />
                   </Link>
                 </div>
               </div>
