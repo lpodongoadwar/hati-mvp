@@ -13,6 +13,7 @@ export default function ParticipatePage() {
   
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState("");
+  const [uploadSuccess, setUploadSuccess] = useState(false); // Track success
 
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,6 +22,7 @@ export default function ParticipatePage() {
 
     setUploading(true);
     setMessage("Analyzing your statement...");
+    setUploadSuccess(false);
 
     // 1. Send PDF to AI
     const formData = new FormData();
@@ -54,7 +56,8 @@ export default function ParticipatePage() {
         setMessage(`Database Error: ${dbError.message}`);
       } else {
         setMessage(`Success! Your new Hati Score is ${data.score}.`);
-        // Force a refresh of the dashboard data
+        setUploadSuccess(true); // Mark as successful
+        // Force a refresh of Next.js router cache
         router.refresh();
       }
     } catch (err: any) {
@@ -68,19 +71,26 @@ export default function ParticipatePage() {
     <main className="min-h-screen bg-background text-foreground pb-20 font-sans">
       <div className="bg-card border-b border-border/80">
         <div className="max-w-3xl mx-auto px-6 py-4">
-          <Link href="/dashboard" className="flex items-center text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+          {/* 
+            If upload was successful, the Back to Dashboard link includes ?refresh=true
+            This triggers the Dashboard page to re-fetch the score.
+          */}
+          <Link 
+            href={uploadSuccess ? "/dashboard?refresh=true" : "/dashboard"} 
+            className="flex items-center text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+          >
             <ArrowLeft className="mr-2 size-4" /> Back to Dashboard
           </Link>
         </div>
       </div>
 
       <div className="max-w-3xl mx-auto px-6 pt-12 space-y-12">
+        {/* ... Existing Header and Section 1 & 2 code stays exactly the same ... */}
         <div>
           <h1 className="text-4xl font-bold tracking-tight text-[#1b4a3a]">How to Build Your Score</h1>
           <p className="mt-2 text-lg text-gray-600">Complete these core activities to prove your financial discipline and unlock credit.</p>
         </div>
 
-        {/* Section 1: The Mechanics */}
         <section className="bg-card p-8 rounded-2xl border border-border/80 shadow-sm space-y-6">
           <div className="flex items-center gap-3 border-b border-border/80 pb-4">
             <Target className="size-8 text-[#1b4a3a]" />
@@ -103,7 +113,6 @@ export default function ParticipatePage() {
           </div>
         </section>
 
-        {/* Section 2: Score to Ambassadors Program Link */}
         <section className="bg-[#fcfaf6] p-8 rounded-2xl border border-[#e5e1d8] shadow-sm space-y-4">
           <div className="flex items-center gap-3">
             <div className="bg-[#1b4a3a]/10 p-2 rounded-lg text-[#1b4a3a]">
@@ -124,7 +133,6 @@ export default function ParticipatePage() {
           </div>
         </section>
 
-        {/* Section 3: The Tools (3-Column Grid) */}
         <section className="space-y-6">
           <h2 className="text-2xl font-semibold text-foreground">Start Building Now</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

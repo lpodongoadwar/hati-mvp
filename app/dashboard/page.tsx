@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState, useCallback } from "react";
+import { useRouter, useSearchParams } from "next/navigation"; // Added useSearchParams
 import { User, Mail, Phone, ArrowRight, HelpCircle } from 'lucide-react'
 import { siInstagram, siX, siTiktok } from 'simple-icons'
 import Image from 'next/image'
@@ -18,33 +18,35 @@ const logoSource = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/file
 
 export default function DashboardPage() {
   const router = useRouter();
+  const searchParams = useSearchParams(); // Hook to read URL params
   const supabase = createClient();
   const [score, setScore] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function loadUser() {
-      // 1. Get the user from the browser session
-      const { data: { user } } = await supabase.auth.getUser();
+  // Listen to the 'refresh' parameter. If it changes, this effect runs again.
+  const refreshParam = searchParams.get('refresh');
 
-      // 2. If no user, kick to login
-      if (!user) {
-        router.replace('/login');
-        return;
-      }
+  const loadUser = useCallback(async () => {
+    const { data: { user } } = await supabase.auth.getUser();
 
-      // 3. Fetch their real score
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('score')
-        .eq('id', user.id)
-        .single();
-
-      setScore(profile?.score || 200);
-      setLoading(false);
+    if (!user) {
+      router.replace('/login');
+      return;
     }
-    loadUser();
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('score')
+      .eq('id', user.id)
+      .single();
+
+    setScore(profile?.score || 200);
+    setLoading(false);
   }, [router, supabase]);
+
+  useEffect(() => {
+    loadUser();
+  }, [loadUser, refreshParam]); // Added refreshParam as a dependency
 
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center bg-background text-foreground">Loading your profile...</div>;
@@ -53,6 +55,7 @@ export default function DashboardPage() {
   return (
     <main className="min-h-screen bg-background text-foreground">
       <div className="mx-auto flex min-h-screen max-w-7xl flex-col px-5 sm:px-8 lg:px-12">
+        {/* ... Your existing Header code stays exactly the same ... */}
         <header className="flex items-center justify-between gap-4 border-b border-border/80 py-4 sm:py-5">
           <Link
             aria-label="Hati home"
@@ -128,9 +131,9 @@ export default function DashboardPage() {
           <CampusBlitzBanner />
         </div>
 
+        {/* ... Your existing Footer code stays exactly the same ... */}
         <footer className="mt-12 border-t border-border/80 py-10 text-sm text-muted-foreground">
           <div className="mb-8 grid grid-cols-1 gap-8 md:grid-cols-3">
-            {/* Column 1: Hati, Inc. (Navigation) */}
             <div className="space-y-3">
               <h3 className="text-base font-semibold text-[#1b4a3a]">Hati, Inc.</h3>
               <ul className="space-y-2 text-xs">
@@ -152,7 +155,6 @@ export default function DashboardPage() {
               </ul>
             </div>
 
-            {/* Column 2: Contact & Socials */}
             <div className="space-y-4">
               <h3 className="text-sm font-semibold text-[#1b4a3a]">Contact Us</h3>
               <div className="space-y-2 text-xs">
@@ -222,11 +224,9 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* Column 3: Placeholder for balance */}
             <div className="hidden md:block"></div>
           </div>
 
-          {/* Copyright Bar */}
           <div className="flex flex-col items-center justify-between gap-4 border-t border-border/40 pt-8 text-xs md:flex-row">
             <p>© 2026 Hati, Inc. All Rights Reserved.</p>
             <div className="flex gap-4">

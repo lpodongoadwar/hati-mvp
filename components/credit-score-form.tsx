@@ -23,32 +23,7 @@ export function CreditScoreForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-        // Trigger Pesapal
-    try {
-      const pesapalRes = await fetch('/api/pesapal', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          amount: 2000,
-          email: email,
-          phone: phone,
-          name: fullName
-        })
-      });
-      const pesapalData = await pesapalRes.json();
-      
-      if (pesapalData.success) {
-        // If successful, redirect the user to Pesapal's payment page
-        window.location.href = pesapalData.redirect_url;
-        return; // Stop the rest of the form from executing
-      } else {
-        alert(`Payment Error: ${pesapalData.error}`);
-      }
-    } catch (err) {
-      console.error("Failed to reach Pesapal", err);
-    }
     setIsSubmitting(true);
-
     let calculatedScore = 200; 
 
     // 1. Parse the PDF if a file is selected
@@ -56,78 +31,78 @@ export function CreditScoreForm() {
     if (file) {
       const formData = new FormData();
       formData.append('file', file);
-
       try {
         const res = await fetch('/api/parse-pdf', {
           method: 'POST',
           body: formData,
         });
         const data = await res.json();
-        
-        // DEBUG ALERTS
-        if (!res.ok) {
-          alert(`AI Error: ${data.error}`);
-        }
-
         if (data.success) {
           calculatedScore = data.score; 
-        } else {
-          alert("AI could not calculate a score. Using base score.");
         }
       } catch (err) {
         console.error("Failed to parse PDF, using base score.", err);
-        alert("Network error trying to reach the AI.");
       }
     }
 
-    // 2. Create the Auth User
-    const { data: authData, error: authError } = await supabase.auth.signUp({
-      email: email,
-      password: password,
-    });
-
-    if (authError) {
-      alert(`AUTH ERROR: ${authError.message}`);
+    // 2. Create Auth User
+    const { data: authData, error: authError } = await supabase.auth.signUp({ email, password });
+    if (authError || !authData.user) {
+      alert(authError?.message || "Auth failed");
       setIsSubmitting(false);
       return;
     }
 
-    if (!authData.user) {
-      alert("No user returned from Auth. Please check your Supabase logs.");
-      setIsSubmitting(false);
-      return;
-    }
-
-    // 3. Insert into the profiles table
-    const { error: dbError } = await supabase
-      .from('profiles')
-      .upsert([ 
-        { 
-          id: authData.user.id, 
-          full_name: fullName,
-          phone: phone,
-          username: username,
-          email: email,
-          nin: nin,
-          social_handle: socialHandle,
-          score: calculatedScore, 
-          team: 'individual', // default team for new users
-          referral_count: 0,
-          completed_modules: []
-        }
-      ]);
+    // 3. Save Profile
+    const { error: dbError } = await supabase.from('profiles').upsert([{ 
+      id: authData.user.id, 
+      full_name: fullName, 
+      phone: phone, 
+      username: username, 
+      email: email, 
+      nin: nin, 
+      social_handle: socialHandle, 
+      score: calculatedScore, 
+      team: 'individual', 
+      referral_count: 0, 
+      completed_modules: []
+    }]);
 
     if (dbError) {
-      alert(`Profile Save Error: ${dbError.message}\nCode: ${dbError.code}\nDetails: ${dbError.details}`);
+      alert(`DB Error: ${dbError.message}`);
       setIsSubmitting(false);
-      return; 
-    } 
+      return;
+    }
+
+    // 4. Send OTP
+    await fetch('/api/send-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId: authData.user.id, phone: phone })
+    });
+
+    // 5. Trigger Pesapal
+    try {
+      const pesapalRes = await fetch('/api/pesapal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: 2000, email, phone, name: fullName })
+      });
+      const pesapalData = await pesapalRes.json();
+      
+      if (pesapalData.success) {
+        // FOR NOW: Redirect to verify-phone to test OTP
+        // LATER: Change this to pesapalData.redirect_url
+        window.location.href = '/verify-phone';
+      } else {
+        alert(`Payment Error: ${pesapalData.error}`);
+      }
+    } catch (err) {
+      console.error("Failed to reach Pesapal", err);
+    }
     
-      // SUCCESS! Force a hard redirect to the dashboard
-    console.log("Signup successful! Redirecting to dashboard...");
-    window.location.href = '/dashboard';
     setIsSubmitting(false);
-  };
+  }; // <--- THIS IS THE MISSING BRACKET THAT CAUSED THE ERROR
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -215,7 +190,7 @@ export function CreditScoreForm() {
           required
         />
       </div>
-
+      
       {/* Social Media */}
       <div className="space-y-2">
         <label className="text-sm font-medium">Social Media Handle (optional, add as many as you like)</label>
