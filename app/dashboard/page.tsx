@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
-import { useRouter, useSearchParams } from "next/navigation"; // Added useSearchParams
+import { useEffect, useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { User, Mail, Phone, ArrowRight, HelpCircle } from 'lucide-react'
 import { siInstagram, siX, siTiktok } from 'simple-icons'
 import Image from 'next/image'
@@ -16,37 +16,36 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 const logoSource = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/file_0000000026b481f4ac4092f29fa586e7%20%281%29.png-aEG4UagFYjCgRKM7hpezKdtI5qDLCJ.jpeg'
 
-export default function DashboardPage() {
+// 1. Move all your logic and UI into a child component
+function DashboardContent() {
   const router = useRouter();
-  const searchParams = useSearchParams(); // Hook to read URL params
+  const searchParams = useSearchParams(); 
   const supabase = createClient();
   const [score, setScore] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  // Listen to the 'refresh' parameter. If it changes, this effect runs again.
   const refreshParam = searchParams.get('refresh');
 
-  const loadUser = useCallback(async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
-      router.replace('/login');
-      return;
-    }
-
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('score')
-      .eq('id', user.id)
-      .single();
-
-    setScore(profile?.score || 200);
-    setLoading(false);
-  }, [router, supabase]);
-
   useEffect(() => {
+    async function loadUser() {
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (!user) {
+        router.replace('/login');
+        return;
+      }
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('score')
+        .eq('id', user.id)
+        .single();
+
+      setScore(profile?.score || 200);
+      setLoading(false);
+    }
     loadUser();
-  }, [loadUser, refreshParam]); // Added refreshParam as a dependency
+  }, [router, supabase, refreshParam]); 
 
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center bg-background text-foreground">Loading your profile...</div>;
@@ -55,7 +54,6 @@ export default function DashboardPage() {
   return (
     <main className="min-h-screen bg-background text-foreground">
       <div className="mx-auto flex min-h-screen max-w-7xl flex-col px-5 sm:px-8 lg:px-12">
-        {/* ... Your existing Header code stays exactly the same ... */}
         <header className="flex items-center justify-between gap-4 border-b border-border/80 py-4 sm:py-5">
           <Link
             aria-label="Hati home"
@@ -126,12 +124,11 @@ export default function DashboardPage() {
             </Card>
           </section>
           
-         <DashboardRoadmap score={score} />
+          <DashboardRoadmap score={score} />
           
           <CampusBlitzBanner />
         </div>
 
-        {/* ... Your existing Footer code stays exactly the same ... */}
         <footer className="mt-12 border-t border-border/80 py-10 text-sm text-muted-foreground">
           <div className="mb-8 grid grid-cols-1 gap-8 md:grid-cols-3">
             <div className="space-y-3">
@@ -240,4 +237,13 @@ export default function DashboardPage() {
       </div>
     </main>
   )
+}
+
+// 2. Export the wrapped version
+export default function DashboardPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-background text-foreground">Loading dashboard...</div>}>
+      <DashboardContent />
+    </Suspense>
+  );
 }
