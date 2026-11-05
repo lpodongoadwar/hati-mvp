@@ -5,8 +5,8 @@ import { createClient } from "@/lib/db";
 import { Users, CheckCircle2 } from "lucide-react";
 
 const TEAMS = [
-  { id: 'red', name: 'Makerere University', color: 'bg-red-600' },
-  { id: 'yellow', name: 'Victoria University', color: 'bg-yellow-400' },
+  { id: 'red', name: 'MAK', color: 'bg-red-600' },
+  { id: 'yellow', name: 'VU', color: 'bg-yellow-400' },
   { id: 'blue', name: 'MUBS', color: 'bg-blue-600' },
   { id: 'green', name: 'KIU', color: 'bg-green-600' },
   { id: 'orange', name: 'KYU', color: 'bg-orange-500' },
