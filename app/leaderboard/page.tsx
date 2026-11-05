@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { TeamSelector } from "@/components/team-selector";
 import { createClient } from "@/lib/db";
 import { ArrowLeft, ClipboardList, BookOpen } from "lucide-react";
 
@@ -118,6 +119,8 @@ export default async function LeaderboardPage() {
           </div>
 
         </div>
+         <TeamSelector />
+
       </section>
 
       {/* Standings Table */}
