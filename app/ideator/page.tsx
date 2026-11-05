@@ -105,7 +105,7 @@ export default function ApplyPage() {
     <main className="min-h-screen bg-background text-foreground pb-20 font-sans">
       <div className="bg-card border-b border-border/80">
         <div className="max-w-3xl mx-auto px-6 py-4">
-          <Link href="/Leaderboard" className="flex items-center text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+          <Link href="/leaderboard" className="flex items-center text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft className="mr-2 size-4" /> Back to Leaderboard
           </Link>
         </div>
