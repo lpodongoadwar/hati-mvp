@@ -1,12 +1,16 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, Suspense } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/db";
 
-export function CreditScoreForm() {
+// 1. Inner component containing the actual form logic
+function FormContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const referrerId = searchParams.get("ref"); // Grabs the '?ref=...' from the URL
+  
   const supabase = createClient();
   
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -53,7 +57,7 @@ export function CreditScoreForm() {
       return;
     }
 
-    // 3. Save Profile
+    // 3. Save Profile (WITH REFERRAL TRACKING)
     const { error: dbError } = await supabase.from('profiles').upsert([{ 
       id: authData.user.id, 
       full_name: fullName, 
@@ -65,7 +69,8 @@ export function CreditScoreForm() {
       score: calculatedScore, 
       team: 'individual', 
       referral_count: 0, 
-      completed_modules: []
+      completed_modules: [],
+      referred_by: referrerId || null // <--- SAVING THE REFERRER
     }]);
 
     if (dbError) {
@@ -102,7 +107,7 @@ export function CreditScoreForm() {
     }
     
     setIsSubmitting(false);
-  }; // <--- THIS IS THE MISSING BRACKET THAT CAUSED THE ERROR
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -190,7 +195,22 @@ export function CreditScoreForm() {
           required
         />
       </div>
-      
+
+      {/* Upload Mini Statement */}
+      <div className="space-y-2">
+        <label className="text-sm font-medium">Upload Mini Statement (PDF)</label>
+        <input 
+          type="file" 
+          accept=".pdf"
+          ref={fileInputRef} 
+          className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium"
+          required
+        />
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          Dial *165# (MTN) or *185# (Airtel) and select "Mini Statement" to get this PDF.
+        </p>
+      </div>
+
       {/* Social Media */}
       <div className="space-y-2">
         <label className="text-sm font-medium">Social Media Handle (optional, add as many as you like)</label>
@@ -243,5 +263,14 @@ export function CreditScoreForm() {
       </div>
 
     </form>
+  );
+}
+
+// 2. Outer export wrapping the form in Suspense
+export function CreditScoreForm() {
+  return (
+    <Suspense fallback={<div className="text-center py-4 text-sm text-muted-foreground">Loading form...</div>}>
+      <FormContent />
+    </Suspense>
   );
 }
