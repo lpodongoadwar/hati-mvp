@@ -148,6 +148,43 @@ export default function DashboardPage() {
               </ul>
             </div>
 
+ {/* NEW Column 2: Resources (Articles & Research) */}
+            <div className="space-y-3">
+              <h3 className="text-base font-semibold text-[#1b4a3a]">Resources</h3>
+              <ul className="space-y-2 text-xs">
+                <li>
+                  <a 
+                    href="https://nilepost.co.ug/opinions/367159/credit-is-not-the-enemy-borrow-to-build-wealth" 
+                    target="_blank" 
+                    rel="noreferrer"
+                    className="transition-colors hover:text-[#1b4a3a]"
+                  >
+                    Why Credit is Not the Enemy
+                  </a>
+                </li>
+                <li>
+                  <a 
+                    href="https://nilepost.co.ug/crime/380308/police-arrest-two-masaka-elders-sacco-managers-over-members-missing-savings" 
+                    target="_blank" 
+                    rel="noreferrer"
+                    className="transition-colors hover:text-[#1b4a3a]"
+                  >
+                    The SACCO Transparency Crisis
+                  </a>
+                </li>
+                <li>
+                  <a 
+                    href="https://nilepost.co.ug/business/371825/minister-musasizi-urges-banks-to-cut-lending-rates-to-support-economic-growth" 
+                    target="_blank" 
+                    rel="noreferrer"
+                    className="transition-colors hover:text-[#1b4a3a]"
+                  >
+                    Minister Musasizi on Credit Data
+                  </a>
+                </li>
+              </ul>
+            </div>
+            
             <div className="space-y-4">
               <h3 className="text-sm font-semibold text-[#1b4a3a]">Contact Us</h3>
               <div className="space-y-2 text-xs">
