@@ -17,8 +17,9 @@ const TEAMS: Record<TeamKey, { label: string; campus: string; dot: string }> = {
 
 type Mobiliser = {
   id: string;
-  full_name: string | null;
-  team: string | null; // Changed to string to accept "individual"
+  username: string | null; // Added username
+  full_name: string | null; // Kept as fallback
+  team: string | null; 
   referral_count: number | null;
 };
 
@@ -28,8 +29,7 @@ async function getData() {
   const [{ data: rows }, { data: authData }] = await Promise.all([
     supabase
       .from("profiles")
-      .select("id, full_name, team, referral_count")
-      // REMOVED the .not("team", "is", null) so Individual users show up
+      .select("id, username, full_name, team, referral_count") // Fetching username now
       .order("referral_count", { ascending: false }),
     supabase.auth.getUser(),
   ]);
@@ -37,7 +37,7 @@ async function getData() {
   const mobilisers = ((rows ?? []) as Mobiliser[]).sort(
     (a, b) =>
       (b.referral_count ?? 0) - (a.referral_count ?? 0) ||
-      (a.full_name ?? "").localeCompare(b.full_name ?? "")
+      (a.username ?? "").localeCompare(b.username ?? "")
   );
 
   return { mobilisers, userId: authData.user?.id ?? null };
@@ -66,7 +66,7 @@ export default async function IndividualLeaderboardPage() {
           <thead className="bg-muted/50 text-muted-foreground border-b border-border/80">
             <tr>
               <th className="px-6 py-4 font-medium w-16">Rank</th>
-              <th className="px-6 py-4 font-medium">Name</th>
+              <th className="px-6 py-4 font-medium">Username</th>
               <th className="px-6 py-4 font-medium">Affiliation</th>
               <th className="px-6 py-4 font-medium text-right">Referrals</th>
             </tr>
@@ -80,7 +80,6 @@ export default async function IndividualLeaderboardPage() {
               </tr>
             ) : (
               mobilisers.map((m, i) => {
-                // Check if they are in a university team, or just an individual
                 const team = m.team && m.team !== "individual" ? TEAMS[m.team as TeamKey] : null;
                 const isMe = userId === m.id;
 
@@ -93,7 +92,8 @@ export default async function IndividualLeaderboardPage() {
                       #{i + 1}
                     </td>
                     <td className="px-6 py-4 font-semibold text-foreground">
-                      {m.full_name ?? "Anonymous User"}
+                      {/* Show username, fallback to full name, then Anonymous */}
+                      {m.username || m.full_name || "Anonymous User"}
                       {isMe && (
                         <span className="ml-2 rounded bg-[#1b4a3a] px-1.5 py-0.5 text-[10px] uppercase text-white">
                           You
