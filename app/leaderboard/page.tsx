@@ -1,9 +1,10 @@
-import Link from "next/link";
-import { TeamSelector } from "@/components/team-selector";
-import { createClient } from "@/lib/db";
-import { ArrowLeft, ClipboardList, BookOpen } from "lucide-react";
+"use client";
 
-export const dynamic = "force-dynamic";
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { createClient } from "@/lib/db";
+import { TeamSelector } from "@/components/team-selector";
+import { ArrowLeft, ClipboardList, BookOpen } from "lucide-react";
 
 /* ---------- Config ---------- */
 
@@ -39,7 +40,7 @@ function getReward(referrals: number): number {
 
 const formatUGX = (amount: number) => `UGX ${amount.toLocaleString("en-UG")}`;
 
-/* ---------- Data ---------- */
+/* ---------- Data Types ---------- */
 
 type Mobiliser = {
   id: string;
@@ -48,33 +49,75 @@ type Mobiliser = {
   referral_count: number | null;
 };
 
-async function getData() {
-  const supabase = await createClient();
-  const { data: rows } = await supabase
-    .from("profiles")
-    .select("id, full_name, team, referral_count")
-    .not("team", "is", null)
-    .order("referral_count", { ascending: false });
+type TeamData = {
+  key: TeamKey;
+  total: number;
+  top: Mobiliser[];
+  count: number;
+};
 
-  const mobilisers = (rows ?? []) as Mobiliser[];
+export default function LeaderboardPage() {
+  const supabase = createClient();
+  
+  const [userId, setUserId] = useState<string | null>(null);
+  const [byTeam, setByTeam] = useState<TeamData[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const byTeam = TEAM_ORDER.map((key) => {
-    const members = mobilisers.filter((m) => m.team === key);
-    return {
-      key,
-      total: members.reduce((sum, m) => sum + (m.referral_count ?? 0), 0),
-      top: members.slice(0, 3),
-      count: members.length,
-    };
-  });
+  useEffect(() => {
+    // 1. Get current user for the share button
+    supabase.auth.getUser().then(({ data }) => {
+      setUserId(data.user?.id || null);
+    });
 
-  return { byTeam };
-}
+    // 2. Fetch leaderboard data
+    async function fetchData() {
+      const { data: rows } = await supabase
+        .from("profiles")
+        .select("id, full_name, team, referral_count")
+        .not("team", "is", null)
+        .order("referral_count", { ascending: false });
 
-/* ---------- Page ---------- */
+      const mobilisers = (rows ?? []) as Mobiliser[];
 
-export default async function LeaderboardPage() {
-  const { byTeam } = await getData();
+      const mappedTeams = TEAM_ORDER.map((key) => {
+        const members = mobilisers.filter((m) => m.team === key);
+        return {
+          key,
+          total: members.reduce((sum, m) => sum + (m.referral_count ?? 0), 0),
+          top: members.slice(0, 3),
+          count: members.length,
+        };
+      });
+
+      setByTeam(mappedTeams);
+      setLoading(false);
+    }
+    
+    fetchData();
+  }, [supabase]);
+
+  const handleShare = async () => {
+    if (!userId) return alert("Please log in to share your link.");
+    
+    // Create the invite URL with the user's ID as the referral code
+    const inviteLink = `${window.location.origin}/?ref=${userId}`;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Join my team on Hati',
+          text: 'Help me climb the leaderboard and build your credit score.',
+          url: inviteLink,
+        });
+      } catch (err) {
+        console.log('Error sharing', err);
+      }
+    } else {
+      // Fallback for desktop browsers
+      navigator.clipboard.writeText(inviteLink);
+      alert("Invite link copied to clipboard!");
+    }
+  };
 
   return (
     <main className="mx-auto w-full max-w-3xl px-4 py-10 sm:py-14">
@@ -119,8 +162,7 @@ export default async function LeaderboardPage() {
           </div>
 
         </div>
-         <TeamSelector />
-
+        <TeamSelector />
       </section>
 
       {/* Standings Table */}
@@ -137,41 +179,49 @@ export default async function LeaderboardPage() {
             </tr>
           </thead>
 
-          {byTeam.map(({ key, total, top, count }) => {
-            const team = TEAMS[key];
-            return (
-              <tbody key={key} className="border-t border-neutral-200 dark:border-neutral-800">
-                <tr className={`border-l-4 bg-neutral-50/60 dark:bg-neutral-900/60 ${team.stripe}`}>
-                  <th scope="rowgroup" className="px-4 py-3 text-base font-semibold">
-                    {team.label} <span className="font-normal text-neutral-500">({team.campus})</span>
-                    <span className="ml-2 text-xs font-normal text-neutral-500">- {count} Mobilizers</span>
-                  </th>
-                  <td className="px-4 py-3 text-right font-semibold tabular-nums">{total.toLocaleString("en-UG")}</td>
-                  <td className="px-4 py-3 text-right text-neutral-500">Team total</td>
-                </tr>
-
-                {top.length === 0 ? (
-                  <tr className={`border-l-4 ${team.stripe}`}>
-                    <td colSpan={3} className="px-4 py-3 pl-8 text-neutral-500">No mobilisers on this team yet.</td>
+          {loading ? (
+            <tbody>
+              <tr>
+                <td colSpan={3} className="px-4 py-6 text-center text-muted-foreground">Loading standings...</td>
+              </tr>
+            </tbody>
+          ) : (
+            byTeam.map(({ key, total, top, count }) => {
+              const team = TEAMS[key];
+              return (
+                <tbody key={key} className="border-t border-neutral-200 dark:border-neutral-800">
+                  <tr className={`border-l-4 bg-neutral-50/60 dark:bg-neutral-900/60 ${team.stripe}`}>
+                    <th scope="rowgroup" className="px-4 py-3 text-base font-semibold">
+                      {team.label} <span className="font-normal text-neutral-500">({team.campus})</span>
+                      <span className="ml-2 text-xs font-normal text-neutral-500">- {count} Mobilizers</span>
+                    </th>
+                    <td className="px-4 py-3 text-right font-semibold tabular-nums">{total.toLocaleString("en-UG")}</td>
+                    <td className="px-4 py-3 text-right text-neutral-500">Team total</td>
                   </tr>
-                ) : (
-                  top.map((student, i) => {
-                    const studentCount = student.referral_count ?? 0;
-                    return (
-                      <tr key={student.id} className={`border-l-4 ${team.stripe}`}>
-                        <td className="px-4 py-2 pl-8">
-                          <span className="mr-2 inline-block w-4 text-neutral-500 tabular-nums">{i + 1}.</span>
-                          {student.full_name ?? "Unnamed mobiliser"}
-                        </td>
-                        <td className="px-4 py-2 text-right tabular-nums">{studentCount}</td>
-                        <td className="px-4 py-2 text-right tabular-nums">{formatUGX(getReward(studentCount))}</td>
-                      </tr>
-                    );
-                  })
-                )}
-              </tbody>
-            );
-          })}
+
+                  {top.length === 0 ? (
+                    <tr className={`border-l-4 ${team.stripe}`}>
+                      <td colSpan={3} className="px-4 py-3 pl-8 text-neutral-500">No mobilisers on this team yet.</td>
+                    </tr>
+                  ) : (
+                    top.map((student, i) => {
+                      const studentCount = student.referral_count ?? 0;
+                      return (
+                        <tr key={student.id} className={`border-l-4 ${team.stripe}`}>
+                          <td className="px-4 py-2 pl-8">
+                            <span className="mr-2 inline-block w-4 text-neutral-500 tabular-nums">{i + 1}.</span>
+                            {student.full_name ?? "Unnamed mobiliser"}
+                          </td>
+                          <td className="px-4 py-2 text-right tabular-nums">{studentCount}</td>
+                          <td className="px-4 py-2 text-right tabular-nums">{formatUGX(getReward(studentCount))}</td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              );
+            })
+          )}
         </table>
       </section>
 
@@ -191,11 +241,17 @@ export default async function LeaderboardPage() {
           <p className="mt-2 text-xs text-muted-foreground">38 more to go</p>
         </div>
 
-        <div className="flex gap-2">
-          <button className="flex flex-1 items-center justify-center gap-2 rounded-md border bg-background px-4 py-2 text-sm font-medium hover:bg-muted">
+        <div className="flex flex-col sm:flex-row gap-2">
+          <Link 
+            href="/leaderboard/mrr" 
+            className="flex flex-1 items-center justify-center gap-2 rounded-md border bg-background px-4 py-2 text-sm font-medium hover:bg-muted transition-colors"
+          >
             🏆 View Leaderboards
-          </button>
-          <button className="flex flex-1 items-center justify-center gap-2 rounded-md bg-[#1b4a3a] px-4 py-2 text-sm font-medium text-white hover:bg-[#153a2e]">
+          </Link>
+          <button 
+            onClick={handleShare}
+            className="flex flex-1 items-center justify-center gap-2 rounded-md bg-[#1b4a3a] px-4 py-2 text-sm font-medium text-white hover:bg-[#153a2e] transition-colors"
+          >
             🔗 Share Invite Link
           </button>
         </div>
@@ -207,15 +263,15 @@ export default async function LeaderboardPage() {
         <p className="text-sm text-muted-foreground mb-4">Learn and earn points along the way.</p>
         <div className="grid grid-cols-2 gap-2">
           <Link href="/survey" className="flex flex-col items-center justify-center gap-2 rounded-xl bg-[#0a1f17] p-4 text-white hover:bg-[#0d2a1f] transition-colors">
-  <div className="rounded-full bg-[#c4f080] p-2 text-[#0a1f17]">
-    <ClipboardList className="size-5" />
-  </div>
-  <span className="text-xs font-medium">Take Survey</span>
-</Link>
-         <Link href="/curriculum" className="flex flex-col items-center justify-center gap-2 rounded-xl bg-[#0a1f17] p-4 text-white hover:bg-[#0d2a1f]">
-  <div className="rounded-full bg-[#c4f080] p-2 text-[#0a1f17]"><BookOpen className="size-5" /></div>
-  <span className="text-xs font-medium">Complete Module</span>
-</Link>
+            <div className="rounded-full bg-[#c4f080] p-2 text-[#0a1f17]">
+              <ClipboardList className="size-5" />
+            </div>
+            <span className="text-xs font-medium">Take Survey</span>
+          </Link>
+          <Link href="/curriculum" className="flex flex-col items-center justify-center gap-2 rounded-xl bg-[#0a1f17] p-4 text-white hover:bg-[#0d2a1f] transition-colors">
+            <div className="rounded-full bg-[#c4f080] p-2 text-[#0a1f17]"><BookOpen className="size-5" /></div>
+            <span className="text-xs font-medium">Complete Module</span>
+          </Link>
         </div>
       </section>
 
