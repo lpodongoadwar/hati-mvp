@@ -83,16 +83,18 @@ export default function ProfilePage() {
           <h1 className="text-xl font-semibold">My Profile</h1>
         </div>
 
-        {/* Profile Picture */}
+               {/* Profile Picture */}
         <div className="flex flex-col items-center space-y-2">
-          <div className="relative flex size-24 items-center justify-center rounded-full bg-muted overflow-hidden">
+          <div className="relative">
             
-            {/* Show Image if exists, otherwise show DP text */}
-            {avatarUrl ? (
-              <img src={avatarUrl} alt="Profile" className="h-full w-full object-cover" />
-            ) : (
-              <span className="text-2xl text-muted-foreground">DP</span>
-            )}
+            {/* Inner container that clips the image */}
+            <div className="flex size-24 items-center justify-center rounded-full bg-muted overflow-hidden">
+              {avatarUrl ? (
+                <img src={avatarUrl} alt="Profile" className="h-full w-full object-cover" />
+              ) : (
+                <span className="text-2xl text-muted-foreground">DP</span>
+              )}
+            </div>
 
             {/* Hidden File Input */}
             <input 
@@ -103,11 +105,11 @@ export default function ProfilePage() {
               className="hidden" 
             />
 
-            {/* Camera Button */}
+            {/* Camera Button (now outside the overflow-hidden container) */}
             <button 
               onClick={() => fileInputRef.current?.click()}
               disabled={uploading}
-              className="absolute bottom-0 right-0 rounded-full bg-[#1b4a3a] p-2 text-white hover:bg-[#153a2e] transition-colors disabled:opacity-50"
+              className="absolute bottom-0 right-0 rounded-full bg-[#1b4a3a] p-2 text-white hover:bg-[#153a2e] transition-colors disabled:opacity-50 shadow-md border-2 border-background"
             >
               <Camera className="size-4" />
             </button>
