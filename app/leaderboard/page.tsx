@@ -233,7 +233,7 @@ export default function LeaderboardPage() {
         <div className="mb-4">
           <div className="flex justify-between text-sm font-medium mb-2">
             <span>12/50 Referrals</span>
-            <span className="text-muted-foreground">to unlock $20</span>
+            <span className="text-muted-foreground">to unlock rewards up to UGX 80,000</span>
           </div>
           <div className="h-2 w-full rounded-full bg-muted">
             <div className="h-2 rounded-full bg-[#1b4a3a]" style={{ width: '24%' }}></div>
