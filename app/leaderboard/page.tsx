@@ -44,6 +44,7 @@ const formatUGX = (amount: number) => `UGX ${amount.toLocaleString("en-UG")}`;
 
 type Mobiliser = {
   id: string;
+  username: string | null;
   full_name: string | null;
   team: TeamKey | null;
   referral_count: number | null;
@@ -73,8 +74,7 @@ export default function LeaderboardPage() {
     async function fetchData() {
       const { data: rows } = await supabase
         .from("profiles")
-        .select("id, full_name, team, referral_count")
-        .not("team", "is", null)
+        .select("id, username, full_name, team, referral_count")
         .order("referral_count", { ascending: false });
 
       const mobilisers = (rows ?? []) as Mobiliser[];
@@ -89,6 +89,9 @@ export default function LeaderboardPage() {
         };
       });
 
+      // DYNAMIC SORTING: Sort teams by total referrals
+      mappedTeams.sort((a, b) => b.total - a.total);
+
       setByTeam(mappedTeams);
       setLoading(false);
     }
@@ -99,7 +102,6 @@ export default function LeaderboardPage() {
   const handleShare = async () => {
     if (!userId) return alert("Please log in to share your link.");
     
-    // Create the invite URL with the user's ID as the referral code
     const inviteLink = `${window.location.origin}/?ref=${userId}`;
     
     if (navigator.share) {
@@ -113,7 +115,6 @@ export default function LeaderboardPage() {
         console.log('Error sharing', err);
       }
     } else {
-      // Fallback for desktop browsers
       navigator.clipboard.writeText(inviteLink);
       alert("Invite link copied to clipboard!");
     }
@@ -150,16 +151,16 @@ export default function LeaderboardPage() {
             <h3 className="font-semibold text-[#1b4a3a]">The Hati Startup Show</h3>
             <p className="text-sm text-gray-700 leading-relaxed">
               The Startup Show is our flagship event where the best Ideators pitch live to a panel of Venture Capitalists and Angel Investors. They will deploy up to <strong>$2M in funding</strong> across the top pitches. To get there, you must first prove yourself as a Mobilizer. 
-              </p>
+            </p>
             <p className="text-sm text-gray-700 leading-relaxed">
               <strong>The Club Champions:</strong> The top 5 mobilizers across all teams. To qualify through this track, one must have a Tier I-II Hati Trust Score, join a team, complete all surveys and modules, and get at least the first tier of rewards.
-              </p>
+            </p>
             <p className="text-sm text-gray-700 leading-relaxed">
-              <strong>The University Nominees:</strong> The 10 mobilizers from the top 3 universities. 5 from university #1, 3 from university #2and 2 from university #3. To qualify through this track, one must be nominated by their university.
-              </p>
+              <strong>The University Nominees:</strong> The 10 mobilizers from the top 3 universities. 5 from university #1, 3 from university #2 and 2 from university #3. To qualify through this track, one must be nominated by their university.
+            </p>
             <p className="text-sm text-gray-700 leading-relaxed">
-              <strong>The Top Public Candidates:</strong> The top 5 individual mobilizers voted by the community. To qualify through this track, one must have a Tier III Hati Trust Score, complete all surveys and modules, andget at least the fourth tier of rewards. 
-              </p>
+              <strong>The Top Public Candidates:</strong> The top 5 individual mobilizers voted by the community. To qualify through this track, one must have a Tier III Hati Trust Score, complete all surveys and modules, and get at least the fourth tier of rewards. 
+            </p>
             <p className="text-sm text-gray-700 leading-relaxed">
               <strong>The next best 25 candidates:</strong> Voted by the public, will get to pitch to Angel Investors under dynamic terms.
             </p>
@@ -185,7 +186,7 @@ export default function LeaderboardPage() {
           </caption>
           <thead className="bg-neutral-50 text-neutral-600 dark:bg-neutral-900 dark:text-neutral-400">
             <tr>
-              <th scope="col" className="px-4 py-2 font-medium">Team / University</th>
+              <th scope="col" className="px-4 py-2 font-medium">Rank / Team</th>
               <th scope="col" className="px-4 py-2 text-right font-medium">Referrals</th>
               <th scope="col" className="px-4 py-2 text-right font-medium">Reward</th>
             </tr>
@@ -198,12 +199,13 @@ export default function LeaderboardPage() {
               </tr>
             </tbody>
           ) : (
-            byTeam.map(({ key, total, top, count }) => {
+            byTeam.map(({ key, total, top, count }, index) => {
               const team = TEAMS[key];
               return (
                 <tbody key={key} className="border-t border-neutral-200 dark:border-neutral-800">
                   <tr className={`border-l-4 bg-neutral-50/60 dark:bg-neutral-900/60 ${team.stripe}`}>
                     <th scope="rowgroup" className="px-4 py-3 text-base font-semibold">
+                      <span className="text-muted-foreground mr-2">#{index + 1}</span>
                       {team.label} <span className="font-normal text-neutral-500">({team.campus})</span>
                       <span className="ml-2 text-xs font-normal text-neutral-500">- {count} Mobilizers</span>
                     </th>
@@ -222,7 +224,8 @@ export default function LeaderboardPage() {
                         <tr key={student.id} className={`border-l-4 ${team.stripe}`}>
                           <td className="px-4 py-2 pl-8">
                             <span className="mr-2 inline-block w-4 text-neutral-500 tabular-nums">{i + 1}.</span>
-                            {student.full_name ?? "Unnamed mobiliser"}
+                            {/* Show username, fallback to full name */}
+                            {student.username || student.full_name || "Anonymous"}
                           </td>
                           <td className="px-4 py-2 text-right tabular-nums">{studentCount}</td>
                           <td className="px-4 py-2 text-right tabular-nums">{formatUGX(getReward(studentCount))}</td>
