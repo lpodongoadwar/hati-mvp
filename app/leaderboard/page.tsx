@@ -153,6 +153,7 @@ export default function LeaderboardPage() {
               The Club Champions: The top 5 mobilizers across all teams. To qualify through this track, one must have a Tier I-II Hati Trust Score, join a team, complete all surveys and modules, and get at least the first tier of rewards.
               The University Nominees: The 10 mobilizers from the top 3 universities. 5 from university #1, 3 from university #2and 2 from university #3. To qualify through this track, one must be nominated by their university.
               The Top Public Candidates: The top 5 individual mobilizers voted by the community. To qualify through this track, one must have a Tier III Hati Trust Score, complete all surveys and modules, andget at least the fourth tier of rewards. 
+              The next best 25 candidates voted by the public will get to pitch to Angel Investors under dynamic terms.
             </p>
             <div className="pt-2">
               <Link 
