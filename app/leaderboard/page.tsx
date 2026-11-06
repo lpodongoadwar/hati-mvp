@@ -153,7 +153,7 @@ export default function LeaderboardPage() {
               The Startup Show is our flagship event where the best Ideators pitch live to a panel of Venture Capitalists and Angel Investors. They will deploy up to <strong>$2M in funding</strong> across the top pitches. To get there, you must first prove yourself as a Mobilizer. 
             </p>
             <p className="text-sm text-gray-700 leading-relaxed">
-              <strong>The Club Champions:</strong> The top 5 mobilizers across all teams. To qualify through this track, one must have a Tier I-II Hati Trust Score, join a team, complete all surveys and modules, and get at least the first tier of rewards.
+              <strong>The Club Champions:</strong> The top 5 mobilizers across all teams. To qualify through this track, one must have a Tier I-II Hati Trust Score, join a team, complete all surveys and modules, and get at least the second tier of rewards.
             </p>
             <p className="text-sm text-gray-700 leading-relaxed">
               <strong>The University Nominees:</strong> The 10 mobilizers from the top 3 universities. 5 from university #1, 3 from university #2 and 2 from university #3. To qualify through this track, one must be nominated by their university.
@@ -294,11 +294,11 @@ export default function LeaderboardPage() {
       <section className="mt-8">
         <h2 className="text-lg font-semibold mb-3">Reward Tiers</h2>
         <ul className="grid grid-cols-1 gap-x-8 gap-y-1 text-sm sm:grid-cols-2">
-          <li>0–5 referrals: UGX 0</li>
-          <li>6–14 referrals: UGX 20,000</li>
-          <li>15–29 referrals: UGX 40,000</li>
-          <li>30–49 referrals: UGX 60,000</li>
-          <li>50 or more referrals: UGX 80,000</li>
+          <li>1. 0–5 referrals: UGX 0</li>
+          <li>2. 6–14 referrals: UGX 20,000</li>
+          <li>3. 15–29 referrals: UGX 40,000</li>
+          <li>4. 30–49 referrals: UGX 60,000</li>
+          <li>5. 50 or more referrals: UGX 80,000</li>
         </ul>
       </section>
     </main>
