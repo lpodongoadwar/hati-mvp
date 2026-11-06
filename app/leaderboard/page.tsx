@@ -162,7 +162,7 @@ export default function LeaderboardPage() {
               <strong>The Top Public Candidates:</strong> The top 5 individual mobilizers voted by the community. To qualify through this track, one must have a Tier III Hati Trust Score, complete all surveys and modules, and get at least the fourth tier of rewards. 
             </p>
             <p className="text-sm text-gray-700 leading-relaxed">
-              <strong>The next best 25 candidates:</strong> Voted by the public, will get to pitch to Angel Investors under dynamic terms.
+              <strong>The next best 30 candidates:</strong> Voted by the public, will get to pitch to Angel Investors under dynamic terms.
             </p>
             <div className="pt-2">
               <Link 
