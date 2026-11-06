@@ -150,10 +150,18 @@ export default function LeaderboardPage() {
             <h3 className="font-semibold text-[#1b4a3a]">The Hati Startup Show</h3>
             <p className="text-sm text-gray-700 leading-relaxed">
               The Startup Show is our flagship event where the best Ideators pitch live to a panel of Venture Capitalists and Angel Investors. They will deploy up to <strong>$2M in funding</strong> across the top pitches. To get there, you must first prove yourself as a Mobilizer. 
-              The Club Champions: The top 5 mobilizers across all teams. To qualify through this track, one must have a Tier I-II Hati Trust Score, join a team, complete all surveys and modules, and get at least the first tier of rewards.
-              The University Nominees: The 10 mobilizers from the top 3 universities. 5 from university #1, 3 from university #2and 2 from university #3. To qualify through this track, one must be nominated by their university.
-              The Top Public Candidates: The top 5 individual mobilizers voted by the community. To qualify through this track, one must have a Tier III Hati Trust Score, complete all surveys and modules, andget at least the fourth tier of rewards. 
-              The next best 25 candidates voted by the public will get to pitch to Angel Investors under dynamic terms.
+              </p>
+            <p className="text-sm text-gray-700 leading-relaxed">
+              <strong>The Club Champions:</strong> The top 5 mobilizers across all teams. To qualify through this track, one must have a Tier I-II Hati Trust Score, join a team, complete all surveys and modules, and get at least the first tier of rewards.
+              </p>
+            <p className="text-sm text-gray-700 leading-relaxed">
+              <strong>The University Nominees:</strong> The 10 mobilizers from the top 3 universities. 5 from university #1, 3 from university #2and 2 from university #3. To qualify through this track, one must be nominated by their university.
+              </p>
+            <p className="text-sm text-gray-700 leading-relaxed">
+              <strong>The Top Public Candidates:</strong> The top 5 individual mobilizers voted by the community. To qualify through this track, one must have a Tier III Hati Trust Score, complete all surveys and modules, andget at least the fourth tier of rewards. 
+              </p>
+            <p className="text-sm text-gray-700 leading-relaxed">
+              <strong>The next best 25 candidates:</strong> Voted by the public, will get to pitch to Angel Investors under dynamic terms.
             </p>
             <div className="pt-2">
               <Link 
