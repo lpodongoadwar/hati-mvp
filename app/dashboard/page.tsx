@@ -202,6 +202,16 @@ export default function DashboardPage() {
                     Minister Musasizi on Credit Data
                   </a>
                 </li>
+                <li>
+                  <a 
+                    href="https://nilepost.co.ug/businesses/382217/startup-uganda-builds-momentum-for-five-day-innovation-week" 
+                    target="_blank" 
+                    rel="noreferrer"
+                    className="transition-colors hover:text-[#1b4a3a]"
+                  >
+                    Uganda Startup Innovation Week
+                  </a>
+                </li>
               </ul>
             </div>
             
