@@ -164,12 +164,32 @@ export default function DashboardPage() {
                 </li>
                 <li>
                   <a 
-                    href="https://nilepost.co.ug/crime/380308/police-arrest-two-masaka-elders-sacco-managers-over-members-missing-savings" 
+                    href="https://www.monitor.co.ug/uganda/business/markets/-the-double-squeeze-rising-prices-costly-loans-and-pressure-on-growth-5660888#story" 
                     target="_blank" 
                     rel="noreferrer"
                     className="transition-colors hover:text-[#1b4a3a]"
                   >
-                    The SACCO Transparency Crisis
+                    The Macroeconomic Squeeze in Uganda
+                  </a>
+                </li>
+                <li>
+                  <a 
+                    href="https://nilepost.co.ug/businesses/382203/centenary-airtel-money-launch-kwaata-sente-digital-loan-product" 
+                    target="_blank" 
+                    rel="noreferrer"
+                    className="transition-colors hover:text-[#1b4a3a]"
+                  >
+                    The Digital Lending Landscape in Uganda
+                  </a>
+                </li>
+                <li>
+                  <a 
+                    href="https://observer.ug/education/broken-dreams-and-budget-limits-inside-ugandas-48-9-higher-education-loan-surge/#google_vignette" 
+                    target="_blank" 
+                    rel="noreferrer"
+                    className="transition-colors hover:text-[#1b4a3a]"
+                  >
+                    The Education Financing Crisis in Uganda
                   </a>
                 </li>
                 <li>
