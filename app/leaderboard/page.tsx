@@ -294,13 +294,13 @@ export default function LeaderboardPage() {
         <h2 className="text-lg font-semibold">Boost your score</h2>
         <p className="text-sm text-muted-foreground mb-4">Learn and earn points along the way.</p>
         <div className="grid grid-cols-2 gap-2">
-          <Link href="/survey" className="flex flex-col items-center justify-center gap-2 rounded-xl bg-[#0a1f17] p-4 text-white hover:bg-[#0d2a1f] transition-colors">
+          <Link href="/survey" className="flex flex-col items-center justify-center gap-2 rounded-xl bg-[#1b4a3a] p-4 text-white hover:bg-[#153a2e] transition-colors">
             <div className="rounded-full bg-[#c4f080] p-2 text-[#1b4a3a]">
               <ClipboardList className="size-5" />
             </div>
             <span className="text-xs font-medium">Take Survey</span>
           </Link>
-          <Link href="/curriculum" className="flex flex-col items-center justify-center gap-2 rounded-xl bg-[#0a1f17] p-4 text-white hover:bg-[#0d2a1f] transition-colors">
+          <Link href="/curriculum" className="flex flex-col items-center justify-center gap-2 rounded-xl bg-[#1b4a3a] p-4 text-white hover:bg-[#153a2e] transition-colors">
             <div className="rounded-full bg-[#c4f080] p-2 text-[#1b4a3a]"><BookOpen className="size-5" /></div>
             <span className="text-xs font-medium">Complete Module</span>
           </Link>
