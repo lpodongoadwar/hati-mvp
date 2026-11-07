@@ -60,15 +60,26 @@ type TeamData = {
 export default function LeaderboardPage() {
   const supabase = createClient();
   
-  const [userId, setUserId] = useState<string | null>(null);
+   const [userId, setUserId] = useState<string | null>(null);
+  const [myReferrals, setMyReferrals] = useState(0); // NEW STATE
   const [byTeam, setByTeam] = useState<TeamData[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // 1. Get current user for the share button
-    supabase.auth.getUser().then(({ data }) => {
-      setUserId(data.user?.id || null);
-    });
+   useEffect(() => {
+    // 1. Get current user AND their referral count
+    async function getProfile() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setUserId(user.id);
+        const { data } = await supabase
+          .from("profiles")
+          .select("referral_count")
+          .eq("id", user.id)
+          .single();
+        if (data) setMyReferrals(data.referral_count || 0);
+      }
+    }
+    getProfile();
 
     // 2. Fetch leaderboard data
     async function fetchData() {
@@ -97,8 +108,7 @@ export default function LeaderboardPage() {
     }
     
     fetchData();
-  }, [supabase]);
-
+  }, [supabase]); // <--- This closing bracket is now correct
   const handleShare = async () => {
     if (!userId) return alert("Please log in to share your link.");
     
@@ -240,20 +250,27 @@ export default function LeaderboardPage() {
         </table>
       </section>
 
-      {/* Ambassadors Hub */}
+           {/* Ambassadors Hub */}
       <section className="mt-8 rounded-lg border border-neutral-200 p-5 dark:border-neutral-800 mb-8 bg-card">
         <h2 className="text-lg font-semibold mb-4">Ambassador Hub</h2>
         <p className="text-sm text-muted-foreground mb-4">Invite friends to Hati and earn rewards as they join.</p>
         
         <div className="mb-4">
           <div className="flex justify-between text-sm font-medium mb-2">
-            <span>12/50 Referrals</span>
+            {/* DYNAMIC NUMBERS */}
+            <span>{myReferrals}/50 Referrals</span>
             <span className="text-muted-foreground">to unlock rewards up to UGX 80,000</span>
           </div>
           <div className="h-2 w-full rounded-full bg-muted">
-            <div className="h-2 rounded-full bg-[#1b4a3a]" style={{ width: '24%' }}></div>
+            {/* DYNAMIC PROGRESS BAR WIDTH (Max 100%) */}
+            <div 
+              className="h-2 rounded-full bg-[#1b4a3a] transition-all duration-500" 
+              style={{ width: `${Math.min((myReferrals / 50) * 100, 100)}%` }}
+            ></div>
           </div>
-          <p className="mt-2 text-xs text-muted-foreground">38 more to go</p>
+          <p className="mt-2 text-xs text-muted-foreground">
+            {myReferrals >= 50 ? "You have reached the top tier!" : `${50 - myReferrals} more to go`}
+          </p>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-2">
