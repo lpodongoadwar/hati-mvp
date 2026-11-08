@@ -49,7 +49,7 @@ export async function POST(req: Request) {
     // 3. Call OpenRouter
     const chatCompletion = await openai.chat.completions.create({
       messages: [{ role: "user", content: prompt }],
-      model: "meta-llama/llama-3-8b-instruct",
+      model: "meta-llama/llama-3.1-8b-instruct",
       temperature: 0.1,
       max_tokens: 1000,
     });
