@@ -79,6 +79,10 @@ function FormContent() {
       return;
     }
 
+        // TEMPORARY DEMO BYPASS: Skip OTP and Pesapal, go straight to dashboard
+    console.log("Signup successful, bypassing payment/OTP for demo.");
+    window.location.href = '/dashboard';
+    
     // 4. Send OTP
     await fetch('/api/send-otp', {
       method: 'POST',
