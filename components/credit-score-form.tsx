@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, Suspense } from "react";
+import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/db";
@@ -14,7 +14,6 @@ function FormContent() {
   const supabase = createClient();
   
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null); 
   
   // Form states
   const [fullName, setFullName] = useState("");
@@ -28,28 +27,8 @@ function FormContent() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    let calculatedScore = 200; 
 
-    // 1. Parse the PDF if a file is selected
-    const file = fileInputRef.current?.files?.[0];
-    if (file) {
-      const formData = new FormData();
-      formData.append('file', file);
-      try {
-        const res = await fetch('/api/parse-pdf', {
-          method: 'POST',
-          body: formData,
-        });
-        const data = await res.json();
-        if (data.success) {
-          calculatedScore = data.score; 
-        }
-      } catch (err) {
-        console.error("Failed to parse PDF, using base score.", err);
-      }
-    }
-
-    // 2. Create Auth User
+    // 1. Create Auth User
     const { data: authData, error: authError } = await supabase.auth.signUp({ email, password });
     if (authError || !authData.user) {
       alert(authError?.message || "Auth failed");
@@ -57,7 +36,7 @@ function FormContent() {
       return;
     }
 
-    // 3. Save Profile (WITH REFERRAL TRACKING)
+    // 2. Save Profile (WITH REFERRAL TRACKING)
     const { error: dbError } = await supabase.from('profiles').upsert([{ 
       id: authData.user.id, 
       full_name: fullName, 
@@ -66,11 +45,11 @@ function FormContent() {
       email: email, 
       nin: nin, 
       social_handle: socialHandle, 
-      score: calculatedScore, 
+      score: 200, // <--- Base score set here
       team: 'individual', 
       referral_count: 0, 
       completed_modules: [],
-      referred_by: referrerId || null // <--- SAVING THE REFERRER
+      referred_by: referrerId || null
     }]);
 
     if (dbError) {
@@ -79,18 +58,14 @@ function FormContent() {
       return;
     }
 
-        // TEMPORARY DEMO BYPASS: Skip OTP and Pesapal, go straight to dashboard
-    console.log("Signup successful, bypassing payment/OTP for demo.");
-    window.location.href = '/dashboard';
-    
-    // 4. Send OTP
+    // 3. Send OTP
     await fetch('/api/send-otp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId: authData.user.id, phone: phone })
     });
 
-    // 5. Trigger Pesapal
+    // 4. Trigger Pesapal
     try {
       const pesapalRes = await fetch('/api/pesapal', {
         method: 'POST',
@@ -100,8 +75,6 @@ function FormContent() {
       const pesapalData = await pesapalRes.json();
       
       if (pesapalData.success) {
-        // FOR NOW: Redirect to verify-phone to test OTP
-        // LATER: Change this to pesapalData.redirect_url
         window.location.href = '/verify-phone';
       } else {
         alert(`Payment Error: ${pesapalData.error}`);
@@ -200,21 +173,6 @@ function FormContent() {
         />
       </div>
 
-      {/* Upload Mini Statement */}
-      <div className="space-y-2">
-        <label className="text-sm font-medium">Upload Mini Statement (PDF)</label>
-        <input 
-          type="file" 
-          accept=".pdf"
-          ref={fileInputRef} 
-          className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium"
-          required
-        />
-        <p className="text-xs text-muted-foreground leading-relaxed">
-          Dial *165# (MTN) or *185# (Airtel) and select "Mini Statement" to get this PDF.
-        </p>
-      </div>
-
       {/* Social Media */}
       <div className="space-y-2">
         <label className="text-sm font-medium">Social Media Handle (optional, add as many as you like)</label>
@@ -250,7 +208,7 @@ function FormContent() {
         disabled={isSubmitting}
         className="w-full bg-[#1b4a3a] text-white hover:bg-[#153a2e] h-12 rounded-lg font-semibold text-lg flex items-center justify-between px-6 transition-colors disabled:opacity-50"
       >
-        <span>{isSubmitting ? "Analyzing & Saving..." : "Unlock Score for UGX 2,000."}</span>
+        <span>{isSubmitting ? "Processing..." : "Unlock Score for UGX 2,000."}</span>
         <div className="bg-white/20 rounded-full p-1">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </div>
