@@ -1,10 +1,6 @@
 import { NextResponse } from 'next/server';
 import Groq from 'groq-sdk';
-
-// The @ts-ignore is crucial here. It tells TypeScript to ignore the
-// type error that comes from this import, because the library's types are incorrect for Next.js.
-// @ts-ignore
-import pdf from 'pdf-parse/lib/pdf-parse.js';
+import { extractText, getDocumentProxy } from 'unpdf';
 
 const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
@@ -19,13 +15,15 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
-    // 1. Parse the PDF to extract text
+    // 1. Parse the PDF to extract text using unpdf
     const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    const pdfData = await pdf(buffer);
+    const buffer = new Uint8Array(bytes);
     
-    // 2. Truncate text to avoid Groq's 8k TPM limit
-    const pdfText = pdfData.text.substring(0, 15000); 
+    const pdf = await getDocumentProxy(buffer);
+    const { text } = await extractText(pdf, { mergePages: true });
+
+    // 2. Truncate text to avoid Groq's token limit
+    const pdfText = text.substring(0, 15000); 
 
     const prompt = `
       You are a financial analyst for Hati, a credit scoring platform in Uganda.
