@@ -26,20 +26,20 @@ export async function POST(req: Request) {
     const pdfText = text.substring(0, 15000); 
 
     const prompt = `
-      You are a financial analyst for Hati, a credit scoring platform in Uganda.
-      Analyze this Mobile Money Mini Statement text and return ONLY a valid JSON object 
-      with the following fields (no markdown, no explanation, just the raw JSON):
-      {
-        "totalTransactions": <number of total transactions>,
-        "averageMonthlyInflow": <number in UGX, no commas>,
-        "averageMonthlyOutflow": <number in UGX, no commas>,
-        "hasLoanRepayments": <boolean true/false>,
-        "incomeConsistency": <"high", "medium", or "low">
-      }
+  You are a financial analyst for Hati, a credit scoring platform in Uganda.
+  Analyze this Mobile Money Mini Statement text and return a valid JSON object 
+  with the following fields (no markdown, no explanation, just the raw JSON):
+  {
+    "totalTransactions": <number of total transactions>,
+    "averageMonthlyInflow": <number in UGX, no commas>,
+    "averageMonthlyOutflow": <number in UGX, no commas>,
+    "hasLoanRepayments": <boolean true/false>,
+    "incomeConsistency": <"high", "medium", or "low">
+  }
 
-      Here is the statement text:
-      ${pdfText}
-    `;
+  Here is the statement text:
+  ${pdfText}
+`;
 
     const chatCompletion = await groq.chat.completions.create({
       messages: [{ role: "user", content: prompt }],
