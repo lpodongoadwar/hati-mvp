@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import Groq from 'groq-sdk';
 // @ts-ignore
-import pdf from 'pdf-parse/lib/pdf-parse.js';
+import pdf from 'pdf-parse';
 
 const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
