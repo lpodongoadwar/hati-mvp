@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server';
 import Groq from 'groq-sdk';
+
+// The @ts-ignore is crucial here. It tells TypeScript to ignore the
+// type error that comes from this import, because the library's types are incorrect for Next.js.
 // @ts-ignore
-import pdf from 'pdf-parse';
+import pdf from 'pdf-parse/lib/pdf-parse.js';
 
 const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
@@ -22,12 +25,12 @@ export async function POST(req: Request) {
     const pdfData = await pdf(buffer);
     
     // 2. Truncate text to avoid Groq's 8k TPM limit
-    // 15,000 characters is roughly 3,500 - 4,000 tokens.
     const pdfText = pdfData.text.substring(0, 15000); 
 
     const prompt = `
       You are a financial analyst for Hati, a credit scoring platform in Uganda.
-      Analyze this Mobile Money Mini Statement text and return ONLY a valid JSON object with the following fields (no markdown, no explanation, just the raw JSON):
+      Analyze this Mobile Money Mini Statement text and return ONLY a valid JSON object 
+      with the following fields (no markdown, no explanation, just the raw JSON):
       {
         "totalTransactions": <number of total transactions>,
         "averageMonthlyInflow": <number in UGX, no commas>,
