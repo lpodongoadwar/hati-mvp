@@ -2,18 +2,18 @@ import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import { extractText, getDocumentProxy } from 'unpdf';
 
-// Initialize the OpenAI client, but point it to OpenRouter
-const openai = new OpenAI({
-  baseURL: "https://openrouter.ai/api/v1",
-  apiKey: process.env.OPENROUTER_API_KEY,
-  defaultHeaders: {
-    "HTTP-Referer": "https://hati-mvp-three.vercel.app", // Optional, for OpenRouter analytics
-    "X-Title": "Hati", // Optional
-  },
-});
-
 export async function POST(req: Request) {
   try {
+    // 1. Initialize OpenAI inside the route so it only runs at request time
+    const openai = new OpenAI({
+      baseURL: "https://openrouter.ai/api/v1",
+      apiKey: process.env.OPENROUTER_API_KEY || "missing-key", 
+      defaultHeaders: {
+        "HTTP-Referer": "https://hati-mvp-three.vercel.app",
+        "X-Title": "Hati",
+      },
+    });
+
     const formData = await req.formData();
     const file = formData.get('file') as File;
 
@@ -21,7 +21,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
-    // 1. Parse the PDF
+    // 2. Parse the PDF
     const bytes = await file.arrayBuffer();
     const buffer = new Uint8Array(bytes);
     
@@ -46,18 +46,16 @@ export async function POST(req: Request) {
       ${pdfText}
     `;
 
-    // Call OpenRouter using a reliable free model (e.g., Llama 3 8B)
+    // 3. Call OpenRouter
     const chatCompletion = await openai.chat.completions.create({
       messages: [{ role: "user", content: prompt }],
-      model: "meta-llama/llama-3-8b-instruct", // Using a reliable free model on OpenRouter
+      model: "meta-llama/llama-3-8b-instruct",
       temperature: 0.1,
       max_tokens: 1000,
-      // OpenRouter supports response_format for many models, but we can leave it out to be safe
     });
 
     const responseText = chatCompletion.choices[0]?.message?.content || "{}";
     
-    // Clean up markdown just in case
     const cleanJson = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
     const parsedData = JSON.parse(cleanJson);
 
