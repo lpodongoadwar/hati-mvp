@@ -44,7 +44,7 @@ export async function POST(req: Request) {
     // 3. Call Groq using the stable Llama 3.1 model with strict JSON mode
     const chatCompletion = await groq.chat.completions.create({
       messages: [{ role: "user", content: prompt }],
-      model: "llama-3.1-8b-instant", // Switched to a highly stable model
+     model: "openai/gpt-oss-20b", 
       temperature: 0.1,
       max_tokens: 1000,
       response_format: { type: "json_object" }, // Safe to use here
