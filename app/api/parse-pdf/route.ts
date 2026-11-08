@@ -22,39 +22,36 @@ export async function POST(req: Request) {
     const pdf = await getDocumentProxy(buffer);
     const { text } = await extractText(pdf, { mergePages: true });
 
-    const pdfText = text.substring(0, 12000); 
+    // 2. Truncate to 10,000 characters (safe limit for Llama 3.1 8B)
+    const pdfText = text.substring(0, 10000); 
 
     const prompt = `
       You are a financial analyst for Hati, a credit scoring platform in Uganda.
-      Analyze this Mobile Money Mini Statement text and return ONLY a JSON object 
-      with the following fields:
+      Analyze this Mobile Money Mini Statement text and return ONLY a valid JSON object 
+      with the following fields (no markdown, no explanation, just the raw JSON):
       {
-        "totalTransactions": number,
-        "averageMonthlyInflow": number,
-        "averageMonthlyOutflow": number,
-        "hasLoanRepayments": boolean,
-        "incomeConsistency": "high" | "medium" | "low"
+        "totalTransactions": <number of total transactions>,
+        "averageMonthlyInflow": <number in UGX, no commas>,
+        "averageMonthlyOutflow": <number in UGX, no commas>,
+        "hasLoanRepayments": <boolean true/false>,
+        "incomeConsistency": <"high", "medium", or "low">
       }
-
-      Do not include any markdown formatting, backticks, or explanations. Just the raw JSON string.
 
       Here is the statement text:
       ${pdfText}
     `;
 
+    // 3. Call Groq using the stable Llama 3.1 model with strict JSON mode
     const chatCompletion = await groq.chat.completions.create({
       messages: [{ role: "user", content: prompt }],
-      model: "openai/gpt-oss-120b",
+      model: "llama-3.1-8b-instant", // Switched to a highly stable model
       temperature: 0.1,
       max_tokens: 1000,
-      // REMOVED the strict response_format to bypass the json_validate_failed error
+      response_format: { type: "json_object" }, // Safe to use here
     });
 
     const responseText = chatCompletion.choices[0]?.message?.content || "{}";
-    
-    // Clean up the response in case the AI still added backticks
-    const cleanJson = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
-    const parsedData = JSON.parse(cleanJson);
+    const parsedData = JSON.parse(responseText);
 
     // --- SANITIZE DATA ---
     const inflow = Number(String(parsedData.averageMonthlyInflow).replace(/,/g, '')) || 0;
