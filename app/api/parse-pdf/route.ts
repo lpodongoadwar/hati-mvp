@@ -15,42 +15,46 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
-    // 1. Parse the PDF to extract text using unpdf
+    // 1. Parse the PDF to extract text
     const bytes = await file.arrayBuffer();
     const buffer = new Uint8Array(bytes);
     
     const pdf = await getDocumentProxy(buffer);
     const { text } = await extractText(pdf, { mergePages: true });
 
-    // 2. Truncate text to avoid Groq's token limit
-    const pdfText = text.substring(0, 15000); 
+    const pdfText = text.substring(0, 12000); 
 
     const prompt = `
-  You are a financial analyst for Hati, a credit scoring platform in Uganda.
-  Analyze this Mobile Money Mini Statement text and return a valid JSON object 
-  with the following fields (no markdown, no explanation, just the raw JSON):
-  {
-    "totalTransactions": <number of total transactions>,
-    "averageMonthlyInflow": <number in UGX, no commas>,
-    "averageMonthlyOutflow": <number in UGX, no commas>,
-    "hasLoanRepayments": <boolean true/false>,
-    "incomeConsistency": <"high", "medium", or "low">
-  }
+      You are a financial analyst for Hati, a credit scoring platform in Uganda.
+      Analyze this Mobile Money Mini Statement text and return ONLY a JSON object 
+      with the following fields:
+      {
+        "totalTransactions": number,
+        "averageMonthlyInflow": number,
+        "averageMonthlyOutflow": number,
+        "hasLoanRepayments": boolean,
+        "incomeConsistency": "high" | "medium" | "low"
+      }
 
-  Here is the statement text:
-  ${pdfText}
-`;
+      Do not include any markdown formatting, backticks, or explanations. Just the raw JSON string.
+
+      Here is the statement text:
+      ${pdfText}
+    `;
 
     const chatCompletion = await groq.chat.completions.create({
       messages: [{ role: "user", content: prompt }],
       model: "openai/gpt-oss-120b",
       temperature: 0.1,
       max_tokens: 1000,
-      response_format: { type: "json_object" },
+      // REMOVED the strict response_format to bypass the json_validate_failed error
     });
 
     const responseText = chatCompletion.choices[0]?.message?.content || "{}";
-    const parsedData = JSON.parse(responseText);
+    
+    // Clean up the response in case the AI still added backticks
+    const cleanJson = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
+    const parsedData = JSON.parse(cleanJson);
 
     // --- SANITIZE DATA ---
     const inflow = Number(String(parsedData.averageMonthlyInflow).replace(/,/g, '')) || 0;
