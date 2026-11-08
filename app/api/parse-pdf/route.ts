@@ -1,9 +1,15 @@
 import { NextResponse } from 'next/server';
-import Groq from 'groq-sdk';
+import OpenAI from 'openai';
 import { extractText, getDocumentProxy } from 'unpdf';
 
-const groq = new Groq({
-  apiKey: process.env.GROQ_API_KEY,
+// Initialize the OpenAI client, but point it to OpenRouter
+const openai = new OpenAI({
+  baseURL: "https://openrouter.ai/api/v1",
+  apiKey: process.env.OPENROUTER_API_KEY,
+  defaultHeaders: {
+    "HTTP-Referer": "https://hati-mvp-three.vercel.app", // Optional, for OpenRouter analytics
+    "X-Title": "Hati", // Optional
+  },
 });
 
 export async function POST(req: Request) {
@@ -15,14 +21,13 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
-    // 1. Parse the PDF to extract text
+    // 1. Parse the PDF
     const bytes = await file.arrayBuffer();
     const buffer = new Uint8Array(bytes);
     
     const pdf = await getDocumentProxy(buffer);
     const { text } = await extractText(pdf, { mergePages: true });
 
-    // 2. Truncate to 10,000 characters (safe limit for Llama 3.1 8B)
     const pdfText = text.substring(0, 10000); 
 
     const prompt = `
@@ -41,17 +46,20 @@ export async function POST(req: Request) {
       ${pdfText}
     `;
 
-    // 3. Call Groq using the stable Llama 3.1 model with strict JSON mode
-    const chatCompletion = await groq.chat.completions.create({
+    // Call OpenRouter using a reliable free model (e.g., Llama 3 8B)
+    const chatCompletion = await openai.chat.completions.create({
       messages: [{ role: "user", content: prompt }],
-     model: "openai/gpt-oss-20b", 
+      model: "meta-llama/llama-3-8b-instruct", // Using a reliable free model on OpenRouter
       temperature: 0.1,
       max_tokens: 1000,
-      response_format: { type: "json_object" }, // Safe to use here
+      // OpenRouter supports response_format for many models, but we can leave it out to be safe
     });
 
     const responseText = chatCompletion.choices[0]?.message?.content || "{}";
-    const parsedData = JSON.parse(responseText);
+    
+    // Clean up markdown just in case
+    const cleanJson = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
+    const parsedData = JSON.parse(cleanJson);
 
     // --- SANITIZE DATA ---
     const inflow = Number(String(parsedData.averageMonthlyInflow).replace(/,/g, '')) || 0;
@@ -59,23 +67,18 @@ export async function POST(req: Request) {
     const hasLoans = Boolean(parsedData.hasLoanRepayments);
     const consistency = parsedData.incomeConsistency || "low";
 
-    // --- HATI TRUST SCORE CALCULATION (Max 850) ---
+    // --- HATI TRUST SCORE CALCULATION ---
     let score = 200;
-
     if (transactions > 10) score += 50;
     if (transactions > 50) score += 75;
     if (transactions > 100) score += 75;
-
     if (inflow > 100000) score += 50;
     if (inflow > 500000) score += 100;
     if (inflow > 2000000) score += 100;
-
     if (consistency === "medium") score += 50;
     if (consistency === "high") score += 100;
     if (hasLoans) score += 50; 
-    
     if (transactions > 50 && inflow > 500000) score += 50;
-
     if (score > 850) score = 850;
 
     return NextResponse.json({ 
