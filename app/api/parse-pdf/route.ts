@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import Groq from 'groq-sdk';
+// @ts-ignore
+import pdf from 'pdf-parse/lib/pdf-parse.js';
 
 const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
@@ -14,14 +16,14 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
-    // Convert PDF to text (basic extraction for the demo)
+    // 1. Parse the PDF to extract text
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
+    const pdfData = await pdf(buffer);
     
-    // Convert the PDF buffer to a string. 
-    // Note: For production, you'd use a library like 'pdf-parse' here.
-    // For this MVP, we are sending the raw text stream to the AI.
-    const pdfText = buffer.toString('utf-8').substring(0, 15000); 
+    // 2. Truncate text to avoid Groq's 8k TPM limit
+    // 15,000 characters is roughly 3,500 - 4,000 tokens.
+    const pdfText = pdfData.text.substring(0, 15000); 
 
     const prompt = `
       You are a financial analyst for Hati, a credit scoring platform in Uganda.
@@ -41,7 +43,7 @@ export async function POST(req: Request) {
     const chatCompletion = await groq.chat.completions.create({
       messages: [{ role: "user", content: prompt }],
       model: "openai/gpt-oss-120b",
-     temperature: 0.1,
+      temperature: 0.1,
       max_tokens: 1000,
       response_format: { type: "json_object" },
     });
@@ -55,7 +57,7 @@ export async function POST(req: Request) {
     const hasLoans = Boolean(parsedData.hasLoanRepayments);
     const consistency = parsedData.incomeConsistency || "low";
 
-    // --- STRICTER HATI TRUST SCORE CALCULATION (Max 850) ---
+    // --- HATI TRUST SCORE CALCULATION (Max 850) ---
     let score = 200;
 
     if (transactions > 10) score += 50;
