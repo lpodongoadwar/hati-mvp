@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { User, Camera, MessageCircle, HelpCircle, Mail, Phone, Lock, ShieldCheck, Scale, LogOut, ArrowLeft } from "lucide-react";
 import { createClient } from "@/lib/db";
+import { Crisp } from "crisp-sdk-web";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -13,6 +14,12 @@ export default function ProfilePage() {
   
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+
+  // 1. Initialize Crisp for this page
+  useEffect(() => {
+    // Replace this with your actual Crisp Website ID
+    Crisp.configure("YOUR_CRISP_WEBSITE_ID_HERE"); 
+  }, []);
 
   // Fetch the current avatar on load
   useEffect(() => {
@@ -71,6 +78,10 @@ export default function ProfilePage() {
     }
   };
 
+  const openLiveChat = () => {
+    Crisp.chat.open();
+  };
+
   return (
     <main className="min-h-screen bg-background p-6">
       <div className="mx-auto max-w-md space-y-8">
@@ -83,10 +94,9 @@ export default function ProfilePage() {
           <h1 className="text-xl font-semibold">My Profile</h1>
         </div>
 
-               {/* Profile Picture */}
+        {/* Profile Picture */}
         <div className="flex flex-col items-center space-y-2">
           <div className="relative">
-            
             {/* Inner container that clips the image */}
             <div className="flex size-24 items-center justify-center rounded-full bg-muted overflow-hidden">
               {avatarUrl ? (
@@ -105,7 +115,7 @@ export default function ProfilePage() {
               className="hidden" 
             />
 
-            {/* Camera Button (now outside the overflow-hidden container) */}
+            {/* Camera Button */}
             <button 
               onClick={() => fileInputRef.current?.click()}
               disabled={uploading}
@@ -152,7 +162,11 @@ export default function ProfilePage() {
         <div className="space-y-2 rounded-xl border p-4">
           <h2 className="mb-2 font-semibold">Support</h2>
           
-          <button className="flex w-full items-center gap-3 rounded-lg p-2 hover:bg-muted text-sm font-medium">
+          {/* Live Chat Button - Now opens the Crisp widget */}
+          <button 
+            onClick={openLiveChat}
+            className="flex w-full items-center gap-3 rounded-lg p-2 hover:bg-muted text-sm font-medium"
+          >
             <MessageCircle className="size-5 text-[#1b4a3a]" />
             <span>Live Chat</span>
           </button>

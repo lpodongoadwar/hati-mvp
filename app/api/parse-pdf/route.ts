@@ -1,5 +1,9 @@
 import { NextResponse } from 'next/server';
-import { GoogleGenAI } from '@google/genai';
+import Groq from 'groq-sdk';
+
+const groq = new Groq({
+  apiKey: process.env.GROQ_API_KEY,
+});
 
 export async function POST(req: Request) {
   try {
@@ -10,16 +14,18 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
+    // Convert PDF to text (basic extraction for the demo)
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
-    const base64Pdf = buffer.toString('base64');
-
-    // Initialize the NEW Google Gen AI SDK
-    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY as string });
+    
+    // Convert the PDF buffer to a string. 
+    // Note: For production, you'd use a library like 'pdf-parse' here.
+    // For this MVP, we are sending the raw text stream to the AI.
+    const pdfText = buffer.toString('utf-8').substring(0, 15000); 
 
     const prompt = `
       You are a financial analyst for Hati, a credit scoring platform in Uganda.
-      Analyze this Mobile Money Mini Statement PDF and return ONLY a valid JSON object with the following fields (no markdown, no explanation, just the raw JSON):
+      Analyze this Mobile Money Mini Statement text and return ONLY a valid JSON object with the following fields (no markdown, no explanation, just the raw JSON):
       {
         "totalTransactions": <number of total transactions>,
         "averageMonthlyInflow": <number in UGX, no commas>,
@@ -27,44 +33,20 @@ export async function POST(req: Request) {
         "hasLoanRepayments": <boolean true/false>,
         "incomeConsistency": <"high", "medium", or "low">
       }
+
+      Here is the statement text:
+      ${pdfText}
     `;
 
-    const modelsToTry = ['gemini-3.8-flash', 'gemini-3.5-flash', 'gemini-3.5-flash-lite'];
-    let result = null;
-    let lastError = null;
+    const chatCompletion = await groq.chat.completions.create({
+      messages: [{ role: "user", content: prompt }],
+      model: "llama-3.3-70b-versatile",
+      temperature: 0.1,
+      response_format: { type: "json_object" },
+    });
 
-    for (const modelName of modelsToTry) {
-      try {
-        console.log(`Attempting parse with ${modelName}...`);
-        result = await ai.models.generateContent({
-          model: modelName,
-          contents: [
-            { text: prompt },
-            { inlineData: { data: base64Pdf, mimeType: 'application/pdf' } }
-          ]
-        });
-        break; 
-      } catch (error: any) {
-        console.error(`${modelName} failed:`, error.message);
-        lastError = error;
-        // If it's not a rate limit or overload error, throw immediately
-        if (!error.message.includes('503') && !error.message.includes('429')) {
-          throw error;
-        }
-      }
-    }
-
-    if (!result) throw lastError;
-
-    // New SDK returns text like this:
-    const responseText = result.text;
-    
-    if (!responseText) {
-       throw new Error("No text returned from Gemini");
-    }
-
-    const cleanJson = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
-    const parsedData = JSON.parse(cleanJson);
+    const responseText = chatCompletion.choices[0]?.message?.content || "{}";
+    const parsedData = JSON.parse(responseText);
 
     // --- SANITIZE DATA ---
     const inflow = Number(String(parsedData.averageMonthlyInflow).replace(/,/g, '')) || 0;
@@ -75,22 +57,18 @@ export async function POST(req: Request) {
     // --- STRICTER HATI TRUST SCORE CALCULATION (Max 850) ---
     let score = 200;
 
-    // Pillar 1: Financial Activity (Max 200 pts)
     if (transactions > 10) score += 50;
     if (transactions > 50) score += 75;
     if (transactions > 100) score += 75;
 
-    // Pillar 2: Income Capacity (Max 250 pts)
     if (inflow > 100000) score += 50;
     if (inflow > 500000) score += 100;
     if (inflow > 2000000) score += 100;
 
-    // Pillar 3: Financial Discipline (Max 200 pts)
     if (consistency === "medium") score += 50;
     if (consistency === "high") score += 100;
     if (hasLoans) score += 50; 
     
-    // Bonus: High activity + High inflow
     if (transactions > 50 && inflow > 500000) score += 50;
 
     if (score > 850) score = 850;
