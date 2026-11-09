@@ -67,7 +67,12 @@ function FormContent() {
       body: JSON.stringify({ userId: authData.user.id, phone: phone })
     });
 
-    // 4. Trigger Pesapal
+        // 4. Log initial score history
+    await supabase.from('score_history').insert([
+      { user_id: authData.user.id, score: 200 }
+    ]);
+
+    // 5. Trigger Pesapal
     try {
       const pesapalRes = await fetch('/api/pesapal', {
         method: 'POST',

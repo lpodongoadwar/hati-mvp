@@ -46,7 +46,7 @@ export default function ParticipatePage() {
         return;
       }
 
-      // 3. Update the profile score
+           // 3. Update the profile score
       const { error: dbError } = await supabase
         .from("profiles")
         .update({ score: data.score })
@@ -55,9 +55,12 @@ export default function ParticipatePage() {
       if (dbError) {
         setMessage(`Database Error: ${dbError.message}`);
       } else {
+        // NEW: Log the new score to history
+        await supabase.from("score_history").insert([
+          { user_id: user.id, score: data.score }
+        ]);
+
         setMessage(`Success! Your new Hati Score is ${data.score}.`);
-        setUploadSuccess(true); // Mark as successful
-        // Force a refresh of Next.js router cache
         router.refresh();
       }
     } catch (err: any) {
