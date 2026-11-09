@@ -4,12 +4,14 @@ import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/db";
+import { Eye, EyeOff } from "lucide-react"; // Add this line
 
 // 1. Inner component containing the actual form logic
 function FormContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const referrerId = searchParams.get("ref"); // Grabs the '?ref=...' from the URL
+    const [showPassword, setShowPassword] = useState(false);
   
   const supabase = createClient();
   
@@ -134,17 +136,26 @@ function FormContent() {
         />
       </div>
 
-      {/* Password */}
+            {/* Password */}
       <div className="space-y-2">
         <label className="text-sm font-medium">Password</label>
-        <input 
-          type="password" 
-          placeholder="Create a password" 
-          className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+        <div className="relative">
+          <input 
+            type={showPassword ? "text" : "password"} 
+            placeholder="Create a password" 
+            className="flex h-11 w-full rounded-md border border-input bg-background px-3 pr-10 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+          >
+            {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+          </button>
+        </div>
       </div>
 
       {/* Email */}
