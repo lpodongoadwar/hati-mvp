@@ -6,7 +6,6 @@ import Link from "next/link";
 import { User, Camera, MessageCircle, HelpCircle, Mail, Phone, Lock, ShieldCheck, Scale, LogOut, ArrowLeft } from "lucide-react";
 import { createClient } from "@/lib/db";
 import { EditProfileModal } from "@/components/edit-profile-modal";
-import { Crisp } from "crisp-sdk-web";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -82,7 +81,6 @@ export default function ProfilePage() {
   };
 
   const handleLiveChat = () => {
-    Crisp.chat.hide();
     const phoneNumber = "256778490232";
     const message = encodeURIComponent("Hello Hati Support, I need help with my account.");
     window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank", "noopener,noreferrer");
@@ -123,7 +121,7 @@ export default function ProfilePage() {
             />
 
             {/* Camera Button */}
-            <button 
+          <button
               onClick={() => fileInputRef.current?.click()}
               disabled={uploading}
               className="absolute bottom-0 right-0 rounded-full bg-[#1b4a3a] p-2 text-white hover:bg-[#153a2e] transition-colors disabled:opacity-50 shadow-md border-2 border-background"
