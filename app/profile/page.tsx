@@ -5,32 +5,35 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { User, Camera, MessageCircle, HelpCircle, Mail, Phone, Lock, ShieldCheck, Scale, LogOut, ArrowLeft } from "lucide-react";
 import { createClient } from "@/lib/db";
-import { Crisp } from "crisp-sdk-web";
+import { EditProfileModal } from "@/components/edit-profile-modal";
 
 export default function ProfilePage() {
   const router = useRouter();
   const supabase = createClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  
+
+  // State for Profile Picture
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
 
-  // 1. Initialize Crisp for this page
-  useEffect(() => {
-    // Replace this with your actual Crisp Website ID
-    Crisp.configure("YOUR_CRISP_WEBSITE_ID_HERE"); 
-  }, []);
+  // State for Edit Modals
+  const [modalType, setModalType] = useState<"email" | "phone" | "password" | null>(null);
+  const [profileData, setProfileData] = useState({ email: "", phone: "" });
 
-  // Fetch the current avatar on load
+  // Fetch initial data (Avatar + Email/Phone)
   useEffect(() => {
-    async function getProfile() {
+    async function fetchData() {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        const { data } = await supabase.from('profiles').select('avatar_url').eq('id', user.id).single();
+        const { data } = await supabase.from('profiles').select('avatar_url, phone').eq('id', user.id).single();
         if (data?.avatar_url) setAvatarUrl(data.avatar_url);
+        setProfileData({
+          email: user.email || "",
+          phone: data?.phone || ""
+        });
       }
     }
-    getProfile();
+    fetchData();
   }, [supabase]);
 
   const handleLogout = async () => {
@@ -43,7 +46,6 @@ export default function ProfilePage() {
     if (!file) return;
 
     setUploading(true);
-
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("No user found");
@@ -78,10 +80,6 @@ export default function ProfilePage() {
     }
   };
 
-  const openLiveChat = () => {
-    Crisp.chat.open();
-  };
-
   return (
     <main className="min-h-screen bg-background p-6">
       <div className="mx-auto max-w-md space-y-8">
@@ -97,6 +95,7 @@ export default function ProfilePage() {
         {/* Profile Picture */}
         <div className="flex flex-col items-center space-y-2">
           <div className="relative">
+
             {/* Inner container that clips the image */}
             <div className="flex size-24 items-center justify-center rounded-full bg-muted overflow-hidden">
               {avatarUrl ? (
@@ -143,18 +142,39 @@ export default function ProfilePage() {
           <h2 className="font-semibold text-lg">Account Details</h2>
           
           <div className="flex items-center justify-between border-b pb-3">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground"><Mail className="size-4"/> Email</div>
-            <button onClick={() => alert('Email edit modal coming soon!')} className="text-sm font-medium text-[#1b4a3a] hover:underline">Edit</button>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Mail className="size-4"/> Email
+            </div>
+            <button
+              onClick={() => setModalType("email")}
+              className="text-sm font-medium text-[#1b4a3a] hover:underline"
+            >
+              Edit
+            </button>
           </div>
           
           <div className="flex items-center justify-between border-b pb-3">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground"><Phone className="size-4"/> Phone</div>
-            <button onClick={() => alert('Phone edit modal coming soon!')} className="text-sm font-medium text-[#1b4a3a] hover:underline">Edit</button>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Phone className="size-4"/> Phone
+            </div>
+            <button
+              onClick={() => setModalType("phone")}
+              className="text-sm font-medium text-[#1b4a3a] hover:underline"
+            >
+              Edit
+            </button>
           </div>
 
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground"><Lock className="size-4"/> Password</div>
-            <button onClick={() => alert('Password change modal coming soon!')} className="text-sm font-medium text-[#1b4a3a] hover:underline">Change</button>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Lock className="size-4"/> Password
+            </div>
+            <button
+              onClick={() => setModalType("password")}
+              className="text-sm font-medium text-[#1b4a3a] hover:underline"
+            >
+              Change
+            </button>
           </div>
         </div>
 
@@ -162,11 +182,7 @@ export default function ProfilePage() {
         <div className="space-y-2 rounded-xl border p-4">
           <h2 className="mb-2 font-semibold">Support</h2>
           
-          {/* Live Chat Button - Now opens the Crisp widget */}
-          <button 
-            onClick={openLiveChat}
-            className="flex w-full items-center gap-3 rounded-lg p-2 hover:bg-muted text-sm font-medium"
-          >
+          <button className="flex w-full items-center gap-3 rounded-lg p-2 hover:bg-muted text-sm font-medium">
             <MessageCircle className="size-5 text-[#1b4a3a]" />
             <span>Live Chat</span>
           </button>
@@ -192,8 +208,26 @@ export default function ProfilePage() {
             Log Out
           </button>
         </div>
-
       </div>
+
+      {/* The Edit Modal */}
+      <EditProfileModal
+        isOpen={modalType !== null}
+        type={modalType}
+        currentValue={modalType === "email" ? profileData.email : modalType === "phone" ? profileData.phone : ""}
+        onClose={() => setModalType(null)}
+        onSuccess={() => {
+          // Refresh local state when phone or email is updated
+          const fetchData = async () => {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+              const { data } = await supabase.from("profiles").select("phone").eq("id", user.id).single();
+              setProfileData({ email: user.email || "", phone: data?.phone || "" });
+            }
+          };
+          fetchData();
+        }}
+      />
     </main>
   );
 }
