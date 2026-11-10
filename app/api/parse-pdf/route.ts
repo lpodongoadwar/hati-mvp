@@ -1,37 +1,62 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import { extractText, getDocumentProxy } from 'unpdf';
+import crypto from 'crypto';
+import { createClient } from '@supabase/supabase-js'; // We need this to check the DB
+
+// Initialize Supabase Admin client (Server side)
+// You need to add SUPABASE_SERVICE_ROLE_KEY to your Vercel env variables
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 export async function POST(req: Request) {
   try {
-    // 1. Initialize OpenAI inside the route so it only runs at request time
-    const openai = new OpenAI({
-      baseURL: "https://openrouter.ai/api/v1",
-      apiKey: process.env.OPENROUTER_API_KEY || "missing-key", 
-      defaultHeaders: {
-        "HTTP-Referer": "https://hati-mvp-three.vercel.app",
-        "X-Title": "Hati",
-      },
-    });
-
     const formData = await req.formData();
     const file = formData.get('file') as File;
+    const userId = formData.get('userId') as string; // We need to pass this from the frontend!
 
     if (!file) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
-    // 2. Parse the PDF
+    if (!userId) {
+      return NextResponse.json({ error: 'No user ID provided' }, { status: 400 });
+    }
+
+    // 1. Generate Hash of the PDF to prevent duplicate uploads
     const bytes = await file.arrayBuffer();
     const buffer = new Uint8Array(bytes);
-    
+    const fileHash = crypto.createHash('md5').update(buffer).digest('hex');
+
+    // 2. Check if user already uploaded this exact file
+    const { data: profile } = await supabaseAdmin
+      .from('profiles')
+      .select('statement_hash')
+      .eq('id', userId)
+      .single();
+
+    if (profile?.statement_hash === fileHash) {
+      return NextResponse.json({
+        success: false,
+        error: 'Fraud Alert: You have already uploaded this exact statement. Please provide a new one.'
+      }, { status: 400 });
+    }
+
+    // 3. Parse the PDF
     const pdf = await getDocumentProxy(buffer);
     const { text } = await extractText(pdf, { mergePages: true });
-
     const pdfText = text.substring(0, 10000); 
 
+    // ... (OpenAI / OpenRouter Setup here) ...
+    const openai = new OpenAI({
+      baseURL: "https://openrouter.ai/api/v1",
+      apiKey: process.env.OPENROUTER_API_KEY || "missing-key",
+    });
+
     const prompt = `
-      You are a financial analyst for Hati, a credit scoring platform in Uganda.
+      You are a strict financial analyst for Hati, a credit scoring platform in Uganda.
       Analyze this Mobile Money Mini Statement text and return ONLY a valid JSON object 
       with the following fields (no markdown, no explanation, just the raw JSON):
       {
@@ -46,7 +71,6 @@ export async function POST(req: Request) {
       ${pdfText}
     `;
 
-    // 3. Call OpenRouter
     const chatCompletion = await openai.chat.completions.create({
       messages: [{ role: "user", content: prompt }],
       model: "meta-llama/llama-3.1-8b-instruct",
@@ -55,7 +79,6 @@ export async function POST(req: Request) {
     });
 
     const responseText = chatCompletion.choices[0]?.message?.content || "{}";
-    
     const cleanJson = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
     const parsedData = JSON.parse(cleanJson);
 
@@ -65,19 +88,38 @@ export async function POST(req: Request) {
     const hasLoans = Boolean(parsedData.hasLoanRepayments);
     const consistency = parsedData.incomeConsistency || "low";
 
-    // --- HATI TRUST SCORE CALCULATION ---
+    // --- STRICTER HATI TRUST SCORE CALCULATION (Max 850) ---
     let score = 200;
-    if (transactions > 10) score += 50;
-    if (transactions > 50) score += 75;
-    if (transactions > 100) score += 75;
-    if (inflow > 100000) score += 50;
-    if (inflow > 500000) score += 100;
-    if (inflow > 2000000) score += 100;
+
+    // Pillar 1: Financial Activity (Max 150 pts)
+    if (transactions > 25) score += 50;
+    if (transactions > 75) score += 50;
+    if (transactions > 150) score += 50;
+
+    // Pillar 2: Income Capacity (Max 250 pts)
+    if (inflow > 1000000) score += 50;
+    if (inflow > 2500000) score += 100;
+    if (inflow > 5000000) score += 100;
+
+    // Pillar 3: Financial Discipline (Max 200 pts)
     if (consistency === "medium") score += 50;
     if (consistency === "high") score += 100;
     if (hasLoans) score += 50; 
-    if (transactions > 50 && inflow > 500000) score += 50;
+
+    // Elite Bonus
+    if (transactions > 75 && inflow > 2500000) score += 50;
     if (score > 850) score = 850;
+
+    // 4. Save the new score AND the file hash to the database
+    await supabaseAdmin
+      .from('profiles')
+      .update({ score: score, statement_hash: fileHash })
+      .eq('id', userId);
+
+    // 5. Log history
+    await supabaseAdmin.from('score_history').insert([
+      { user_id: userId, score: score }
+    ]);
 
     return NextResponse.json({ 
       success: true, 

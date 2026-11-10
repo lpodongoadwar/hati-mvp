@@ -15,61 +15,46 @@ export default function ParticipatePage() {
   const [message, setMessage] = useState("");
   const [uploadSuccess, setUploadSuccess] = useState(false); // Track success
 
-  const handleUpload = async (e: React.FormEvent) => {
+    const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
     const file = fileInputRef.current?.files?.[0];
     if (!file) return;
-
     setUploading(true);
     setMessage("Analyzing your statement...");
-    setUploadSuccess(false);
 
-    // 1. Send PDF to AI
+    // 1. Get the user FIRST
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      setMessage("You must be logged in.");
+      setUploading(false);
+      return;
+    }
+
+    // 2. Send PDF AND User ID to AI
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("userId", user.id); // <--- CRITICAL ADDITION
 
     try {
       const res = await fetch("/api/parse-pdf", { method: "POST", body: formData });
       const data = await res.json();
 
       if (!data.success) {
-        setMessage(`AI Error: ${data.error}`);
+        setMessage(`Error: ${data.error}`);
         setUploading(false);
         return;
       }
 
-      // 2. Get the user
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        setMessage("You must be logged in.");
-        setUploading(false);
-        return;
-      }
+      // 3. Success!
+      setMessage(`Success! Your new Hati Score is ${data.score}.`);
+      router.refresh();
 
-           // 3. Update the profile score
-      const { error: dbError } = await supabase
-        .from("profiles")
-        .update({ score: data.score })
-        .eq("id", user.id);
-
-      if (dbError) {
-        setMessage(`Database Error: ${dbError.message}`);
-      } else {
-        // NEW: Log the new score to history
-        await supabase.from("score_history").insert([
-          { user_id: user.id, score: data.score }
-        ]);
-
-        setMessage(`Success! Your new Hati Score is ${data.score}.`);
-        router.refresh();
-      }
     } catch (err: any) {
       setMessage(`Network Error: ${err.message}`);
     }
     
     setUploading(false);
   };
-
   return (
     <main className="min-h-screen bg-background text-foreground pb-20 font-sans">
       <div className="bg-card border-b border-border/80">
