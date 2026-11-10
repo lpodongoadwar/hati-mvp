@@ -136,17 +136,12 @@ export default function DashboardPage() {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/leaderboard" className="transition-colors hover:text-[#1b4a3a]">
-                    Hati Ambassadors Program
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/ideator" className="transition-colors hover:text-[#1b4a3a]">
-                    Hati Startup Show
-                  </Link>
-                </li>
-              </ul>
-            </div>
+                 <Link href="/team" className="transition-colors hover:text-[#1b4a3a]">
+                  Our Team
+                </Link>
+              </li>
+            </ul>
+          </div>
 
  {/* NEW Column 2: Resources (Articles & Research) */}
             <div className="space-y-3">
