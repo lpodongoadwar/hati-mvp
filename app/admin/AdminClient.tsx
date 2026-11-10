@@ -1,13 +1,10 @@
 "use client";
 
-export const dynamic = "force-dynamic";
-
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { ArrowLeft, ShieldAlert, Users, Lightbulb, TrendingUp, CheckCircle2, ChevronRight } from "lucide-react";
+import { ArrowLeft, ShieldAlert, Users, Lightbulb, TrendingUp, CheckCircle2 } from "lucide-react";
 import { createClient } from "@/lib/db";
 
-// Define types for our data
 type Profile = {
   id: string;
   full_name: string;
@@ -16,6 +13,8 @@ type Profile = {
   referral_count: number;
   kyc_status: string;
   completed_modules: string[];
+  id_front_url: string | null;
+  id_back_url: string | null;
 };
 
 type Idea = {
@@ -25,21 +24,18 @@ type Idea = {
   category: string;
   video_url: string;
   votes: number;
-  created_at: string;
 };
 
 export function AdminClient() {
   const supabase = createClient();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
-  
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [ideas, setIdeas] = useState<Idea[]>([]);
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
 
-  // 1. The Admin Passcode
-  const ADMIN_PASSCODE = "HatiAdmin2026!"; 
+  const ADMIN_PASSCODE = "HatiAdmin2026!";
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,25 +46,13 @@ export function AdminClient() {
     }
   };
 
-  // 2. Fetch Data
   const loadAdminData = useCallback(async () => {
     setLoading(true);
-    // Fetch Profiles
-    const { data: profileData } = await supabase
-      .from("profiles")
-      .select("*")
-      .order("referral_count", { ascending: false });
-    
+    const { data: profileData } = await supabase.from("profiles").select("*").order("referral_count", { ascending: false });
     if (profileData) setProfiles(profileData);
 
-    // Fetch Ideas
-    const { data: ideaData } = await supabase
-      .from("ideas")
-      .select("*")
-      .order("votes", { ascending: false });
-      
+    const { data: ideaData } = await supabase.from("ideas").select("*").order("votes", { ascending: false });
     if (ideaData) setIdeas(ideaData);
-    
     setLoading(false);
   }, [supabase]);
 
@@ -78,23 +62,27 @@ export function AdminClient() {
     }
   }, [isAuthenticated, loadAdminData]);
 
-  // 3. Admin Action: Boost Votes
   const handleBoostVotes = async (idea: Idea, amount: number) => {
     setUpdatingId(idea.id);
-    const newVotes = Math.max(0, idea.votes + amount); // Prevent negative votes
-
-    const { error } = await supabase
-      .from("ideas")
-      .update({ votes: newVotes })
-      .eq("id", idea.id);
-
+    const newVotes = Math.max(0, idea.votes + amount);
+    const { error } = await supabase.from("ideas").update({ votes: newVotes }).eq("id", idea.id);
     if (!error) {
-      setIdeas((prev) => 
-        prev.map((i) => i.id === idea.id ? { ...i, votes: newVotes } : i)
-            .sort((a, b) => b.votes - a.votes)
-      );
+      setIdeas((prev) => prev.map((i) => i.id === idea.id ? { ...i, votes: newVotes } : i).sort((a, b) => b.votes - a.votes));
     }
     setUpdatingId(null);
+  };
+
+  const handleVerifyUser = async (userId: string) => {
+    const { error } = await supabase
+      .from('profiles')
+      .update({ kyc_status: 'Verified' })
+      .eq('id', userId);
+
+    if (!error) {
+      loadAdminData();
+    } else {
+      alert("Error verifying user");
+    }
   };
 
   if (!isAuthenticated) {
@@ -103,9 +91,9 @@ export function AdminClient() {
         <form onSubmit={handleLogin} className="bg-white/10 p-8 rounded-2xl border border-white/20 max-w-sm w-full space-y-4 backdrop-blur-sm">
           <ShieldAlert className="size-12 text-[#c4f080] mx-auto mb-2" />
           <h1 className="text-2xl font-bold text-center">Admin Access</h1>
-          <input 
-            type="password" 
-            placeholder="Enter Admin Passcode" 
+          <input
+            type="password"
+            placeholder="Enter Admin Passcode"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="w-full h-11 px-3 rounded-md bg-black/50 border border-white/20 text-white placeholder:text-white/40 focus:outline-none focus:border-[#c4f080]"
@@ -118,7 +106,6 @@ export function AdminClient() {
     );
   }
 
-  // Quick Stats
   const totalUsers = profiles.length;
   const totalIdeas = ideas.length;
   const totalReferrals = profiles.reduce((sum, p) => sum + (p.referral_count || 0), 0);
@@ -138,7 +125,6 @@ export function AdminClient() {
       </div>
 
       <div className="max-w-6xl mx-auto px-6 pt-12 space-y-12">
-        
         {/* Stats Row */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-card p-6 rounded-2xl border border-border/80 shadow-sm flex items-center gap-4">
@@ -199,18 +185,10 @@ export function AdminClient() {
                     </td>
                     <td className="px-6 py-4 text-center font-bold tabular-nums">{idea.votes}</td>
                     <td className="px-6 py-4 text-right space-x-2">
-                      <button 
-                        onClick={() => handleBoostVotes(idea, 10)}
-                        disabled={updatingId === idea.id}
-                        className="text-xs bg-green-100 text-green-700 px-3 py-1 rounded hover:bg-green-200 transition-colors"
-                      >
+                      <button onClick={() => handleBoostVotes(idea, 10)} disabled={updatingId === idea.id} className="text-xs bg-green-100 text-green-700 px-3 py-1 rounded hover:bg-green-200 transition-colors">
                         +10 Votes
                       </button>
-                      <button 
-                        onClick={() => handleBoostVotes(idea, -10)}
-                        disabled={updatingId === idea.id}
-                        className="text-xs bg-red-100 text-red-700 px-3 py-1 rounded hover:bg-red-200 transition-colors"
-                      >
+                      <button onClick={() => handleBoostVotes(idea, -10)} disabled={updatingId === idea.id} className="text-xs bg-red-100 text-red-700 px-3 py-1 rounded hover:bg-red-200 transition-colors">
                         -10 Votes
                       </button>
                     </td>
@@ -224,10 +202,10 @@ export function AdminClient() {
           </div>
         </section>
 
-        {/* User Directory */}
+        {/* User Directory & KYC */}
         <section className="space-y-4">
           <div className="flex items-center justify-between border-b pb-2">
-            <h2 className="text-2xl font-bold text-[#1b4a3a]">User Directory</h2>
+            <h2 className="text-2xl font-bold text-[#1b4a3a]">User Directory & KYC</h2>
           </div>
           <div className="bg-card rounded-2xl border border-border/80 overflow-hidden shadow-sm overflow-x-auto">
             <table className="w-full text-left text-sm">
@@ -235,42 +213,60 @@ export function AdminClient() {
                 <tr>
                   <th className="px-6 py-4 font-medium">Name</th>
                   <th className="px-6 py-4 font-medium">Phone</th>
-                  <th className="px-6 py-4 font-medium">Team</th>
                   <th className="px-6 py-4 font-medium text-center">Referrals</th>
-                  <th className="px-6 py-4 font-medium">KYC Status</th>
-                  <th className="px-6 py-4 font-medium">Modules</th>
+                  <th className="px-6 py-4 font-medium text-center">ID Docs</th>
+                  <th className="px-6 py-4 font-medium text-right">KYC Status</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/80">
                 {profiles.map((profile) => (
                   <tr key={profile.id} className="hover:bg-muted/20">
-                    <td className="px-6 py-4 font-medium text-foreground">{profile.full_name || "N/A"}</td>
+                    <td className="px-6 py-4 font-medium text-foreground">
+                      {profile.full_name || "N/A"}
+                    </td>
                     <td className="px-6 py-4">{profile.phone || "N/A"}</td>
-                    <td className="px-6 py-4">
-                      <span className="inline-flex items-center rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium uppercase">
-                        {profile.team || "None"}
-                      </span>
-                    </td>
                     <td className="px-6 py-4 text-center font-bold tabular-nums">{profile.referral_count || 0}</td>
-                    <td className="px-6 py-4">
-                      <span className={`inline-flex items-center gap-1 text-xs font-medium ${profile.kyc_status === 'Verified' ? 'text-green-700' : 'text-yellow-600'}`}>
-                        {profile.kyc_status === 'Verified' ? <CheckCircle2 className="size-3" /> : null}
-                        {profile.kyc_status || "Pending"}
-                      </span>
+
+                    {/* ID Docs Column */}
+                    <td className="px-6 py-4 text-center space-x-2">
+                      {profile.id_front_url ? (
+                        <a href={profile.id_front_url} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline text-xs">
+                          Front
+                        </a>
+                      ) : (
+                        <span className="text-gray-400 text-xs">None</span>
+                      )}
+                      {profile.id_back_url && (
+                        <a href={profile.id_back_url} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline text-xs ml-2">
+                          Back
+                        </a>
+                      )}
                     </td>
-                    <td className="px-6 py-4 text-xs">
-                      {profile.completed_modules?.length || 0} / 3
+
+                    {/* KYC Status Column */}
+                    <td className="px-6 py-4 text-right">
+                      {profile.kyc_status === 'Verified' ? (
+                        <span className="inline-flex items-center gap-1 text-xs font-bold text-green-700">
+                          <CheckCircle2 className="size-3" /> Verified
+                        </span>
+                      ) : (
+                        <button
+                          onClick={() => handleVerifyUser(profile.id)}
+                          className="bg-blue-100 text-blue-700 px-3 py-1 rounded text-xs font-medium hover:bg-blue-200 transition-colors"
+                        >
+                          Approve KYC
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}
                 {profiles.length === 0 && (
-                  <tr><td colSpan={6} className="px-6 py-8 text-center text-muted-foreground">No users found.</td></tr>
+                  <tr><td colSpan={5} className="px-6 py-8 text-center text-muted-foreground">No users found.</td></tr>
                 )}
               </tbody>
             </table>
           </div>
         </section>
-
       </div>
     </main>
   );
