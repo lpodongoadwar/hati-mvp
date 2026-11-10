@@ -11,6 +11,7 @@ export function CrispChat() {
     // 1. Initialize Crisp with your Website ID
     // You will get this ID from your Crisp Dashboard > Settings > Website Settings
     Crisp.configure("YOUR_CRISP_WEBSITE_ID_HERE");
+    Crisp.chat.hide();
 
     // 2. Identify the user (so you don't have to ask "Who am I speaking to?")
     const setUser = async () => {

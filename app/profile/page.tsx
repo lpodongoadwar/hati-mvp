@@ -6,6 +6,7 @@ import Link from "next/link";
 import { User, Camera, MessageCircle, HelpCircle, Mail, Phone, Lock, ShieldCheck, Scale, LogOut, ArrowLeft } from "lucide-react";
 import { createClient } from "@/lib/db";
 import { EditProfileModal } from "@/components/edit-profile-modal";
+import { Crisp } from "crisp-sdk-web";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -78,6 +79,13 @@ export default function ProfilePage() {
     } finally {
       setUploading(false);
     }
+  };
+
+  const handleLiveChat = () => {
+    Crisp.chat.hide();
+    const phoneNumber = "256778490232";
+    const message = encodeURIComponent("Hello Hati Support, I need help with my account.");
+    window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank", "noopener,noreferrer");
   };
 
   return (
@@ -181,8 +189,11 @@ export default function ProfilePage() {
         {/* Help & Support */}
         <div className="space-y-2 rounded-xl border p-4">
           <h2 className="mb-2 font-semibold">Support</h2>
-          
-          <button className="flex w-full items-center gap-3 rounded-lg p-2 hover:bg-muted text-sm font-medium">
+
+          <button
+            onClick={handleLiveChat}
+            className="flex w-full items-center gap-3 rounded-lg p-2 hover:bg-muted text-sm font-medium"
+          >
             <MessageCircle className="size-5 text-[#1b4a3a]" />
             <span>Live Chat</span>
           </button>
@@ -217,7 +228,6 @@ export default function ProfilePage() {
         currentValue={modalType === "email" ? profileData.email : modalType === "phone" ? profileData.phone : ""}
         onClose={() => setModalType(null)}
         onSuccess={() => {
-          // Refresh local state when phone or email is updated
           const fetchData = async () => {
             const { data: { user } } = await supabase.auth.getUser();
             if (user) {
