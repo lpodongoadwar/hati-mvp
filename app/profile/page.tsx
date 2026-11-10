@@ -196,11 +196,13 @@ export default function ProfilePage() {
             <span>Live Chat</span>
           </button>
           
-          <button className="flex w-full items-center gap-3 rounded-lg p-2 hover:bg-muted text-sm font-medium">
+          {/* LINK TO HELP CENTER */}
+          <Link href="/help" className="flex w-full items-center gap-3 rounded-lg p-2 hover:bg-muted text-sm font-medium">
             <HelpCircle className="size-5 text-[#1b4a3a]" />
             <span>Help Center</span>
-          </button>
+          </Link>
 
+          {/* LINK TO LEGAL PAGE */}
           <Link href="/legal" className="flex w-full items-center gap-3 rounded-lg p-2 hover:bg-muted text-sm font-medium">
             <Scale className="size-5 text-[#1b4a3a]" />
             <span>Legal & Compliance</span>
