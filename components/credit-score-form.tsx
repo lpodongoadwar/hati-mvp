@@ -72,23 +72,8 @@ function FormContent() {
       { user_id: authData.user.id, score: 200 }
     ]);
 
-    // 5. Trigger Pesapal
-    try {
-      const pesapalRes = await fetch('/api/pesapal', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: 2000, email, phone, name: fullName })
-      });
-      const pesapalData = await pesapalRes.json();
-      
-      if (pesapalData.success) {
-        window.location.href = '/verify-phone';
-      } else {
-        alert(`Payment Error: ${pesapalData.error}`);
-      }
-    } catch (err) {
-      console.error("Failed to reach Pesapal", err);
-    }
+        // 5. Redirect directly to dashboard (Pesapal removed)
+    window.location.href = '/dashboard';
     
     setIsSubmitting(false);
   };
@@ -224,7 +209,7 @@ function FormContent() {
         disabled={isSubmitting}
         className="w-full bg-[#1b4a3a] text-white hover:bg-[#153a2e] h-12 rounded-lg font-semibold text-lg flex items-center justify-between px-6 transition-colors disabled:opacity-50"
       >
-        <span>{isSubmitting ? "Processing..." : "Unlock Score for UGX 2,000."}</span>
+        <span>{isSubmitting ? "Processing..." : "Create Account"}</span>
         <div className="bg-white/20 rounded-full p-1">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </div>
