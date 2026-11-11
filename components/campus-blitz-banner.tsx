@@ -58,29 +58,43 @@ export function CampusBlitzBanner() {
             </div>
           </div>
 
-          {/* Coming Soon Products */}
-          <div className="space-y-3 pt-4 border-t border-white/10">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-white/60">
-              Coming Soon to Hati
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div className="rounded-lg bg-white/5 p-4 border border-white/10">
-                <ShoppingBag className="size-5 text-[#c4f080] mb-2" />
-                <h4 className="font-semibold text-sm">Hati Market</h4>
-                <p className="text-xs text-white/70 mt-1">Save with every purchase.</p>
+                 {/* COMING SOON TO HATI */}
+        <div className="space-y-4 mt-12">
+          <h2 className="text-sm font-semibold tracking-widest text-[#c4f080] uppercase">
+            Coming Soon to Hati
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            
+            {/* 1. Hati Market */}
+            <div className="bg-white/5 p-6 rounded-2xl border border-white/10 space-y-3">
+              <div className="text-[#c4f080]">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
               </div>
-              <div className="rounded-lg bg-white/5 p-4 border border-white/10">
-                <ShieldCheck className="size-5 text-[#c4f080] mb-2" />
-                <h4 className="font-semibold text-sm">Hati Insurance</h4>
-                <p className="text-xs text-white/70 mt-1">Micro-cover for your assets and health.</p>
-              </div>
-              <div className="rounded-lg bg-white/5 p-4 border border-white/10">
-                <Plane className="size-5 text-[#c4f080] mb-2" />
-                <h4 className="font-semibold text-sm">Hati Travel</h4>
-                <p className="text-xs text-white/70 mt-1">Turn your savings into real experiences.</p>
-              </div>
+              <h3 className="text-xl font-semibold text-white">Hati Market</h3>
+              <p className="text-sm text-white/70">Save with every purchase at campus vendors and partner stores.</p>
             </div>
+
+            {/* 2.  Hati Score API */}
+            <div className="bg-white/5 p-6 rounded-2xl border border-white/10 space-y-3">
+              <div className="text-[#c4f080]">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></svg>
+              </div>
+              <h3 className="text-xl font-semibold text-white">Hati Score API</h3>
+              <p className="text-sm text-white/70">A unified database allowing banks and syndicated lenders to underwrite thin-file users.</p>
+            </div>
+
+            {/* 3. Hati Insurance  */}
+            <div className="bg-white/5 p-6 rounded-2xl border border-white/10 space-y-3">
+              <div className="text-[#c4f080]">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
+              </div>
+              <h3 className="text-xl font-semibold text-white">HatiInsurance</h3>
+              <p className="text-sm text-white/70">Affordable cover for your health and assets, paid via mobile money.</p>
+            </div>
+
           </div>
+        </div>
 
           {/* Learn More Button */}
           <div className="pt-2">

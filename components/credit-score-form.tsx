@@ -60,13 +60,11 @@ function FormContent() {
       return;
     }
 
-    // 3. Send OTP
-    await fetch('/api/send-otp', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId: authData.user.id, phone: phone })
-    });
-
+       // 3. Redirect directly to dashboard
+    window.location.href = '/dashboard';
+    
+    setIsSubmitting(false);
+    
         // 4. Log initial score history
     await supabase.from('score_history').insert([
       { user_id: authData.user.id, score: 200 }
