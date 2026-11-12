@@ -49,21 +49,7 @@ export default function LearnMorePage() {
             </p>
           </section>
 
-          {/* Insurance */}
-          <section className="bg-card p-8 rounded-2xl border border-border/80 shadow-sm space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="bg-[#1b4a3a]/10 p-2 rounded-lg text-[#1b4a3a]">
-                <ShieldCheck className="size-6" />
-              </div>
-              <h2 className="text-2xl font-semibold text-[#1b4a3a]">Hati Insurance</h2>
-            </div>
-            <h3 className="font-semibold text-lg">Protect What You Build</h3>
-            <p className="text-gray-700 leading-relaxed text-sm">
-              We act as an aggregator, connecting you to licensed insurers. Whether it's micro life cover, health emergency coverage, or crop insurance for your Group-Based Enterprise (GBE), we offer affordable premiums embedded directly into your Hati Wallet. As your credit score grows, your insurance premiums drop.
-            </p>
-          </section>
-
-          {/* Hati Score Index */}
+            {/* Hati Score Index */}
           <section className="bg-card p-8 rounded-2xl border border-border/80 shadow-sm space-y-4">
             <div className="flex items-center gap-3">
               <div className="bg-[#1b4a3a]/10 p-2 rounded-lg text-[#1b4a3a]">
@@ -89,6 +75,20 @@ export default function LearnMorePage() {
             </p>
           </section>
         </div>
+
+          {/* Insurance */}
+          <section className="bg-card p-8 rounded-2xl border border-border/80 shadow-sm space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="bg-[#1b4a3a]/10 p-2 rounded-lg text-[#1b4a3a]">
+                <ShieldCheck className="size-6" />
+              </div>
+              <h2 className="text-2xl font-semibold text-[#1b4a3a]">Hati Insurance</h2>
+            </div>
+            <h3 className="font-semibold text-lg">Protect What You Build</h3>
+            <p className="text-gray-700 leading-relaxed text-sm">
+              We act as an aggregator, connecting you to licensed insurers. Whether it's micro life cover, health emergency coverage, or crop insurance for your Group-Based Enterprise (GBE), we offer affordable premiums embedded directly into your Hati Wallet. As your credit score grows, your insurance premiums drop.
+            </p>
+          </section>
 
         <div className="bg-[#1b4a3a] text-white p-8 rounded-2xl shadow-md space-y-4 text-center">
           <TrendingUp className="size-10 text-[#c4f080] mx-auto" />
