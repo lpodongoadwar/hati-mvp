@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeft, ShoppingBag, ShieldCheck, Plane, Target, TrendingUp } from "lucide-react";
+import { ArrowLeft, ShoppingBag, ShieldCheck, Target, TrendingUp } from "lucide-react";
 
 export default function LearnMorePage() {
   return (
@@ -63,20 +63,31 @@ export default function LearnMorePage() {
             </p>
           </section>
 
-          {/* Travel */}
-          <section className="bg-card p-8 rounded-2xl border border-border/80 shadow-sm space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="bg-[#1b4a3a]/10 p-2 rounded-lg text-[#1b4a3a]">
-                <Plane className="size-6" />
-              </div>
-              <h2 className="text-2xl font-semibold text-[#1b4a3a]">Hati Travel</h2>
-            </div>
-            <h3 className="font-semibold text-lg">You Deserve Something Nice</h3>
-            <p className="text-gray-700 leading-relaxed text-sm">
-              For our Tier II and Tier III users, we believe financial discipline should be rewarded. Hati Travel is a self-funding rewards program. Advertisers pay for engagement, and those funds are pooled into unit trusts. At the end of the year, consistent savers unlock fully funded travel experiences to undiscovered locations.
-            </p>
-          </section>
-        </div>
+         {/* Hati Score Index */}
+<section className="bg-card p-8 rounded-2xl border border-border/80 shadow-sm space-y-4">
+  <div className="flex items-center gap-3">
+    <div className="bg-[#1b4a3a]/10 p-2 rounded-lg text-[#1b4a3a]">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/>
+        <path d="M12 2v4"/>
+        <path d="M12 18v4"/>
+        <path d="m4.93 4.93 2.83 2.83"/>
+        <path d="m16.24 16.24 2.83 2.83"/>
+        <path d="M2 12h4"/>
+        <path d="M18 12h4"/>
+        <path d="m4.93 19.07 2.83-2.83"/>
+        <path d="m16.24 7.76 2.83-2.83"/>
+      </svg>
+    </div>
+    <h2 className="text-2xl font-semibold text-[#1b4a3a]">Hati Score Index</h2>
+  </div>
+  
+  <h3 className="font-semibold text-lg">Formalizing the Invisible</h3>
+  
+  <p className="text-gray-700 leading-relaxed text-sm">
+    The Hati Score Index is the infrastructure layer designed to formalize the invisible, underbanked informal sector of Uganda. By aggregating alternative financial data and behavioral insights, we create a unified credit identity that allows banks, SACCOs, and syndicated lenders to confidently underwrite thin-file users.
+  </p>
+</section>
 
         <div className="bg-[#1b4a3a] text-white p-8 rounded-2xl shadow-md space-y-4 text-center">
           <TrendingUp className="size-10 text-[#c4f080] mx-auto" />
