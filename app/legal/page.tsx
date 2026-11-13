@@ -48,7 +48,7 @@ export default function LegalPage() {
           <section>
             <h2 className="text-2xl font-semibold text-[#1b4a3a] mb-3">3. Corporate Information</h2>
             <p>
-              Hati, Inc., the Hati Logo and associated marks are trademarks owned by <strong>Hati Solutions Uganda Limited</strong>. The platform and technology are operated by <strong>Hati Solutions Limited</strong>, a wholly-owned subsidiary of Hati Holdings.
+              Hati, Inc., the Hati Logo and associated marks are trademarks owned by <strong>Hati Innovations Uganda Limited</strong>. The platform and technology are operated by <strong>Hati Innovations Limited</strong>.
             </p>
             <p className="mt-2 text-sm text-gray-500">
               *Legal documents are currently being finalized with our corporate counsel. For specific legal inquiries, please email legal@hati.africa.
