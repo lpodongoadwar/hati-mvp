@@ -126,7 +126,7 @@ export default function DashboardPage() {
         </div>
 
         <footer className="mt-12 border-t border-border/80 py-10 text-sm text-muted-foreground">
-          <div className="mb-8 grid grid-cols-1 gap-8 md:grid-cols-3">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             <div className="space-y-3">
               <h3 className="text-base font-semibold text-[#1b4a3a]">Hati, Inc.</h3>
               <ul className="space-y-2 text-xs">
@@ -278,6 +278,19 @@ export default function DashboardPage() {
                 </a>
               </div>
             </div>
+
+            {/* Column 3: FAQ */}
+<div className="space-y-3">
+  <h3 className="font-semibold text-foreground text-base">FAQ</h3>
+  <ul className="space-y-2 text-xs">
+    <li><a href="/faq#what-is-hati" className="hover:text-[#1b4a3a] transition-colors">What is Hati?</a></li>
+    <li><a href="/faq#swep-model" className="hover:text-[#1b4a3a] transition-colors">How does SWEP work?</a></li>
+    <li><a href="/faq#is-it-free" className="hover:text-[#1b4a3a] transition-colors">Is Hati free to use?</a></li>
+    <li><a href="/faq#ambassadors" className="hover:text-[#1b4a3a] transition-colors">How do I earn in the Ambassadors Program?</a></li>
+    <li><a href="/faq#startup-show" className="hover:text-[#1b4a3a] transition-colors">How do I get VC funding?</a></li>
+    <li><a href="/faq#data-security" className="hover:text-[#1b4a3a] transition-colors">Is my data secure?</a></li>
+  </ul>
+</div>
 
             <div className="hidden md:block"></div>
           </div>
