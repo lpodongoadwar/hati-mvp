@@ -126,7 +126,10 @@ export default function DashboardPage() {
         </div>
 
         <footer className="mt-12 border-t border-border/80 py-10 text-sm text-muted-foreground">
+          {/* 3-Column Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+            
+            {/* Column 1: Hati, Inc. (Navigation) */}
             <div className="space-y-3">
               <h3 className="text-base font-semibold text-[#1b4a3a]">Hati, Inc.</h3>
               <ul className="space-y-2 text-xs">
@@ -136,172 +139,94 @@ export default function DashboardPage() {
                   </Link>
                 </li>
                 <li>
-                 <Link href="/team" className="transition-colors hover:text-[#1b4a3a]">
-                  Our Team
-                </Link>
-              </li>
-            </ul>
-          </div>
+                  <Link href="/team" className="transition-colors hover:text-[#1b4a3a]">
+                    Our Team
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/faq" className="transition-colors hover:text-[#1b4a3a]">
+                    FAQ
+                  </Link>
+                </li>
+              </ul>
+            </div>
 
- {/* NEW Column 2: Resources (Articles & Research) */}
+            {/* Column 2: Resources (Articles & Research) */}
             <div className="space-y-3">
               <h3 className="text-base font-semibold text-[#1b4a3a]">Resources</h3>
               <ul className="space-y-2 text-xs">
                 <li>
-                  <a 
-                    href="https://nilepost.co.ug/opinions/367159/credit-is-not-the-enemy-borrow-to-build-wealth" 
-                    target="_blank" 
-                    rel="noreferrer"
-                    className="transition-colors hover:text-[#1b4a3a]"
-                  >
+                  <a href="https://nilepost.co.ug/opinions/367159/credit-is-not-the-enemy-borrow-to-build-wealth" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#1b4a3a]">
                     Why Credit is Not the Enemy
                   </a>
                 </li>
                 <li>
-                  <a 
-                    href="https://www.monitor.co.ug/uganda/business/markets/-the-double-squeeze-rising-prices-costly-loans-and-pressure-on-growth-5660888#story" 
-                    target="_blank" 
-                    rel="noreferrer"
-                    className="transition-colors hover:text-[#1b4a3a]"
-                  >
+                  <a href="https://www.monitor.co.ug/uganda/business/markets/-the-double-squeeze-rising-prices-costly-loans-and-pressure-on-growth-5660888#story" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#1b4a3a]">
                     The Macroeconomic Squeeze in Uganda
                   </a>
                 </li>
                 <li>
-                  <a 
-                    href="https://nilepost.co.ug/businesses/382203/centenary-airtel-money-launch-kwaata-sente-digital-loan-product" 
-                    target="_blank" 
-                    rel="noreferrer"
-                    className="transition-colors hover:text-[#1b4a3a]"
-                  >
+                  <a href="https://nilepost.co.ug/businesses/382203/centenary-airtel-money-launch-kwaata-sente-digital-loan-product" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#1b4a3a]">
                     The Digital Lending Landscape in Uganda
                   </a>
                 </li>
                 <li>
-                  <a 
-                    href="https://observer.ug/education/broken-dreams-and-budget-limits-inside-ugandas-48-9-higher-education-loan-surge/#google_vignette" 
-                    target="_blank" 
-                    rel="noreferrer"
-                    className="transition-colors hover:text-[#1b4a3a]"
-                  >
+                  <a href="https://observer.ug/education/broken-dreams-and-budget-limits-inside-ugandas-48-9-higher-education-loan-surge/#google_vignette" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#1b4a3a]">
                     The Education Financing Crisis in Uganda
                   </a>
                 </li>
                 <li>
-                  <a 
-                    href="https://nilepost.co.ug/business/371825/minister-musasizi-urges-banks-to-cut-lending-rates-to-support-economic-growth" 
-                    target="_blank" 
-                    rel="noreferrer"
-                    className="transition-colors hover:text-[#1b4a3a]"
-                  >
+                  <a href="https://nilepost.co.ug/business/371825/minister-musasizi-urges-banks-to-cut-lending-rates-to-support-economic-growth" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#1b4a3a]">
                     Minister Musasizi on Credit Data
                   </a>
                 </li>
                 <li>
-                  <a 
-                    href="https://nilepost.co.ug/businesses/382217/startup-uganda-builds-momentum-for-five-day-innovation-week" 
-                    target="_blank" 
-                    rel="noreferrer"
-                    className="transition-colors hover:text-[#1b4a3a]"
-                  >
+                  <a href="https://nilepost.co.ug/businesses/382217/startup-uganda-builds-momentum-for-five-day-innovation-week" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#1b4a3a]">
                     Uganda Startup Innovation Week
                   </a>
                 </li>
               </ul>
             </div>
-            
+
+            {/* Column 3: Contact & Socials */}
             <div className="space-y-4">
-              <h3 className="text-sm font-semibold text-[#1b4a3a]">Contact Us</h3>
+              <h3 className="text-base font-semibold text-[#1b4a3a]">Contact Us</h3>
               <div className="space-y-2 text-xs">
-                <a
-                  href="mailto:support@hati.africa"
-                  className="flex items-center gap-2 transition-colors hover:text-[#1b4a3a]"
-                >
+                <a href="mailto:support@hati.africa" className="flex items-center gap-2 transition-colors hover:text-[#1b4a3a]">
                   <Mail className="size-4" /> support@hati.africa
                 </a>
-                <a
-                  href="tel:+256700000000"
-                  className="flex items-center gap-2 transition-colors hover:text-[#1b4a3a]"
-                >
+                <a href="tel:+256700000000" className="flex items-center gap-2 transition-colors hover:text-[#1b4a3a]">
                   <Phone className="size-4" /> +256 700 000 000
                 </a>
               </div>
 
               <div className="flex items-center gap-4 pt-2">
-                <a
-                  href="https://x.com/hatiincnet"
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label="Hati on X"
-                  className="transition-opacity hover:opacity-80"
-                >
-                  <svg
-                    role="img"
-                    viewBox="0 0 24 24"
-                    className="size-5 fill-current text-muted-foreground hover:fill-[#1b4a3a]"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
+                <a href="https://x.com/hatiincnet" target="_blank" rel="noreferrer" aria-label="Hati on X" className="transition-opacity hover:opacity-80">
+                  <svg role="img" viewBox="0 0 24 24" className="size-5 fill-current text-muted-foreground hover:fill-[#1b4a3a]" xmlns="http://www.w3.org/2000/svg">
                     <path d={siX.path} />
                   </svg>
                 </a>
-                <a
-                  href="https://www.instagram.com/hati.inc?rpxt=b2U2Zmd3N2lvbDlh"
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label="Hati on Instagram"
-                  className="transition-opacity hover:opacity-80"
-                >
-                  <svg
-                    role="img"
-                    viewBox="0 0 24 24"
-                    className="size-5 fill-current text-muted-foreground hover:fill-[#1b4a3a]"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
+                <a href="https://www.instagram.com/hati.inc?rpxt=b2U2Zmd3N2lvbDlh" target="_blank" rel="noreferrer" aria-label="Hati on Instagram" className="transition-opacity hover:opacity-80">
+                  <svg role="img" viewBox="0 0 24 24" className="size-5 fill-current text-muted-foreground hover:fill-[#1b4a3a]" xmlns="http://www.w3.org/2000/svg">
                     <path d={siInstagram.path} />
                   </svg>
                 </a>
-                <a
-                  href="https://tiktok.com/@hati.inc"
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label="Hati on TikTok"
-                  className="transition-opacity hover:opacity-80"
-                >
-                  <svg
-                    role="img"
-                    viewBox="0 0 24 24"
-                    className="size-5 fill-current text-muted-foreground hover:fill-[#1b4a3a]"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
+                <a href="https://tiktok.com/@hati.inc" target="_blank" rel="noreferrer" aria-label="Hati on TikTok" className="transition-opacity hover:opacity-80">
+                  <svg role="img" viewBox="0 0 24 24" className="size-5 fill-current text-muted-foreground hover:fill-[#1b4a3a]" xmlns="http://www.w3.org/2000/svg">
                     <path d={siTiktok.path} />
                   </svg>
                 </a>
               </div>
             </div>
-
-            {/* Column 3: FAQ */}
-<div className="space-y-3">
-  <h3 className="font-semibold text-foreground text-base">FAQ</h3>
-  <ul className="space-y-2 text-xs">
-    <li><a href="/faq#what-is-hati" className="hover:text-[#1b4a3a] transition-colors">What is Hati?</a></li>
-    <li><a href="/faq#swep-model" className="hover:text-[#1b4a3a] transition-colors">How does SWEP work?</a></li>
-    <li><a href="/faq#is-it-free" className="hover:text-[#1b4a3a] transition-colors">Is Hati free to use?</a></li>
-    <li><a href="/faq#ambassadors" className="hover:text-[#1b4a3a] transition-colors">How do I earn in the Ambassadors Program?</a></li>
-    <li><a href="/faq#startup-show" className="hover:text-[#1b4a3a] transition-colors">How do I get VC funding?</a></li>
-    <li><a href="/faq#data-security" className="hover:text-[#1b4a3a] transition-colors">Is my data secure?</a></li>
-  </ul>
-</div>
-
-            <div className="hidden md:block"></div>
+            
           </div>
 
+          {/* Copyright Bar */}
           <div className="flex flex-col items-center justify-between gap-4 border-t border-border/40 pt-8 text-xs md:flex-row">
             <p>© 2026 Hati, Inc. All Rights Reserved.</p>
             <div className="flex gap-4">
               <Link href="/privacy" className="transition-colors hover:text-[#1b4a3a]">Privacy Policy</Link>
-              <Link href="/terms" className="transition-colors hover:text-[#1b4a3a]">
-                Terms & Conditions
-              </Link>
+              <Link href="/terms" className="transition-colors hover:text-[#1b4a3a]">Terms & Conditions</Link>
             </div>
           </div>
         </footer>
