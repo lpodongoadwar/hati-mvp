@@ -49,8 +49,8 @@ export default function CurriculumPage() {
     },
     {
       id: "module-3",
-      title: "The Hati Ecosystem & SWEP",
-      description: "Discover how 'Save With Every Purchase' builds your collateral and unlocks the Ambassadors Program.",
+      title: "The Hati Ecosystem & SWET",
+      description: "Discover how 'Save With Every Transaction' builds your collateral and unlocks the Ambassadors Program.",
       href: "/curriculum/module-3",
       completed: completedModules.includes("module-3"),
       locked: !completedModules.includes("module-2"), // Locked until Module 2 is done

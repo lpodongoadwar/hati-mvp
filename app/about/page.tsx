@@ -61,7 +61,7 @@ export default function AboutPage() {
               <h2 className="text-2xl font-semibold text-[#1b4a3a]">The Roadmap</h2>
             </div>
             <p className="text-gray-700 leading-relaxed">
-              We start with the Campus Blitz in Uganda, helping students develop financial literacy and understanding on how to procure funding. From there, we launch the 'Save With Every Purchase' model and scale across East Africa, develop the infrastructure to run national credit systems, and eventually expand to emerging markets globally.
+              We start with the Campus Blitz in Uganda, helping students develop financial literacy and understanding on how to procure funding. From there, we launch the 'Save With Every Transaction' model and scale across East Africa, develop the infrastructure to run national credit systems, and eventually expand to emerging markets globally.
             </p>
           </section>
 

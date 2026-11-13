@@ -43,7 +43,7 @@ export default function LearnMorePage() {
               </div>
               <h2 className="text-2xl font-semibold text-[#1b4a3a]">Hati Market</h2>
             </div>
-            <h3 className="font-semibold text-lg">Save With Every Purchase</h3>
+            <h3 className="font-semibold text-lg">Save With Every Transaction</h3>
             <p className="text-gray-700 leading-relaxed text-sm">
               When you buy goods from a local vendor using Hati, you can pay a little extra on the transaction (e.g., UGX 500), it is automatically swept into your locked savings vault. This builds your collateral in the background, which can then be used to access credit. We don't ask you to change your spending habits; we just help you save while you do it.
             </p>

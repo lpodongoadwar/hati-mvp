@@ -110,7 +110,7 @@ export default function ScoreGuidePage() {
               <div className="bg-blue-100 p-2 rounded-lg text-blue-700"><TrendingUp className="size-6" /></div>
               <h3 className="text-xl font-bold text-foreground">Tier II: Growth <span className="text-sm font-normal text-muted-foreground ml-2">(500 - 649)</span></h3>
             </div>
-            <p className="text-sm text-gray-700"><strong>How to qualify:</strong> Consistently save via the "Save With Every Purchase" model, complete all surveys, and maintain a high leaderboard ranking.</p>
+            <p className="text-sm text-gray-700"><strong>How to qualify:</strong> Consistently save via the "Save With Every Transaction" model, complete all surveys, and maintain a high leaderboard ranking.</p>
             <p className="text-sm text-gray-700"><strong>Benefits:</strong> Unlock micro-loans from partner banks, qualify for Hati Travel rewards, and get access to financial coaching.</p>
           </div>
 

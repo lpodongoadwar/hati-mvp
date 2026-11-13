@@ -16,7 +16,7 @@ export default function FAQPage() {
       <div className="max-w-3xl mx-auto px-6 pt-12 space-y-12">
         <div>
           <h1 className="text-4xl font-bold tracking-tight text-[#1b4a3a]">Frequently Asked Questions</h1>
-          <p className="mt-2 text-lg text-gray-600">Everything you need to know about Hati, SWEP, and the Startup Show.</p>
+          <p className="mt-2 text-lg text-gray-600">Everything you need to know about Hati, SWET, and the Startup Show.</p>
         </div>
 
         <div className="space-y-8">
@@ -29,10 +29,10 @@ export default function FAQPage() {
           </section>
 
           {/* Question 2 */}
-          <section id="swep-model" className="bg-card p-6 rounded-xl border border-border/80 shadow-sm">
-            <h2 className="text-xl font-semibold text-[#1b4a3a] mb-2">How does the "Save With Every Purchase" (SWEP) model work?</h2>
+          <section id="swet-model" className="bg-card p-6 rounded-xl border border-border/80 shadow-sm">
+            <h2 className="text-xl font-semibold text-[#1b4a3a] mb-2">How does the "Save With Every Transaction" (SWET) model work?</h2>
             <p className="text-gray-700 leading-relaxed">
-              When you buy goods at a Hati-partnered vendor, a small micro-levy (e.g., UGX 100) is automatically added to your transaction. This money doesn't go to Hati; it goes directly into your locked SWEP vault. As you shop, you build collateral and prove your financial discipline, which unlocks higher credit tiers.
+              When you buy goods at a Hati-partnered vendor, a small micro-levy (e.g., UGX 100) is automatically added to your transaction. This money doesn't go to Hati; it goes directly into your locked SWET vault. As you shop, you build collateral and prove your financial discipline, which unlocks higher credit tiers.
             </p>
           </section>
 
