@@ -41,7 +41,7 @@ export default function TeamPage() {
               <h3 className="text-xl font-bold text-foreground">Luzingu Philemon Odongo</h3>
               <p className="text-sm font-medium text-[#1b4a3a] mb-2">Founder & MD</p>
               <p className="text-sm text-gray-600 leading-relaxed">
-                The architect of the Hati ecosystem. With deep experience building financial literacy programs, Luzingu recognized that financial knowledge without capital is just an opinion. He is driving the vision to bridge the gap between informal savings and formal credit access in East Africa.
+                The architect of the Hati ecosystem. With experience building financial literacy programs, Luzingu recognized that financial knowledge without capital is just an opinion. He is driving the vision to bridge the gap between informal savings and formal credit access in East Africa.
               </p>
             </div>
           </div>
