@@ -253,12 +253,12 @@ export default function ApplyPage() {
             </div>
           </section>
 
-          {/* Section 4: The Hati Vision */}
+          {/* Section 4: The Vision */}
           <section className="bg-card p-8 rounded-2xl border border-border/80 shadow-sm space-y-6">
             <div className="border-b border-border/80 pb-4">
               <h2 className="text-2xl font-semibold flex items-center gap-3 text-foreground">
                 <span className="bg-[#1b4a3a] text-white size-8 rounded-full flex items-center justify-center text-sm font-bold">4</span>
-                The Hati Vision
+                The Vision
               </h2>
               <p className="text-sm text-muted-foreground mt-1">Why does this matter?</p>
             </div>
