@@ -26,10 +26,9 @@ export default function TeamPage() {
           
           {/* Member 1: Founder */}
           <div className="bg-card p-6 rounded-2xl border border-border/80 shadow-sm flex flex-col sm:flex-row items-start gap-4">
-            {/* Replace /luzingu.jpg with your actual image name in the public folder */}
             <div className="w-24 h-24 rounded-full overflow-hidden shrink-0 bg-muted border-2 border-[#1b4a3a]/20">
               <img 
-                src="/luzingu.jpg" 
+                src="/luzingu.jpg.png" 
                 alt="Luzingu Philemon Odongo" 
                 className="w-full h-full object-cover"
                 onError={(e) => {
