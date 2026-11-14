@@ -145,7 +145,7 @@ export default function DashboardPage() {
                 </li>
                 <li>
                   <Link href="/faq" className="transition-colors hover:text-[#1b4a3a]">
-                    FAQ
+                    FAQs
                   </Link>
                 </li>
               </ul>
