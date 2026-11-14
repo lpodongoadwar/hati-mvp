@@ -63,7 +63,7 @@ export default function TeamPage() {
               <h3 className="text-xl font-bold text-foreground">Joseph Ajal</h3>
               <p className="text-sm font-medium text-[#1b4a3a] mb-2">Executive Director & Board Secretary</p>
               <p className="text-sm text-gray-600 leading-relaxed">
-                An Executive Coach and HR expert with over 23 years of experience, including roles with major corporations like NSSF, ZESCO, UBL & Coca-Cola (Uganda). He is the Founder & CEO of Precision HR Proprietary Limited and has taught at Strathmore University Business School. Joe spearheads Hati's enterprise partnerships and ensures robust corporate governance.
+                An Executive Coach and HR expert with over 23 years of experience, including roles with major corporations like NSSF, Airtel and Sanlam Life Insurance, and consulting assignments with ZESCO, UBL & Coca-Cola (Uganda), Bank of Uganda and Stanbic Bank among others. He is the Founder & CEO of Precision HR Proprietary Limited and has taught at Strathmore University Business School. Joe spearheads Hati's enterprise partnerships and ensures robust corporate governance.
               </p>
             </div>
           </div>
