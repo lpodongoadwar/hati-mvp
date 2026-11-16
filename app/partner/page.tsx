@@ -1,80 +1,77 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, Check, Mail } from "lucide-react";
+import { ArrowLeft, Check, Mail, Building, Phone, Car, Plane, Hotel, Zap } from "lucide-react";
 
 export default function PartnerPage() {
   const tiers = [
     {
-      name: "HEADLINE PARTNER",
-      limit: "1 only",
-      description: "The ultimate alignment with Uganda's financial and agricultural future.",
+      name: "HEADLINE TELCO PARTNER",
+      limit: "2 Slots Only",
+      price: "$50,000",
+      description: "Exclusive category rights. Drive your lending products (MoMo Payback / Wewole) to 100K verified students.",
       benefits: [
+        "Category Exclusivity (No competing telco on your users)",
+        "USSD integration to push your lending products",
+        "Exclusive 50% share of Telco-specific student data",
         "Naming rights on the Hati Campus Blitz",
-        "Branded stage at the Hati Gala",
-        "Opening ceremony speaking slot",
-        "Anchor sponsor of the 3-month Campus Blitz",
+        "Branded stage at the Hati Gala (with the President)",
         "Full-week broadcast integration with NBS",
-        "10 masterclass sponsorships to distribute",
-        "Co-branded pre and post-event content",
-        "20 VIP delegate passes to the Hati Gala",
-        "Brand in all Hati 2026 communications",
       ],
       featured: true,
     },
     {
-      name: "PLATINUM PARTNER",
-      limit: "2 only",
-      description: "Deep integration into the Startup Show and GBE pipeline.",
+      name: "PLATINUM BANK PARTNER",
+      limit: "4 Slots Only",
+      price: "$25,000",
+      description: "Guaranteed access to $500K in startup deposits and pre-vetted corporate clients.",
       benefits: [
-        "Named sponsor of the Hati Startup Show",
+        "Guaranteed allocation of 5 VC-funded startups ($500K deposit value)",
+        "Right to pitch the 30 Angel-funded startups",
+        "Exclusive 25% share of Banking-specific student data",
         "Panel speaking opportunity at the Gala",
         "Exhibition stand at the Campus Blitz finals",
-        "4 sponsored masterclass seats",
-        "Post-event content package (video highlights)",
-        "12 delegate passes",
-        "Brand in all digital and print materials",
+        "12 VIP delegate passes",
+      ],
+      featured: false,
+    },
+    {
+      name: "DFI / IMPACT PARTNER",
+      limit: "1 Slot Only",
+      price: "$15,000",
+      description: "Align your brand with national financial inclusion and youth empowerment.",
+      benefits: [
+        "Naming rights to the 'Hati Gala' (e.g., 'The Mastercard Foundation Gala')",
+        "Branding on all 100K Financial Literacy Modules",
+        "Seat on the judging panel for the Startup Show",
+        "Full social impact reporting on youth economic outcomes",
+        "8 VIP delegate passes",
       ],
       featured: false,
     },
     {
       name: "GOLD PARTNER",
-      limit: "4 only",
+      limit: "3 Slots Only",
+      price: "$10,000",
       description: "Direct access to top university talent and enterprise data.",
       benefits: [
         "Named sponsor of a Hati Market activation",
-        "Exhibition stand (4 sq m)",
+        "Exclusive 10% share of general student data",
+        "Exhibition stand (4 sq m) at the Gala",
         "2 sponsored masterclass seats",
-        "Speaker slot in relevant session",
-        "8 delegate passes",
-        "Brand on event collateral",
+        "Brand on all event collateral",
       ],
       featured: false,
-    },
-    {
-      name: "SILVER PARTNER",
-      limit: "8 only",
-      description: "Visibility among students, SMEs, and ecosystem builders.",
-      benefits: [
-        "Exhibition presence (2 sq m)",
-        "1 speaking slot in breakout session",
-        "4 delegate passes",
-        "Brand on digital materials and programmes",
-      ],
-      featured: false,
-    },
-    {
-      name: "COMMUNITY PARTNER",
-      limit: "in-kind",
-      description: "For ESOs, NGOs, academia, and ecosystem supporters.",
-      benefits: [
-        "Exhibition table",
-        "2 delegate passes",
-        "Brand in programme",
-        "Suitable for ESOs, NGOs, academia, and ecosystem supporters",
-      ],
-      featured: false,
-    },
+    }
+  ];
+
+  const inKindPartners = [
+    { name: "Official Hospitality Partner", target: "Marriott / Serena", value: "3 months accommodation & bulk VC rates", icon: Hotel },
+    { name: "Official Logistics Partner", target: "CFAO Motors (Toyota)", value: "Branded vehicles for field teams & VCs", icon: Car },
+    { name: "Official Energy Partner", target: "TotalEnergies / Shell", value: "Fuel for NBS crew & field operations", icon: Zap },
+    { name: "Official Airline Partner", target: "Qatar Airways / Uganda Airlines", value: "Flight discounts for VCs + prize tickets", icon: Plane },
+    { name: "Official Beverage Partner", target: "Crown Beverages (Pepsi)", value: "Drinks for all campus activations & Gala", icon: Building },
+    { name: "Official Insurance Partner", target: "Sanlam / UAP", value: "Event insurance & MTN Insure integration", icon: Phone },
   ];
 
   return (
@@ -94,24 +91,24 @@ export default function PartnerPage() {
           Partnership Hati 2026
         </h2>
         <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
-          Sponsorship & Partnership
+          Campus Blitz Sponsorship
         </h1>
         <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
-          Partners at Hati do not buy space. They buy relevance. Each tier is designed to deliver a specific kind of value — reach, access, content, or influence — and packages are structured around what each partner type actually needs from the ecosystem.
+          Partners at Hati do not buy space. They buy access. We are mobilizing 100,000 students and deploying $2M in VC funding. We offer exclusive data, guaranteed deposits, and closed-loop customer acquisition.
         </p>
       </div>
 
       {/* Packages Grid */}
       <div className="max-w-6xl mx-auto px-6 space-y-8">
-        <h3 className="text-2xl font-bold text-center mb-8">Sponsorship Packages</h3>
+        <h3 className="text-2xl font-bold text-center mb-8">Cash Sponsorship Packages</h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {tiers.map((tier, index) => (
             <div
               key={index}
               className={`flex flex-col rounded-2xl p-8 border transition-all duration-200 ${
                 tier.featured
-                  ? "bg-[#1b4a3a] text-white border-transparent shadow-xl lg:-mt-4 lg:mb-4"
+                  ? "bg-[#1b4a3a] text-white border-transparent shadow-xl"
                   : "bg-white text-[#1b4a3a] border-[#e5e1d8] shadow-sm hover:shadow-md hover:border-[#1b4a3a]/30"
               }`}
             >
@@ -127,6 +124,11 @@ export default function PartnerPage() {
                   {tier.limit}
                 </span>
               </div>
+              
+              <div className="text-3xl font-bold mb-4">
+                {tier.price}
+              </div>
+
               <p className={`text-sm mb-6 h-12 ${tier.featured ? "text-white/80" : "text-gray-500"}`}>
                 {tier.description}
               </p>
@@ -143,15 +145,36 @@ export default function PartnerPage() {
               </div>
 
               <a
-                href="mailto:partners@hati.africa"
+                href={`mailto:partners@hati.africa?subject=Sponsorship Inquiry: ${tier.name}`}
                 className={`w-full py-3 rounded-lg font-semibold text-center flex justify-center items-center gap-2 transition-colors ${
                   tier.featured
                     ? "bg-[#c4f080] text-[#0a1f17] hover:bg-white"
                     : "bg-[#1b4a3a] text-white hover:bg-[#153a2e]"
                 }`}
               >
-                Become a partner
+                Secure {tier.name}
               </a>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* In-Kind Partners */}
+      <div className="max-w-6xl mx-auto px-6 mt-20 space-y-8">
+        <div className="text-center">
+          <h3 className="text-2xl font-bold">Official In-Kind Partners</h3>
+          <p className="text-gray-600 mt-2">We are seeking strategic in-kind partnerships to cover operational costs and provide VIP experiences.</p>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {inKindPartners.map((partner, index) => (
+            <div key={index} className="bg-white border border-[#e5e1d8] rounded-xl p-6 shadow-sm flex flex-col items-center text-center">
+              <div className="bg-[#fcfaf6] p-3 rounded-full mb-4">
+                <partner.icon className="size-6 text-[#1b4a3a]" />
+              </div>
+              <h4 className="font-bold text-[#1b4a3a]">{partner.name}</h4>
+              <p className="text-xs font-semibold text-gray-500 mt-1 uppercase tracking-wider">{partner.target}</p>
+              <p className="text-sm text-gray-700 mt-3">{partner.value}</p>
             </div>
           ))}
         </div>
@@ -159,9 +182,9 @@ export default function PartnerPage() {
 
       {/* Bottom Contact CTA */}
       <div className="max-w-4xl mx-auto px-6 mt-20 text-center space-y-6">
-        <h3 className="text-2xl font-bold">Priority Sponsor Target Categories</h3>
+        <h3 className="text-2xl font-bold">Custom Packages Available</h3>
         <p className="text-gray-600 max-w-2xl mx-auto">
-          We are actively seeking partnerships with Telcos (MTN/Airtel), Financial Institutions (Banks, MFIs, SACCOs), FMCGs, and International Development Partners (FSDU, Mastercard Foundation, AVCA).
+          If your brand does not fit into a standard tier, we can build a bespoke partnership tailored to your specific market research or customer acquisition goals.
         </p>
         <div className="pt-4">
           <a
