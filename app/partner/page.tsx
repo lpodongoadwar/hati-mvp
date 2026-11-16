@@ -48,20 +48,6 @@ export default function PartnerPage() {
         "8 VIP delegate passes",
       ],
       featured: false,
-    },
-    {
-      name: "GOLD PARTNER",
-      limit: "3 Slots Only",
-      price: "$10,000",
-      description: "Direct access to top university talent and enterprise data.",
-      benefits: [
-        "Named sponsor of a Hati Market activation",
-        "Exclusive 10% share of general student data",
-        "Exhibition stand (4 sq m) at the Gala",
-        "2 sponsored masterclass seats",
-        "Brand on all event collateral",
-      ],
-      featured: false,
     }
   ];
 
@@ -102,13 +88,13 @@ export default function PartnerPage() {
       <div className="max-w-6xl mx-auto px-6 space-y-8">
         <h3 className="text-2xl font-bold text-center mb-8">Cash Sponsorship Packages</h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {tiers.map((tier, index) => (
             <div
               key={index}
               className={`flex flex-col rounded-2xl p-8 border transition-all duration-200 ${
                 tier.featured
-                  ? "bg-[#1b4a3a] text-white border-transparent shadow-xl"
+                  ? "bg-[#1b4a3a] text-white border-transparent shadow-xl md:-mt-4 md:mb-4"
                   : "bg-white text-[#1b4a3a] border-[#e5e1d8] shadow-sm hover:shadow-md hover:border-[#1b4a3a]/30"
               }`}
             >
@@ -116,20 +102,16 @@ export default function PartnerPage() {
                 <h4 className={`text-lg font-bold tracking-wide ${tier.featured ? "text-[#c4f080]" : "text-[#1b4a3a]"}`}>
                   {tier.name}
                 </h4>
-                <span
-                  className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
-                    tier.featured ? "bg-white/10 text-white/80" : "bg-[#fcfaf6] text-gray-500"
-                  }`}
-                >
+              </div>
+              
+              <div className="flex items-baseline gap-2 mb-4">
+                <span className="text-3xl font-bold">{tier.price}</span>
+                <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${tier.featured ? "bg-white/10 text-white/80" : "bg-[#fcfaf6] text-gray-500"}`}>
                   {tier.limit}
                 </span>
               </div>
-              
-              <div className="text-3xl font-bold mb-4">
-                {tier.price}
-              </div>
 
-              <p className={`text-sm mb-6 h-12 ${tier.featured ? "text-white/80" : "text-gray-500"}`}>
+              <p className={`text-sm mb-6 h-16 ${tier.featured ? "text-white/80" : "text-gray-500"}`}>
                 {tier.description}
               </p>
               
