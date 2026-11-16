@@ -88,13 +88,13 @@ export default function PartnerPage() {
       <div className="max-w-6xl mx-auto px-6 space-y-8">
         <h3 className="text-2xl font-bold text-center mb-8">Cash Sponsorship Packages</h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
           {tiers.map((tier, index) => (
             <div
               key={index}
               className={`flex flex-col rounded-2xl p-8 border transition-all duration-200 ${
                 tier.featured
-                  ? "bg-[#1b4a3a] text-white border-transparent shadow-xl md:-mt-4 md:mb-4"
+                  ? "bg-[#1b4a3a] text-white border-transparent shadow-xl"
                   : "bg-white text-[#1b4a3a] border-[#e5e1d8] shadow-sm hover:shadow-md hover:border-[#1b4a3a]/30"
               }`}
             >
