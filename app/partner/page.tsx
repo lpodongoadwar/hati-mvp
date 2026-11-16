@@ -41,7 +41,7 @@ export default function PartnerPage() {
       price: "$15,000",
       description: "Align your brand with national financial inclusion and youth empowerment.",
       benefits: [
-        "Naming rights to the 'Hati Gala' (e.g., 'The Mastercard Foundation Gala')",
+        "Naming rights to the 'Hati Gala' (e.g., 'The [Your Brand] Gala')",
         "Branding on all 100K Financial Literacy Modules",
         "Seat on the judging panel for the Startup Show",
         "Full social impact reporting on youth economic outcomes",
@@ -66,12 +66,12 @@ export default function PartnerPage() {
   ];
 
   const inKindPartners = [
-    { name: "Official Hospitality Partner", target: "Marriott / Serena", value: "3 months accommodation & bulk VC rates", icon: Hotel },
-    { name: "Official Logistics Partner", target: "CFAO Motors (Toyota)", value: "Branded vehicles for field teams & VCs", icon: Car },
-    { name: "Official Energy Partner", target: "TotalEnergies / Shell", value: "Fuel for NBS crew & field operations", icon: Zap },
-    { name: "Official Airline Partner", target: "Qatar Airways / Uganda Airlines", value: "Flight discounts for VCs + prize tickets", icon: Plane },
-    { name: "Official Beverage Partner", target: "Crown Beverages (Pepsi)", value: "Drinks for all campus activations & Gala", icon: Building },
-    { name: "Official Insurance Partner", target: "Sanlam / UAP", value: "Event insurance & MTN Insure integration", icon: Phone },
+    { name: "Official Hospitality Partner", target: "Luxury Hotels & Resorts", value: "3 months accommodation & bulk VC rates", icon: Hotel },
+    { name: "Official Logistics Partner", target: "Automotive Dealers", value: "Branded vehicles for field teams & VCs", icon: Car },
+    { name: "Official Energy Partner", target: "Oil & Gas Companies", value: "Fuel for NBS crew & field operations", icon: Zap },
+    { name: "Official Airline Partner", target: "International & Regional Airlines", value: "Flight discounts for VCs + prize tickets", icon: Plane },
+    { name: "Official Beverage Partner", target: "Beverage Manufacturers", value: "Drinks for all campus activations & Gala", icon: Building },
+    { name: "Official Insurance Partner", target: "Insurance Providers", value: "Event insurance & micro-insure integration", icon: Phone },
   ];
 
   return (
