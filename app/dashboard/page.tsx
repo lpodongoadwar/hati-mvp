@@ -132,23 +132,28 @@ export default function DashboardPage() {
             {/* Column 1: Hati, Inc. (Navigation) */}
             <div className="space-y-3">
               <h3 className="text-base font-semibold text-[#1b4a3a]">Hati, Inc.</h3>
-              <ul className="space-y-2 text-xs">
-                <li>
-                  <Link href="/about" className="transition-colors hover:text-[#1b4a3a]">
-                    About Hati
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/team" className="transition-colors hover:text-[#1b4a3a]">
-                    Our Team
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/faq" className="transition-colors hover:text-[#1b4a3a]">
-                    FAQs
-                  </Link>
-                </li>
-              </ul>
+             <ul className="space-y-2 text-xs">
+  <li>
+    <Link href="/about" className="transition-colors hover:text-[#1b4a3a]">
+      About Hati
+    </Link>
+  </li>
+  <li>
+    <Link href="/team" className="transition-colors hover:text-[#1b4a3a]">
+      Our Team
+    </Link>
+  </li>
+  <li>
+    <Link href="/help" className="transition-colors hover:text-[#1b4a3a]">
+      FAQs
+    </Link>
+  </li>
+  <li>
+    <Link href="/partner" className="transition-colors hover:text-[#1b4a3a]">
+      Become A Partner
+    </Link>
+  </li>
+</ul>
             </div>
 
             {/* Column 2: Resources (Articles & Research) */}
