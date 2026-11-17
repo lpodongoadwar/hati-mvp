@@ -42,7 +42,7 @@ export default function PartnerPage() {
       description: "Align your brand with national financial inclusion and youth empowerment.",
       benefits: [
         "Naming rights to the 'Hati Gala' (e.g., 'The [Your Brand] Gala')",
-        "Branding on all 100K Financial Literacy Modules",
+        "Branding on all Financial Literacy Modules",
         "Seat on the judging panel for the Startup Show",
         "Full social impact reporting on youth economic outcomes",
         "8 VIP delegate passes",
