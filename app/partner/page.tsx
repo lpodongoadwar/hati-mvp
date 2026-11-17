@@ -9,7 +9,7 @@ export default function PartnerPage() {
       name: "HEADLINE TELCO PARTNER",
       limit: "2 Slots Only",
       price: "$50,000",
-      description: "Exclusive category rights. Drive your lending products (MoMo Payback / Wewole) to 100K verified students.",
+      description: "Exclusive category rights. Drive your lending products to 100K+ verified students.",
       benefits: [
         "Category Exclusivity (No competing telco on your users)",
         "USSD integration to push your lending products",
@@ -54,7 +54,7 @@ export default function PartnerPage() {
   const inKindPartners = [
     { name: "Official Hospitality Partner", target: "Luxury Hotels & Resorts", value: "3 months accommodation & bulk VC rates", icon: Hotel },
     { name: "Official Logistics Partner", target: "Automotive Dealers", value: "Branded vehicles for field teams & VCs", icon: Car },
-    { name: "Official Energy Partner", target: "Oil & Gas Companies", value: "Fuel for NBS crew & field operations", icon: Zap },
+    { name: "Official Energy Partner", target: "Oil & Gas Companies", value: "Fuel for film crew & field operations", icon: Zap },
     { name: "Official Airline Partner", target: "International & Regional Airlines", value: "Flight discounts for VCs + prize tickets", icon: Plane },
     { name: "Official Beverage Partner", target: "Beverage Manufacturers", value: "Drinks for all campus activations & Gala", icon: Building },
     { name: "Official Insurance Partner", target: "Insurance Providers", value: "Event insurance & micro-insure integration", icon: Phone },
@@ -80,7 +80,7 @@ export default function PartnerPage() {
           Campus Blitz Sponsorship
         </h1>
         <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
-          Partners at Hati do not buy space. They buy access. We are mobilizing 100,000 students and deploying $2M in VC funding. We offer exclusive data, guaranteed deposits, and closed-loop customer acquisition.
+          Partners at Hati do not buy space. They buy access. We are mobilizing 100,000+ students and deploying $2M in VC funding. We offer exclusive data, guaranteed deposits, and closed-loop customer acquisition.
         </p>
       </div>
 
