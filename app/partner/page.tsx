@@ -127,7 +127,7 @@ export default function PartnerPage() {
               </div>
 
               <a
-                href={`mailto:partners@hati.africa?subject=Sponsorship Inquiry: ${tier.name}`}
+                href={`mailto:info@hatiinc.com?subject=Sponsorship Inquiry: ${tier.name}`}
                 className={`w-full py-3 rounded-lg font-semibold text-center flex justify-center items-center gap-2 transition-colors ${
                   tier.featured
                     ? "bg-[#c4f080] text-[#0a1f17] hover:bg-white"
@@ -170,7 +170,7 @@ export default function PartnerPage() {
         </p>
         <div className="pt-4">
           <a
-            href="mailto:partners@hati.africa"
+            href="mailto:info@hatiinc.com"
             className="inline-flex items-center justify-center gap-2 rounded-md bg-[#1b4a3a] px-8 py-4 text-white font-semibold hover:bg-[#153a2e] transition-colors shadow-lg"
           >
             <Mail className="size-5" /> Contact Partnership Team
