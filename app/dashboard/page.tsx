@@ -197,11 +197,11 @@ export default function DashboardPage() {
             <div className="space-y-4">
               <h3 className="text-base font-semibold text-[#1b4a3a]">Contact Us</h3>
               <div className="space-y-2 text-xs">
-                <a href="mailto:support@hati.africa" className="flex items-center gap-2 transition-colors hover:text-[#1b4a3a]">
-                  <Mail className="size-4" /> support@hati.africa
+                <a href="mailto:info@hatiinc.com" className="flex items-center gap-2 transition-colors hover:text-[#1b4a3a]">
+                  <Mail className="size-4" /> info@hatiinc.com
                 </a>
-                <a href="tel:+256700000000" className="flex items-center gap-2 transition-colors hover:text-[#1b4a3a]">
-                  <Phone className="size-4" /> +256 700 000 000
+                <a href="tel:+256778490232" className="flex items-center gap-2 transition-colors hover:text-[#1b4a3a]">
+                  <Phone className="size-4" /> +256 778 490 232
                 </a>
               </div>
 

@@ -4,19 +4,22 @@ import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/db";
-import { Eye, EyeOff } from "lucide-react"; // Add this line
+import { Eye, EyeOff, Mail, ShieldCheck } from "lucide-react";
 
-// 1. Inner component containing the actual form logic
 function FormContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const referrerId = searchParams.get("ref"); // Grabs the '?ref=...' from the URL
-    const [showPassword, setShowPassword] = useState(false);
-  
+  const referrerId = searchParams.get("ref");
   const supabase = createClient();
-  
+
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+  const [showPassword, setShowPassword] = useState(false);
+
+  // OTP State
+  const [showOtpScreen, setShowOtpScreen] = useState(false);
+  const [otpCode, setOtpCode] = useState("");
+  const [pendingUserId, setPendingUserId] = useState<string | null>(null);
+
   // Form states
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
@@ -26,19 +29,27 @@ function FormContent() {
   const [nin, setNin] = useState("");
   const [socialHandle, setSocialHandle] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // 1. Create Auth User
-    const { data: authData, error: authError } = await supabase.auth.signUp({ email, password });
+    // 1. Create Auth User (Supabase automatically sends an email OTP/confirmation link)
+    const { data: authData, error: authError } = await supabase.auth.signUp({ 
+      email, 
+      password,
+      options: {
+        // We don't redirect to a link, we want them to stay on page and enter OTP
+        emailRedirectTo: undefined, 
+      }
+    });
+
     if (authError || !authData.user) {
       alert(authError?.message || "Auth failed");
       setIsSubmitting(false);
       return;
     }
 
-    // 2. Save Profile (WITH REFERRAL TRACKING)
+    // 2. Save Profile 
     const { error: dbError } = await supabase.from('profiles').upsert([{ 
       id: authData.user.id, 
       full_name: fullName, 
@@ -47,7 +58,7 @@ function FormContent() {
       email: email, 
       nin: nin, 
       social_handle: socialHandle, 
-      score: 200, // <--- Base score set here
+      score: 200, // Base score
       team: 'individual', 
       referral_count: 0, 
       completed_modules: [],
@@ -60,24 +71,79 @@ function FormContent() {
       return;
     }
 
-       // 3. Redirect directly to dashboard
-    window.location.href = '/dashboard';
-    
-    setIsSubmitting(false);
-    
-        // 4. Log initial score history
+    // 3. Log initial score history
     await supabase.from('score_history').insert([
       { user_id: authData.user.id, score: 200 }
     ]);
 
-        // 5. Redirect directly to dashboard (Pesapal removed)
-    window.location.href = '/dashboard';
-    
+    // 4. Trigger OTP Screen
+    setPendingUserId(authData.user.id);
+    setShowOtpScreen(true);
     setIsSubmitting(false);
   };
 
+  const handleVerifyOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    // Supabase uses type: 'signup' for email verification codes
+    const { data, error } = await supabase.auth.verifyOtp({
+      email,
+      token: otpCode,
+      type: 'signup'
+    });
+
+    if (error) {
+      alert(`Verification failed: ${error.message}`);
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Success! Redirect to dashboard
+    window.location.href = '/dashboard';
+  };
+
+  // --- OTP SCREEN RENDER ---
+  if (showOtpScreen) {
+    return (
+      <div className="space-y-6 text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="bg-[#1b4a3a]/10 p-4 rounded-full w-20 h-20 mx-auto flex items-center justify-center text-[#1b4a3a]">
+          <Mail className="size-10" />
+        </div>
+        <div className="space-y-2">
+          <h2 className="text-2xl font-bold text-foreground">Check your email</h2>
+          <p className="text-sm text-muted-foreground">
+            We sent a 6-digit verification code to <strong>{email}</strong>.
+          </p>
+        </div>
+        
+        <form onSubmit={handleVerifyOtp} className="space-y-4 pt-4">
+          <div className="space-y-2">
+            <input 
+              type="text" 
+              placeholder="Enter 6-digit code" 
+              className="flex h-12 w-full text-center tracking-[0.5em] text-lg font-bold rounded-md border border-input bg-background px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#1b4a3a]"
+              value={otpCode}
+              onChange={(e) => setOtpCode(e.target.value)}
+              maxLength={6}
+              required
+            />
+          </div>
+          <button 
+            type="submit" 
+            disabled={isSubmitting || otpCode.length < 6}
+            className="w-full bg-[#1b4a3a] text-white hover:bg-[#153a2e] h-12 rounded-lg font-semibold text-lg flex items-center justify-center px-6 transition-colors disabled:opacity-50"
+          >
+            {isSubmitting ? "Verifying..." : "Verify Email"}
+          </button>
+        </form>
+      </div>
+    );
+  }
+
+  // --- SIGNUP FORM RENDER ---
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSignup} className="space-y-6">
       
       {/* Full Name */}
       <div className="space-y-2">
@@ -124,7 +190,7 @@ function FormContent() {
         />
       </div>
 
-            {/* Password */}
+      {/* Password */}
       <div className="space-y-2">
         <label className="text-sm font-medium">Password</label>
         <div className="relative">
@@ -174,7 +240,7 @@ function FormContent() {
 
       {/* Social Media */}
       <div className="space-y-2">
-        <label className="text-sm font-medium">Social Media Handle (optional, add as many as you like)</label>
+        <label className="text-sm font-medium">Social Media Handle (optional)</label>
         <input 
           type="text" 
           placeholder="@yourhandle or link (X, TikTok, IG)" 
@@ -224,7 +290,6 @@ function FormContent() {
   );
 }
 
-// 2. Outer export wrapping the form in Suspense
 export function CreditScoreForm() {
   return (
     <Suspense fallback={<div className="text-center py-4 text-sm text-muted-foreground">Loading form...</div>}>
