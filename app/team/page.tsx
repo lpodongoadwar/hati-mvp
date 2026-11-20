@@ -68,28 +68,6 @@ export default function TeamPage() {
             </div>
           </div>
 
-          {/* Member 3: Teddy Ruge */}
-          <div className="bg-card p-6 rounded-2xl border border-border/80 shadow-sm flex flex-col sm:flex-row items-start gap-4">
-            {/* Replace /teddy.jpg with his actual image */}
-            <div className="w-24 h-24 rounded-full overflow-hidden shrink-0 bg-muted border-2 border-[#1b4a3a]/20">
-              <img 
-                src="/teddy.jpg" 
-                alt="Teddy Ruge" 
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  e.currentTarget.src = "https://ui-avatars.com/api/?name=Teddy+Ruge&background=1b4a3a&color=fff&size=256";
-                }}
-              />
-            </div>
-            <div>
-              <h3 className="text-xl font-bold text-foreground">Teddy Ruge</h3>
-              <p className="text-sm font-medium text-[#1b4a3a] mb-2">Executive Director & Chief Angel</p>
-              <p className="text-sm text-gray-600 leading-relaxed">
-                A serial entrepreneur and pioneer in the East African tech ecosystem (Hive Colab, Raintree Farms). Teddy brings a wealth of experience in building enterprises that solve real structural problems. He leads the AVCA/ABAN capital pipeline and the Hati Startup Show.
-              </p>
-            </div>
-          </div>
-
         </div>
       </div>
     </main>
