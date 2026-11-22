@@ -13,7 +13,13 @@ export default function VerificationPage() {
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [savingInfo, setSavingInfo] = useState(false);
   const [message, setMessage] = useState("");
+
+  // State for the personal info form
+  const [phone, setPhone] = useState("");
+  const [nin, setNin] = useState("");
+  const [socialHandle, setSocialHandle] = useState("");
 
   useEffect(() => {
     async function fetchProfile() {
@@ -21,11 +27,35 @@ export default function VerificationPage() {
       if (user) {
         const { data } = await supabase.from("profiles").select("*").eq("id", user.id).single();
         setProfile(data);
+        if (data) {
+          setPhone(data.phone || "");
+          setNin(data.nin || "");
+          setSocialHandle(data.social_handle || "");
+        }
       }
       setLoading(false);
     }
     fetchProfile();
   }, [supabase]);
+
+  const handleSaveInfo = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSavingInfo(true);
+    setMessage("");
+
+    const { error } = await supabase
+      .from("profiles")
+      .update({ phone, nin, social_handle: socialHandle })
+      .eq("id", profile.id);
+
+    if (error) {
+      setMessage(`Error saving info: ${error.message}`);
+    } else {
+      setMessage("Personal details saved successfully!");
+      setProfile({ ...profile, phone, nin, social_handle: socialHandle });
+    }
+    setSavingInfo(false);
+  };
 
   const handleUploadID = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,29 +71,25 @@ export default function VerificationPage() {
     setMessage("Uploading documents...");
 
     try {
-      // 1. Upload Front ID
       const frontExt = frontFile.name.split('.').pop();
       const frontName = `${profile.id}-front-${Date.now()}.${frontExt}`;
       const { error: frontError } = await supabase.storage.from('kyc-documents').upload(frontName, frontFile);
       if (frontError) throw frontError;
 
-      // 2. Upload Back ID
       const backExt = backFile.name.split('.').pop();
       const backName = `${profile.id}-back-${Date.now()}.${backExt}`;
       const { error: backError } = await supabase.storage.from('kyc-documents').upload(backName, backFile);
       if (backError) throw backError;
 
-      // 3. Get Public URLs
       const { data: { publicUrl: frontUrl } } = supabase.storage.from('kyc-documents').getPublicUrl(frontName);
       const { data: { publicUrl: backUrl } } = supabase.storage.from('kyc-documents').getPublicUrl(backName);
 
-      // 4. Update Profile
       const { error: dbError } = await supabase
         .from("profiles")
         .update({
           id_front_url: frontUrl,
           id_back_url: backUrl,
-          kyc_status: 'Pending' // Reset to pending if they re-upload
+          kyc_status: 'Pending' 
         })
         .eq("id", profile.id);
 
@@ -111,6 +137,56 @@ export default function VerificationPage() {
               </p>
             </div>
           </div>
+        </div>
+
+        {/* Personal Details Form (For Google Signups) */}
+        <div className="bg-card border border-border/80 rounded-xl p-6 space-y-4">
+          <h2 className="text-lg font-semibold border-b pb-2">Personal Details</h2>
+          <p className="text-sm text-gray-600">Complete your profile information to proceed with KYC.</p>
+
+          <form onSubmit={handleSaveInfo} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Phone Number</label>
+                <input
+                  type="tel"
+                  placeholder="7XX XXX XXX"
+                  className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">National ID (NIN)</label>
+                <input
+                  type="text"
+                  placeholder="Enter your NIN"
+                  className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  value={nin}
+                  onChange={(e) => setNin(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Social Media Handle (optional)</label>
+              <input
+                type="text"
+                placeholder="@yourhandle or link"
+                className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                value={socialHandle}
+                onChange={(e) => setSocialHandle(e.target.value)}
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={savingInfo}
+              className="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg font-medium hover:bg-gray-200 disabled:opacity-50"
+            >
+              {savingInfo ? "Saving..." : "Save Details"}
+            </button>
+          </form>
         </div>
 
         {/* ID Upload Section */}

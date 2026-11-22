@@ -20,7 +20,6 @@ export async function GET(request: Request) {
             return cookieStore.getAll()
           },
           setAll(cookiesToSet) {
-            // Don't write directly, collect first
             cookiesToSet.forEach((cookie) => pendingCookies.push(cookie))
           },
         },
@@ -30,8 +29,37 @@ export async function GET(request: Request) {
     const { error } = await supabase.auth.exchangeCodeForSession(code)
 
     if (!error) {
+      // --- START SAFETY NET ---
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        // Check if profile exists
+        const { data: existingProfile } = await supabase
+          .from("profiles")
+          .select("id")
+          .eq("id", user.id)
+          .single();
+
+        // If no profile, create one using Google Data
+        if (!existingProfile) {
+          const fullName = user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0];
+          const avatarUrl = user.user_metadata?.avatar_url || null;
+
+          await supabase.from("profiles").insert([{
+            id: user.id,
+            email: user.email,
+            full_name: fullName,
+            avatar_url: avatarUrl,
+            score: 200,
+            kyc_status: "Pending",
+            completed_modules: [],
+            referral_count: 0,
+            phone_verified: false,
+          }]);
+        }
+      }
+      // --- END SAFETY NET ---
+
       const response = NextResponse.redirect(`${origin}${next}`)
-      // Explicitly set collected cookies on the redirect response
       pendingCookies.forEach(({ name, value, options }) => {
         response.cookies.set(name, value, options)
       })
