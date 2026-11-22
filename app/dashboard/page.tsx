@@ -208,7 +208,7 @@ export default function DashboardPage() {
                 <li><a href="https://www.monitor.co.ug/uganda/business/markets/-the-double-squeeze-rising-prices-costly-loans-and-pressure-on-growth-5660888#story" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#1b4a3a]">The Macroeconomic Squeeze in Uganda</a></li>
                 <li><a href="https://nilepost.co.ug/businesses/382203/centenary-airtel-money-launch-kwaata-sente-digital-loan-product" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#1b4a3a]">The Digital Lending Landscape in Uganda</a></li>
                 <li><a href="https://observer.ug/education/broken-dreams-and-budget-limits-inside-ugandas-48-9-higher-education-loan-surge/#google_vignette" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#1b4a3a]">The Education Financing Crisis in Uganda</a></li>
-                <li><a href="https://nilepost.co.ug/business/371825/minister-musasizi-urges-banks-to-cut-lending-rates-to-support-economic-growth" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#1b4a3a]">Minister Musasizi on Credit Data</a></li>
+                <li><a href="https://nilepost.co.ug/business/371825/minister-musasizi-urges-banks-to-cut-lending-rates-to-support-economic-growth" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#1b4a3a]">Minister Musasizi on Credit & Lending Rates</a></li>
                 <li><a href="https://nilepost.co.ug/businesses/382217/startup-uganda-builds-momentum-for-five-day-innovation-week" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#1b4a3a]">Uganda Startup Innovation Week</a></li>
               </ul>
             </div>
