@@ -96,7 +96,7 @@ export default function PrivacyPage() {
               <li>Request restriction of processing in certain circumstances.</li>
               <li>Lodge a complaint with the Personal Data Protection Office (PDPO).</li>
             </ul>
-            <p>To exercise these rights, contact us at <a href="mailto:privacy@hatiinc.com" className="text-[#1b4a3a] underline">privacy@hatiinc.com</a>. We will respond within 30 days.</p>
+            <p>To exercise these rights, contact us at <a href="mailto:info@hatiinc.com" className="text-[#1b4a3a] underline">info@hatiinc.com</a>. We will respond within 30 days.</p>
           </section>
 
           <section className="space-y-3">
@@ -106,7 +106,7 @@ export default function PrivacyPage() {
 
           <section className="space-y-3">
             <h2 className="text-xl font-semibold text-[#1b4a3a]">10. Contact Us</h2>
-            <p>For privacy-related inquiries, contact our Data Protection Officer at <a href="mailto:privacy@hatiinc.com" className="text-[#1b4a3a] underline">privacy@hatiinc.com</a>.</p>
+            <p>For privacy-related inquiries, contact us at <a href="mailto:info@hatiinc.com" className="text-[#1b4a3a] underline">info@hatiinc.com</a>.</p>
             <p className="text-xs text-muted-foreground mt-4">Hati Innovations Uganda Limited. Registered in the Republic of Uganda.</p>
           </section>
 
