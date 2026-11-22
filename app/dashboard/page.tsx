@@ -24,26 +24,37 @@ export default function DashboardPage() {
 
   useEffect(() => {
     async function loadUser() {
-      const { data: { user } } = await supabase.auth.getUser();
+      // 1. Get User (Retry once if null due to cookie lag)
+      let { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        await new Promise(resolve => setTimeout(resolve, 500));
+        const retry = await supabase.auth.getUser();
+        user = retry.data.user;
+      }
 
       if (!user) {
         router.replace('/login');
         return;
       }
 
-      // --- START SAFETY NET ---
-      const { data: profile, error } = await supabase
+      // 2. Fetch Profile
+      const { data: profile } = await supabase
         .from('profiles')
         .select('score')
         .eq('id', user.id)
         .single();
 
-      if (!profile) {
-         // Fallback: Create profile if missing
-         const fullName = user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0];
-         const avatarUrl = user.user_metadata?.avatar_url || null;
+      if (profile) {
+        setScore(profile.score || 200);
+      } else {
+        // 3. Create Profile if it doesn't exist
+        const fullName = user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0];
+        const avatarUrl = user.user_metadata?.avatar_url || null;
 
-         await supabase.from("profiles").insert([{
+        const { error: insertError } = await supabase
+          .from("profiles")
+          .insert([{
             id: user.id,
             email: user.email,
             full_name: fullName,
@@ -54,11 +65,12 @@ export default function DashboardPage() {
             referral_count: 0,
             phone_verified: false,
           }]);
-          setScore(200); // Set default score
-      } else {
-          setScore(profile.score || 200);
+
+        if (insertError) {
+          console.error("Failed to create profile:", insertError);
+        }
+        setScore(200);
       }
-      // --- END SAFETY NET ---
 
       setLoading(false);
     }

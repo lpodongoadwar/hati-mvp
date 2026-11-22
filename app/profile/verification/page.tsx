@@ -16,7 +16,6 @@ export default function VerificationPage() {
   const [savingInfo, setSavingInfo] = useState(false);
   const [message, setMessage] = useState("");
 
-  // State for the personal info form
   const [phone, setPhone] = useState("");
   const [nin, setNin] = useState("");
   const [socialHandle, setSocialHandle] = useState("");
@@ -106,7 +105,7 @@ export default function VerificationPage() {
   };
 
   if (loading) return <div className="p-10 text-center">Loading verification status...</div>;
-  if (!profile) return <div className="p-10 text-center">Please log in to view your verification status.</div>;
+  if (!profile) return <div className="p-10 text-center text-muted-foreground">Could not load profile. Please return to the dashboard and try again.</div>;
 
   return (
     <main className="min-h-screen bg-background text-foreground pb-20">
@@ -124,7 +123,6 @@ export default function VerificationPage() {
           <p className="mt-2 text-gray-600">Upload your National ID to verify your identity and unlock Tier II.</p>
         </div>
 
-        {/* KYC Status Card */}
         <div className={`p-6 rounded-xl border ${profile.kyc_status === 'Verified' ? 'bg-green-50 border-green-200' : 'bg-yellow-50 border-yellow-200'}`}>
           <div className="flex items-center gap-3">
             {profile.kyc_status === 'Verified' ? <CheckCircle2 className="text-green-600 size-6" /> : <Clock className="text-yellow-600 size-6" />}
@@ -139,7 +137,6 @@ export default function VerificationPage() {
           </div>
         </div>
 
-        {/* Personal Details Form (For Google Signups) */}
         <div className="bg-card border border-border/80 rounded-xl p-6 space-y-4">
           <h2 className="text-lg font-semibold border-b pb-2">Personal Details</h2>
           <p className="text-sm text-gray-600">Complete your profile information to proceed with KYC.</p>
@@ -189,7 +186,6 @@ export default function VerificationPage() {
           </form>
         </div>
 
-        {/* ID Upload Section */}
         <div className="bg-card border border-border/80 rounded-xl p-6 space-y-4">
           <h2 className="text-lg font-semibold border-b pb-2">National ID Verification</h2>
           <p className="text-sm text-gray-600">Please upload clear photos of the front and back of your National ID.</p>
@@ -230,7 +226,6 @@ export default function VerificationPage() {
           </form>
         </div>
 
-        {/* Submitted Information */}
         <div className="bg-card border border-border/80 rounded-xl p-6 space-y-6">
           <h2 className="text-lg font-semibold border-b pb-2">Submitted Information</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
