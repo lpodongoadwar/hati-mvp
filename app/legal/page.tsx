@@ -1,60 +1,92 @@
-import Link from "next/link";
-import { ArrowLeft, Scale } from "lucide-react";
+"use client";
 
-export default function LegalPage() {
+import Link from "next/link";
+import { ArrowLeft, Shield, FileText, Scale, AlertTriangle, Database } from "lucide-react";
+import { useRouter } from "next/navigation";
+
+export default function LegalHubPage() {
+  const router = useRouter();
+
+  const documents = [
+    {
+      title: "Privacy Policy",
+      description: "How we collect, use, and protect your personal data in accordance with the Uganda DPPA.",
+      href: "/legal/privacy",
+      icon: Shield,
+    },
+    {
+      title: "Terms & Conditions",
+      description: "The rules governing your use of the Hati Platform.",
+      href: "/legal/terms",
+      icon: FileText,
+    },
+    {
+      title: "Campus Blitz Rules",
+      description: "Official promotional competition rules under the National Lotteries and Gaming Regulatory Board.",
+      href: "/legal/campus-blitz",
+      icon: Scale,
+    },
+    {
+      title: "Acceptable Use Policy",
+      description: "Rules for user conduct and the consequences of prohibited actions.",
+      href: "/legal/aup",
+      icon: AlertTriangle,
+    },
+    {
+      title: "Data Processing Agreement",
+      description: "How Hati Innovations Uganda Limited engages third-party processors under the DPPA.",
+      href: "/legal/dpa",
+      icon: Database,
+    },
+  ];
+
   return (
-    <main className="min-h-screen bg-background text-foreground pb-20 font-sans">
+    <main className="min-h-screen bg-background text-foreground pb-20">
       <div className="bg-card border-b border-border/80">
         <div className="max-w-3xl mx-auto px-6 py-4">
-          <Link href="/profile" className="flex items-center text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-            <ArrowLeft className="mr-2 size-4" /> Back to Profile
-          </Link>
+          <button onClick={() => router.back()} className="flex items-center text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+            <ArrowLeft className="mr-2 size-4" /> Back
+          </button>
         </div>
       </div>
 
-      <div className="max-w-3xl mx-auto px-6 pt-12 space-y-10">
+      <div className="max-w-3xl mx-auto px-6 pt-12 space-y-8">
         <div>
-          <h1 className="text-4xl font-bold tracking-tight text-[#1b4a3a] flex items-center gap-3">
-            <Scale className="size-10" /> Legal & Compliance
-          </h1>
-          <p className="mt-2 text-lg text-gray-600">Transparency is core to our mission.</p>
+          <div className="flex items-center gap-3 mb-2">
+            <Scale className="size-8 text-[#1b4a3a]" />
+            <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+              Legal & Compliance
+            </h1>
+          </div>
+          <p className="mt-2 text-muted-foreground">Transparency is core to our mission. Review our policies below.</p>
         </div>
 
-        <div className="bg-card p-8 rounded-2xl border border-border/80 shadow-sm prose prose-sm max-w-none text-gray-700 space-y-6">
+        <div className="grid gap-4">
+          {documents.map((doc, index) => {
+            const Icon = doc.icon;
+            return (
+              <Link 
+                key={index} 
+                href={doc.href}
+                className="flex items-start gap-4 p-6 bg-card border border-border/80 rounded-2xl shadow-sm hover:border-[#1b4a3a]/40 hover:shadow-md transition-all group"
+              >
+                <div className="bg-[#1b4a3a]/10 p-3 rounded-xl text-[#1b4a3a] group-hover:bg-[#1b4a3a] group-hover:text-white transition-colors">
+                  <Icon className="size-6" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-semibold text-[#1b4a3a]">{doc.title}</h2>
+                  <p className="text-sm text-gray-600 mt-1">{doc.description}</p>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
 
-          <section>
-            <h2 className="text-2xl font-semibold text-[#1b4a3a] mb-3">1. Data Protection & Privacy</h2>
-            <p>
-              Hati is committed to protecting your personal and financial data in accordance with the <strong>Uganda Data Protection and Privacy Act (DPPA)</strong>.
-            </p>
-            <ul className="list-disc pl-5 space-y-2 mt-2">
-              <li>We only collect data necessary to calculate your credit score (Mobile Money statements, NIN, and contact info).</li>
-              <li>Your data is stored securely on encrypted servers.</li>
-              <li>We do not sell your data to third-party advertisers.</li>
-              <li>You have the right to request the deletion of your data at any time by contacting support.</li>
-            </ul>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-semibold text-[#1b4a3a] mb-3">2. Terms of Service</h2>
-            <p>
-              By using Hati, you agree to provide accurate information. Uploading forged documents, attempting to manipulate the scoring algorithm (e.g., uploading duplicate PDFs), or creating fake accounts will result in immediate account suspension.
-            </p>
-            <p className="mt-2">
-              Hati provides a <strong>credit score and financial assessment</strong>, not direct loans. Loan approvals are subject to our partner financial institutions' underwriting criteria.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-semibold text-[#1b4a3a] mb-3">3. Corporate Information</h2>
-            <p>
-              Hati, Inc., the Hati Logo and associated marks are trademarks owned by <strong>Hati Innovations Uganda Limited</strong>. The platform and technology are operated by <strong>Hati Innovations Limited</strong>.
-            </p>
-            <p className="mt-2 text-sm text-gray-500">
-              *Legal documents are currently being finalized with our corporate counsel. For specific legal inquiries, please email legal@hati.africa.
-            </p>
-          </section>
-
+        <div className="mt-16 pt-8 border-t border-border/80 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
+          <p>© 2026 Hati, Inc. All Rights Reserved.</p>
+          <div className="flex gap-4">
+            <Link href="/dashboard" className="hover:text-foreground transition-colors">Dashboard</Link>
+          </div>
         </div>
       </div>
     </main>
