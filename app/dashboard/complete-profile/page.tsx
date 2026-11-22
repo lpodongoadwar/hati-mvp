@@ -27,21 +27,24 @@ export default function CompleteProfilePage() {
       return;
     }
 
+    // Using UPSERT to ensure the update goes through, even if the row was just created
     const { error } = await supabase
       .from("profiles")
-      .update({
+      .upsert({
+        id: user.id,
+        email: user.email,
+        full_name: user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0],
         phone: phone,
         nin: nin,
         social_handle: socialHandle,
-      })
-      .eq("id", user.id);
+      });
 
     if (error) {
       setMessage(`Error: ${error.message}`);
       setSaving(false);
     } else {
-      router.push('/dashboard');
-      router.refresh();
+      // Use a hard redirect to force the dashboard to fetch the new data
+      window.location.href = '/dashboard';
     }
   };
 

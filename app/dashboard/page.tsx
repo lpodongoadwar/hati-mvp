@@ -37,6 +37,9 @@ export default function DashboardPage() {
         return;
       }
 
+      // Add a small delay to ensure Supabase has finished writing the upsert from the previous page
+      await new Promise(resolve => setTimeout(resolve, 300));
+
       const { data: profileData } = await supabase
         .from('profiles')
         .select('*')
