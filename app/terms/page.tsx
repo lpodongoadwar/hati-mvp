@@ -125,7 +125,7 @@ export default function TermsPage() {
         </div>
 
         <div className="mt-16 pt-8 border-t border-border/80 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
-          <p>© 2026 Hati Innovations Uganda Limited. All Rights Reserved.</p>
+          <p>© 2026 Hati, Inc. All Rights Reserved.</p>
           <div className="flex gap-4">
             <Link href="/dashboard" className="hover:text-foreground transition-colors">Dashboard</Link>
             <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</Link>
