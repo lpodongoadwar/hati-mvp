@@ -21,9 +21,9 @@ export default function LegalHubPage() {
       icon: FileText,
     },
     {
-      title: "Campus Blitz Rules",
+      title: "Ambassadors Program Rules",
       description: "Official promotional competition rules under the National Lotteries and Gaming Regulatory Board.",
-      href: "/legal/campus-blitz",
+      href: "/legal/competition-agreement",
       icon: Scale,
     },
     {

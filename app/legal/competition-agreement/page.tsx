@@ -22,7 +22,7 @@ export default function CampusBlitzRulesPage() {
           <div className="flex items-center gap-3 mb-2">
             <Trophy className="size-8 text-[#1b4a3a]" />
             <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-              Campus Blitz Rules
+              Ambassadors Program Rules
             </h1>
           </div>
           <p className="text-sm text-muted-foreground">
