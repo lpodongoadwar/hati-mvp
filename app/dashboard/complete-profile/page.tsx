@@ -27,13 +27,18 @@ export default function CompleteProfilePage() {
       return;
     }
 
-    // Using UPSERT to ensure the update goes through, even if the row was just created
+    // Generate a safe username just in case the row doesn't exist yet
+    const safeUsername = user.email?.split('@')[0] + "_" + Math.floor(Math.random() * 10000);
+
+    // Using UPSERT to ensure the update goes through, and providing all NOT-NULL fields
     const { error } = await supabase
       .from("profiles")
       .upsert({
         id: user.id,
         email: user.email,
         full_name: user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0],
+        username: safeUsername, // Included to avoid null constraint on insert
+        team: "individual",     // This is the fix for the error you're seeing
         phone: phone,
         nin: nin,
         social_handle: socialHandle,
