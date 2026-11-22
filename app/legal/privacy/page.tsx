@@ -115,7 +115,7 @@ export default function PrivacyPage() {
         <div className="pt-8 border-t border-border/80 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
           <p>© 2026 Hati, Inc. All Rights Reserved.</p>
           <div className="flex gap-4">
-            <Link href="/legal" className="hover:text-foreground transition-colors">Legal Hub</Link>
+            <Link href="/dashboard" className="hover:text-foreground transition-colors">Dashboard</Link>
             <Link href="/legal/terms" className="hover:text-foreground transition-colors">Terms & Conditions</Link>
           </div>
         </div>
