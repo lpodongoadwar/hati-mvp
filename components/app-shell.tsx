@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Menu, X, User, Home, UploadCloud, ShieldCheck, Scale, LogOut } from "lucide-react";
+import { Menu, X, User, Home, ShieldCheck, Scale, LogOut, TrendingUp, Trophy, Lightbulb } from "lucide-react";
 import { createClient } from "@/lib/db";
 import { useRouter } from "next/navigation";
 
@@ -18,9 +18,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   const navLinks = [
     { name: "Dashboard", href: "/dashboard", icon: Home },
-    { name: "Upload Statement", href: "/dashboard/upload-statement", icon: UploadCloud },
+    { name: "Score (Participate)", href: "/participate", icon: TrendingUp },
+    { name: "Ambassadors Program", href: "/leaderboard", icon: Trophy },
+    { name: "Ideator Pipeline", href: "/ideator", icon: Lightbulb },
     { name: "Profile", href: "/profile", icon: User },
-    { name: "Verification", href: "/profile/verification", icon: ShieldCheck },
     { name: "Legal & Compliance", href: "/legal", icon: Scale },
   ];
 
