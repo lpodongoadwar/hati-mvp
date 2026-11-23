@@ -11,6 +11,7 @@ import { createClient } from "@/lib/db";
 import { CampusBlitzBanner } from '@/components/campus-blitz-banner'
 import { DashboardRoadmap } from '@/components/dashboard-roadmap'
 import { HatiScoreGauge } from '@/components/hati-score-gauge'
+import { SwetSimulator } from "@/components/swet-simulator";
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
@@ -127,62 +128,73 @@ export default function DashboardPage() {
 
         <div className="flex flex-1 flex-col gap-8 pb-8 pt-7 sm:gap-10 sm:pb-10 sm:pt-10">
           
-          <section aria-labelledby="score-title">
-            <Card className="h-full rounded-[26px] border-border/80 bg-card shadow-[0_24px_70px_-44px_rgba(27,74,58,0.3)] sm:[--card-spacing:--spacing(6)] flex flex-col">
-             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle
-                  aria-level={2}
-                  className="text-xl font-semibold tracking-[-0.04em]"
-                  id="score-title"
-                  role="heading"
-                >
-                  {needsProfileCompletion ? "Complete Your Profile" : "Hati Trust Score"}
-                </CardTitle>
-                <Link 
-                  href="/score-guide" 
-                  className="text-muted-foreground hover:text-[#1b4a3a] transition-colors"
-                  aria-label="Learn more about your Hati Score"
-                >
-                  <HelpCircle className="size-5" />
-                </Link>
-              </CardHeader>
-              <CardContent className="pb-6 flex-1 flex flex-col justify-between">
-                
-                {/* CONDITIONAL RENDERING */}
-                {needsProfileCompletion ? (
-                  <div className="flex flex-col items-center justify-center py-8 text-center space-y-4">
-                    <div className="bg-yellow-100 p-4 rounded-full text-yellow-600">
-                      <AlertCircle className="size-10" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-lg">Action Required</h3>
-                      <p className="text-sm text-muted-foreground max-w-xs mx-auto mt-1">
-                        Since you signed up with Google/Apple, we need a few more details to build your Hati Score.
-                      </p>
-                    </div>
-                    <Link 
-                      href="/dashboard/complete-profile" 
-                      className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#1b4a3a] px-8 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#153a2e] mt-4"
-                    >
-                      Complete Profile <ArrowRight className="size-4" />
-                    </Link>
-                  </div>
-                ) : (
-                  <>
-                    <HatiScoreGauge score={profile?.score || 200} />
-                    <div className="mt-6">
+          {/* NEW RESPONSIVE GRID FOR SCORE + SIMULATOR */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            {/* 1. Hati Trust Score Card */}
+            <section aria-labelledby="score-title">
+              <Card className="h-full rounded-[26px] border-border/80 bg-card shadow-[0_24px_70px_-44px_rgba(27,74,58,0.3)] sm:[--card-spacing:--spacing(6)] flex flex-col">
+               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle
+                    aria-level={2}
+                    className="text-xl font-semibold tracking-[-0.04em]"
+                    id="score-title"
+                    role="heading"
+                  >
+                    {needsProfileCompletion ? "Complete Your Profile" : "Hati Trust Score"}
+                  </CardTitle>
+                  <Link 
+                    href="/score-guide" 
+                    className="text-muted-foreground hover:text-[#1b4a3a] transition-colors"
+                    aria-label="Learn more about your Hati Score"
+                  >
+                    <HelpCircle className="size-5" />
+                  </Link>
+                </CardHeader>
+                <CardContent className="pb-6 flex-1 flex flex-col justify-between">
+                  
+                  {/* CONDITIONAL RENDERING */}
+                  {needsProfileCompletion ? (
+                    <div className="flex flex-col items-center justify-center py-8 text-center space-y-4">
+                      <div className="bg-yellow-100 p-4 rounded-full text-yellow-600">
+                        <AlertCircle className="size-10" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-lg">Action Required</h3>
+                        <p className="text-sm text-muted-foreground max-w-xs mx-auto mt-1">
+                          Since you signed up with Google/Apple, we need a few more details to build your Hati Score.
+                        </p>
+                      </div>
                       <Link 
-                        href="/participate" 
-                        className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#1b4a3a] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#153a2e]"
+                        href="/dashboard/complete-profile" 
+                        className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#1b4a3a] px-8 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#153a2e] mt-4"
                       >
-                        Start Building Your Score <ArrowRight className="size-4" />
+                        Complete Profile <ArrowRight className="size-4" />
                       </Link>
                     </div>
-                  </>
-                )}
-              </CardContent>
-            </Card>
-          </section>
+                  ) : (
+                    <>
+                      <HatiScoreGauge score={profile?.score || 200} />
+                      <div className="mt-6">
+                        <Link 
+                          href="/participate" 
+                          className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#1b4a3a] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#153a2e]"
+                        >
+                          Start Building Your Score <ArrowRight className="size-4" />
+                        </Link>
+                      </div>
+                    </>
+                  )}
+                </CardContent>
+              </Card>
+            </section>
+
+            {/* 2. SWET Simulator Component */}
+            <section aria-labelledby="swet-title">
+              <SwetSimulator />
+            </section>
+            
+          </div>
           
           <DashboardRoadmap score={profile?.score || 200} />
           
@@ -244,8 +256,9 @@ export default function DashboardPage() {
           <div className="flex flex-col items-center justify-between gap-4 border-t border-border/40 pt-8 text-xs md:flex-row">
             <p>© 2026 Hati, Inc. All Rights Reserved.</p>
             <div className="flex gap-4">
-              <Link href="/privacy" className="transition-colors hover:text-[#1b4a3a]">Privacy Policy</Link>
-              <Link href="/terms" className="transition-colors hover:text-[#1b4a3a]">Terms & Conditions</Link>
+              <Link href="/legal" className="transition-colors hover:text-[#1b4a3a]">Legal Hub</Link>
+              <Link href="/legal/privacy" className="transition-colors hover:text-[#1b4a3a]">Privacy Policy</Link>
+              <Link href="/legal/terms" className="transition-colors hover:text-[#1b4a3a]">Terms & Conditions</Link>
             </div>
           </div>
         </footer>
