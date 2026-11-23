@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, ClipboardList, BookOpen, Target, History, TrendingUp, UploadCloud } from "lucide-react";
+import { ClipboardList, BookOpen, Target, History, TrendingUp, UploadCloud } from "lucide-react";
 import { createClient } from "@/lib/db";
+import { BackButton } from "@/components/back-button";
 
 export default function ParticipatePage() {
   const router = useRouter();
@@ -13,33 +14,41 @@ export default function ParticipatePage() {
   
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState("");
-  const [uploadSuccess, setUploadSuccess] = useState(false); // Track success
+  const [uploadSuccess, setUploadSuccess] = useState(false);
 
-    const handleUpload = async (e: React.FormEvent) => {
+  const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
     const file = fileInputRef.current?.files?.[0];
     if (!file) return;
+
     setUploading(true);
     setMessage("Analyzing your statement...");
-
-    // 1. Get the user FIRST
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      setMessage("You must be logged in.");
-      setUploading(false);
-      return;
-    }
-
-    // 2. Send PDF AND User ID to AI
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("userId", user.id); // <--- CRITICAL ADDITION
+    setUploadSuccess(false);
 
     try {
-      const res = await fetch("/api/parse-pdf", { method: "POST", body: formData });
+      // 1. Get current session token securely
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        setMessage("You must be logged in.");
+        setUploading(false);
+        return;
+      }
+
+      // 2. Send PDF to AI (No need to send userId anymore, the token handles it)
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/parse-pdf", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${session.access_token}`, // Secure token
+        },
+        body: formData
+      });
+
       const data = await res.json();
 
-      if (!data.success) {
+      if (!res.ok) {
         setMessage(`Error: ${data.error}`);
         setUploading(false);
         return;
@@ -47,6 +56,7 @@ export default function ParticipatePage() {
 
       // 3. Success!
       setMessage(`Success! Your new Hati Score is ${data.score}.`);
+      setUploadSuccess(true);
       router.refresh();
 
     } catch (err: any) {
@@ -55,25 +65,19 @@ export default function ParticipatePage() {
     
     setUploading(false);
   };
+
   return (
     <main className="min-h-screen bg-background text-foreground pb-20 font-sans">
       <div className="bg-card border-b border-border/80">
         <div className="max-w-3xl mx-auto px-6 py-4">
-          {/* 
-            If upload was successful, the Back to Dashboard link includes ?refresh=true
-            This triggers the Dashboard page to re-fetch the score.
-          */}
-          <Link 
-            href={uploadSuccess ? "/dashboard?refresh=true" : "/dashboard"} 
-            className="flex items-center text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <ArrowLeft className="mr-2 size-4" /> Back to Dashboard
-          </Link>
+          <BackButton
+            fallbackHref={uploadSuccess ? "/dashboard?refresh=true" : "/dashboard"}
+            label="Back to Dashboard"
+          />
         </div>
       </div>
 
       <div className="max-w-3xl mx-auto px-6 pt-12 space-y-12">
-        {/* ... Existing Header and Section 1 & 2 code stays exactly the same ... */}
         <div>
           <h1 className="text-4xl font-bold tracking-tight text-[#1b4a3a]">How to Build Your Score</h1>
           <p className="mt-2 text-lg text-gray-600">Complete these core activities to prove your financial discipline and unlock credit.</p>

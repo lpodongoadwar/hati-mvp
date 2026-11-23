@@ -1,0 +1,86 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { Menu, X, User, Home, UploadCloud, ShieldCheck, Scale, LogOut } from "lucide-react";
+import { createClient } from "@/lib/db";
+import { useRouter } from "next/navigation";
+
+export function AppShell({ children }: { children: React.ReactNode }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const supabase = createClient();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push("/login");
+  };
+
+  const navLinks = [
+    { name: "Dashboard", href: "/dashboard", icon: Home },
+    { name: "Upload Statement", href: "/dashboard/upload-statement", icon: UploadCloud },
+    { name: "Profile", href: "/profile", icon: User },
+    { name: "Verification", href: "/profile/verification", icon: ShieldCheck },
+    { name: "Legal & Compliance", href: "/legal", icon: Scale },
+  ];
+
+  return (
+    <div className="min-h-screen bg-background text-foreground flex flex-col">
+      {/* Top Bar */}
+      <header className="sticky top-0 z-50 bg-card border-b border-border/80">
+        <div className="max-w-7xl mx-auto px-5 h-16 flex items-center justify-between">
+          <Link href="/dashboard" className="font-bold text-xl text-[#1b4a3a]">
+            Hati
+          </Link>
+          
+          <button onClick={() => setIsOpen(!isOpen)} className="p-2 hover:bg-muted rounded-md">
+            {isOpen ? <X className="size-6" /> : <Menu className="size-6" />}
+          </button>
+        </div>
+      </header>
+
+      {/* Slide-out Menu */}
+      {isOpen && (
+        <div className="fixed inset-0 z-40 bg-black/50" onClick={() => setIsOpen(false)}>
+          <div 
+            className="fixed top-0 right-0 h-full w-64 bg-card border-l border-border shadow-xl p-6 space-y-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="font-bold text-lg">Menu</h2>
+              <button onClick={() => setIsOpen(false)}><X className="size-5" /></button>
+            </div>
+            <nav className="space-y-2">
+              {navLinks.map((link) => {
+                const Icon = link.icon;
+                return (
+                  <Link
+                    key={link.name}
+                    href={link.href}
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#1b4a3a]/10 transition-colors"
+                  >
+                    <Icon className="size-5 text-[#1b4a3a]" />
+                    <span className="font-medium">{link.name}</span>
+                  </Link>
+                );
+              })}
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center gap-3 p-3 mt-4 rounded-lg hover:bg-red-50 text-red-600 transition-colors"
+              >
+                <LogOut className="size-5" />
+                <span className="font-medium">Log Out</span>
+              </button>
+            </nav>
+          </div>
+        </div>
+      )}
+
+      {/* Page Content */}
+      <main className="flex-1">
+        {children}
+      </main>
+    </div>
+  );
+}
