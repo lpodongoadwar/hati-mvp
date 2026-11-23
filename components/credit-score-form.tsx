@@ -4,7 +4,35 @@ import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/db";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, AlertCircle } from "lucide-react";
+import { z } from "zod";
+
+// 1. Define the Validation Schema
+const signupSchema = z.object({
+  fullName: z
+    .string()
+    .min(3, "Full name must be at least 3 characters.")
+    .regex(/^[a-zA-Z\s'-]+$/, "Name can only contain letters, spaces, hyphens, and apostrophes."),
+  phone: z
+    .string()
+    .regex(/^[7][0-9]{8}$/, "Please enter a valid 9-digit Ugandan phone number (e.g., 771234567)."),
+  username: z
+    .string()
+    .min(3, "Username must be at least 3 characters.")
+    .regex(/^[a-zA-Z0-9_]+$/, "Username can only contain letters, numbers, and underscores."),
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters.")
+    .regex(/[A-Z]/, "Password must contain at least one uppercase letter.")
+    .regex(/[a-z]/, "Password must contain at least one lowercase letter.")
+    .regex(/[0-9]/, "Password must contain at least one number.")
+    .regex(/[^A-Za-z0-9]/, "Password must contain at least one special character."),
+  email: z.string().email("Please enter a valid email address."),
+  nin: z
+    .string()
+    .regex(/^(CM|CF)[0-9A-Z]{12}$/, "NIN must start with CM or CF and be 14 characters total."),
+  socialHandle: z.string().optional(),
+});
 
 function FormContent() {
   const router = useRouter();
@@ -14,6 +42,7 @@ function FormContent() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   // Form states
   const [fullName, setFullName] = useState("");
@@ -36,8 +65,28 @@ function FormContent() {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setErrorMsg("");
 
-    // 1. Create Auth User
+    // 2. Validate the form data before hitting Supabase
+    try {
+      signupSchema.parse({
+        fullName,
+        phone,
+        username,
+        password,
+        email,
+        nin,
+        socialHandle,
+      });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        setMessage(`Error: ${error.issues[0].message}`);
+        setIsSubmitting(false);
+        return;
+      }
+    }
+
+    // 3. Create Auth User
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
       password,
@@ -47,12 +96,12 @@ function FormContent() {
     });
 
     if (authError || !authData.user) {
-      alert(authError?.message || "Auth failed");
+      setErrorMsg(authError?.message || "Auth failed");
       setIsSubmitting(false);
       return;
     }
 
-    // 2. Save Profile
+    // 4. Save Profile
     const { error: dbError } = await supabase.from("profiles").upsert([
       {
         id: authData.user.id,
@@ -67,20 +116,20 @@ function FormContent() {
         referral_count: 0,
         completed_modules: [],
         referred_by: referrerId || null,
-        kyc_status: "Pending", // Default KYC status
+        kyc_status: "Pending",
       },
     ]);
 
     if (dbError) {
-      alert(`DB Error: ${dbError.message}`);
+      setErrorMsg(`DB Error: ${dbError.message}`);
       setIsSubmitting(false);
       return;
     }
 
-    // 3. Log initial score history
+    // 5. Log initial score history
     await supabase.from("score_history").insert([{ user_id: authData.user.id, score: 200 }]);
 
-    // 4. Redirect straight to dashboard
+    // 6. Redirect straight to dashboard
     window.location.href = "/dashboard";
   };
 
@@ -112,6 +161,14 @@ function FormContent() {
           </div>
         </div>
       </div>
+
+      {/* Error Message Display */}
+      {errorMsg && (
+        <div className="p-3 bg-red-50 text-red-600 border border-red-200 rounded-md text-sm flex items-center gap-2">
+          <AlertCircle className="size-4 shrink-0" />
+          <p>{errorMsg}</p>
+        </div>
+      )}
 
       {/* Full Name */}
       <div className="space-y-2">
@@ -164,7 +221,7 @@ function FormContent() {
         <div className="relative">
           <input
             type={showPassword ? "text" : "password"}
-            placeholder="Create a password"
+            placeholder="Create a strong password"
             className="flex h-11 w-full rounded-md border border-input bg-background px-3 pr-10 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -178,6 +235,7 @@ function FormContent() {
             {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
           </button>
         </div>
+        <p className="text-xs text-muted-foreground">Min 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char.</p>
       </div>
 
       {/* Email */}
@@ -198,12 +256,13 @@ function FormContent() {
         <label className="text-sm font-medium">National Identification Number (NIN)</label>
         <input
           type="text"
-          placeholder="Enter your NIN"
+          placeholder="e.g. CM1234567890AB"
           className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
           value={nin}
-          onChange={(e) => setNin(e.target.value)}
+          onChange={(e) => setNin(e.target.value.toUpperCase())}
           required
         />
+        <p className="text-xs text-muted-foreground">Must start with CM or CF and be 14 characters.</p>
       </div>
 
       {/* Social Media */}

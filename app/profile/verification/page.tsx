@@ -4,6 +4,18 @@ import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { ArrowLeft, CheckCircle2, Clock, UploadCloud, Mail } from "lucide-react";
 import { createClient } from "@/lib/db";
+import { z } from "zod";
+
+// Validation schema for Personal Details
+const personalDetailsSchema = z.object({
+  phone: z
+    .string()
+    .regex(/^[7][0-9]{8}$/, "Please enter a valid 9-digit Ugandan phone number."),
+  nin: z
+    .string()
+    .regex(/^(CM|CF)[0-9A-Z]{12}$/, "NIN must start with CM or CF and be 14 characters total."),
+  socialHandle: z.string().optional(),
+});
 
 export default function VerificationPage() {
   const supabase = createClient();
@@ -47,6 +59,17 @@ export default function VerificationPage() {
     e.preventDefault();
     setSavingInfo(true);
     setMessage("");
+
+    // Validate inputs using Zod
+    try {
+      personalDetailsSchema.parse({ phone, nin, socialHandle });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        setMessage(`Error: ${error.issues[0].message}`);
+        setSavingInfo(false);
+        return;
+      }
+    }
 
     const { error } = await supabase
       .from("profiles")
@@ -238,10 +261,10 @@ export default function VerificationPage() {
                 <label className="text-sm font-medium">National ID (NIN)</label>
                 <input
                   type="text"
-                  placeholder="Enter your NIN"
+                  placeholder="e.g. CM1234567890AB"
                   className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                   value={nin}
-                  onChange={(e) => setNin(e.target.value)}
+                  onChange={(e) => setNin(e.target.value.toUpperCase())}
                   required
                 />
               </div>
