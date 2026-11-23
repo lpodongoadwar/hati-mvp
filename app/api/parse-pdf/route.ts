@@ -4,18 +4,18 @@ import { extractText, getDocumentProxy } from 'unpdf';
 import crypto from 'crypto';
 import { createClient } from '@supabase/supabase-js';
 
-// Initialize Supabase Admin client (Server side)
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
-
 const openai = new OpenAI({
   baseURL: "https://openrouter.ai/api/v1",
   apiKey: process.env.OPENROUTER_API_KEY || "missing-key",
 });
 
 export async function POST(req: Request) {
+  // Create the client INSIDE the handler so env vars are available at runtime, not build time
+  const supabaseAdmin = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+
   try {
     // 1. SECURITY FIX: Get the token from the request header
     const authHeader = req.headers.get('Authorization');
