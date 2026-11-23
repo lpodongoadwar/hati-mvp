@@ -18,11 +18,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   const navLinks = [
     { name: "Dashboard", href: "/dashboard", icon: Home },
-    { name: "Score (Participate)", href: "/participate", icon: TrendingUp },
+    { name: "Score", href: "/participate", icon: TrendingUp },
     { name: "Ambassadors Program", href: "/leaderboard", icon: Trophy },
     { name: "Ideator Pipeline", href: "/ideator", icon: Lightbulb },
     { name: "Profile", href: "/profile", icon: User },
-    { name: "Legal & Compliance", href: "/legal", icon: Scale },
   ];
 
   return (
