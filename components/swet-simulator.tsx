@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { PiggyBank, Sparkles, TrendingUp } from "lucide-react";
+import { Coins, Sparkles, TrendingUp } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
@@ -45,7 +45,7 @@ export function SwetSimulator() {
 
       <CardHeader className="pb-2">
         <CardTitle className="text-xl font-semibold tracking-[-0.04em] flex items-center gap-2 text-[#1b4a3a]">
-          <PiggyBank className="size-6" />
+          <Coins className="size-6" />
           SWET Simulator
         </CardTitle>
         <p className="text-sm text-muted-foreground">Learn how saving builds your credit.</p>
