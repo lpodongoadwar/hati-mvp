@@ -153,26 +153,38 @@ export default function LeaderboardPage() {
               The Hati Ambassadors Program is built on one core belief: <strong>financial literacy without capital is just an opinion.</strong> We are here to promote financial inclusion by helping you build a verified credit score, unlock access to formal credit, and learn how to manage wealth. 
             </p>
             <p className="text-sm text-gray-700 leading-relaxed">
-              By climbing the Mobilizer leaderboard, you are not just earning rewards—you are proving your financial discipline while promoting financial literacy and inclusion by expanding the network of the financially literate and creditworthy. The top Mobilizers (Club Champions, Top Public Candidates, and University Nominees) will unlock the <strong>Ideator</strong> status, giving them a direct pathway to pitch for VC funding.
+              But this is bigger than individual success. This is a battle for the future job opportunities and economic empowerment.
+            </p>
+            <p className="text-sm text-gray-700 leading-relaxed">
+             By climbing the Mobilizer leaderboard, you are not just earning rewards—you are proving your financial discipline and expanding the network of the creditworthy. More importantly, you are fighting to put your university at the top of the national standings. The universities with the highest number of active, mobilized students earn the most slots for their nominees to pitch for serious funding. 
+             </p>
+              <p className="text-sm text-gray-700 leading-relaxed">
+            The message is simple: University education must lead to employment and the creation of massive jobs. Mobilize your peers, prove you have the best solutions to the credit challenges facing your sector, and ensure that when the funding arrives, it flows through your institution.
             </p>
           </div>
 
           <div className="bg-[#fcfaf6] p-5 rounded-xl border border-[#e5e1d8] space-y-3">
             <h3 className="font-semibold text-[#1b4a3a]">The Hati Startup Show</h3>
             <p className="text-sm text-gray-700 leading-relaxed">
-              The Startup Show is our flagship event where the best Ideators pitch live to a panel of Venture Capitalists and Angel Investors. They will deploy up to <strong>$2M in funding</strong> across the top pitches. To get there, you must first prove yourself as a Mobilizer. 
+              The Startup Show is our flagship event where the best Ideators pitch live to a panel of Venture Capitalists and Angel Investors. They will deploy up to <strong>$2M in funding</strong> across the top 20 pitches. To get there, you must be nominated by your by your university. Your pitches then go through the Jury Selection process where the industry's finest across the public and private sector will select the top 50 pitches to appear on the Startup Show, from which 20 will be funded. 
             </p>
             <p className="text-sm text-gray-700 leading-relaxed">
-              <strong>The Club Champions:</strong> The top 5 mobilizers across all teams. To qualify through this track, one must have a Tier I-II Hati Trust Score, join a team, complete all surveys and modules, and get at least the second tier of rewards.
+            <strong>The University Draft:</strong> The top 3 universities on the leaderboard earn the right to present their alumni and professionals to the Jury.
             </p>
             <p className="text-sm text-gray-700 leading-relaxed">
-              <strong>The University Nominees:</strong> The 10 mobilizers from the top 3 universities. 5 from university #1, 3 from university #2 and 2 from university #3. To qualify through this track, one must be nominated by their university.
+              <strong>University #1 gets:</strong> 30 slots
             </p>
             <p className="text-sm text-gray-700 leading-relaxed">
-              <strong>The Top Public Candidates:</strong> The top 5 individual mobilizers voted by the community. To qualify through this track, one must have a Tier III Hati Trust Score, complete all surveys and modules, and get at least the fourth tier of rewards. 
+              <strong>University #2 gets:</strong> 15 slots
             </p>
             <p className="text-sm text-gray-700 leading-relaxed">
-              <strong>The next best 30 candidates:</strong> Voted by the public, will get to pitch to Angel Investors under dynamic terms.
+              <strong>University #3 gets:</strong> 5 slots
+            </p>
+            <p className="text-sm text-gray-700 leading-relaxed">
+              <strong>The next best 30 candidates:</strong> These will get to pitch to Angel Investors under dynamic terms.
+            </p>
+             <p className="text-sm text-gray-700 leading-relaxed">
+            <strong>The Startup Draft:</strong> The funded startups  select junior partners to join their teams from among the top Mobilizers on the individual leaderboards. These are the ones who have demonstrated the strongest mobilization skills and shared the sharpest ideas on how to address bottlenecks in financial literacy, inlusion and credit empowerment. They join the funded startups for the opportunity to learn from the best and to build their own startups.
             </p>
             <div className="pt-2">
               <Link 
