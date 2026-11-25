@@ -169,7 +169,7 @@ export default function LeaderboardPage() {
               The Startup Show is our flagship event where the best Ideators pitch live to a panel of Venture Capitalists and Angel Investors. They will deploy up to <strong>$2M in funding</strong> across the top 20 pitches. To get there, you must be nominated by your by your university. Your pitches then go through the Jury Selection process where the industry's finest across the public and private sector will select the top 50 pitches to appear on the Startup Show, from which 20 will be funded. 
             </p>
             <p className="text-sm text-gray-700 leading-relaxed">
-            <strong>The University Draft:</strong> The top 3 universities on the leaderboard earn the right to present their alumni and professionals to the Jury.
+            <strong>The University Draft:</strong> The top 3 universities on the leaderboard earn the right to present their nominees to the Jury.
             </p>
             <p className="text-sm text-gray-700 leading-relaxed">
               <strong>University #1 gets:</strong> 30 slots
