@@ -2,9 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Menu, X, User, Home, ShieldCheck, Scale, LogOut, TrendingUp, Trophy, Lightbulb } from "lucide-react";
 import { createClient } from "@/lib/db";
 import { useRouter } from "next/navigation";
+
+const logoSource = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/file_0000000026b481f4ac4092f29fa586e7%20%281%29.png-aEG4UagFYjCgRKM7hpezKdtI5qDLCJ.jpeg';
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -29,8 +32,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* Top Bar */}
       <header className="sticky top-0 z-50 bg-card border-b border-border/80">
         <div className="max-w-7xl mx-auto px-5 h-16 flex items-center justify-between">
-          <Link href="/dashboard" className="font-bold text-xl text-[#1b4a3a]">
-            Hati
+          <Link href="/dashboard" aria-label="Hati home">
+            <Image
+              alt="Hati"
+              className="h-[40px] w-[100px] object-cover object-center mix-blend-darken"
+              height={395}
+              priority
+              src={logoSource}
+              unoptimized
+              width={765}
+            />
           </Link>
           
           <button onClick={() => setIsOpen(!isOpen)} className="p-2 hover:bg-muted rounded-md">

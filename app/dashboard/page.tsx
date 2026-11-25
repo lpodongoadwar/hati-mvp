@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { User, Mail, Phone, ArrowRight, HelpCircle, AlertCircle } from 'lucide-react'
 import { siInstagram, siX, siTiktok } from 'simple-icons'
-import Image from 'next/image'
 import Link from 'next/link'
 import { createClient } from "@/lib/db";
 
@@ -14,8 +13,6 @@ import { HatiScoreGauge } from '@/components/hati-score-gauge'
 import { SwetSimulator } from "@/components/swet-simulator";
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-
-const logoSource = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/file_0000000026b481f4ac4092f29fa586e7%20%281%29.png-aEG4UagFYjCgRKM7hpezKdtI5qDLCJ.jpeg'
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -92,40 +89,6 @@ export default function DashboardPage() {
   return (
     <main className="min-h-screen bg-background text-foreground">
       <div className="mx-auto flex min-h-screen max-w-7xl flex-col px-5 sm:px-8 lg:px-12">
-        <header className="flex items-center justify-between gap-4 border-b border-border/80 py-4 sm:py-5">
-          <Link
-            aria-label="Hati home"
-            className="inline-flex items-center gap-2.5 rounded-lg focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#1b4a3a]/25"
-            href="/dashboard"
-          >
-            <Image
-              alt="Hati"
-              className="h-[50px] w-[124px] object-cover object-center mix-blend-darken"
-              height={395}
-              priority
-              src={logoSource}
-              unoptimized
-              width={765}
-            />
-          </Link>
-
-          <div className="flex items-center gap-4">
-            <Badge
-              className="hidden h-7 px-3 text-[10px] font-semibold tracking-[0.16em] border-[#1b4a3a] text-[#1b4a3a] sm:inline-flex"
-              variant="outline"
-            >
-              PREVIEW
-            </Badge>
-            <Link
-              href="/profile"
-              className="flex flex-col items-center justify-center gap-1 text-sm font-medium text-muted-foreground hover:text-[#1b4a3a]"
-            >
-              <User className="size-5" />
-              <span>Profile</span>
-            </Link>
-          </div>
-        </header>
-
         <div className="flex flex-1 flex-col gap-8 pb-8 pt-7 sm:gap-10 sm:pb-10 sm:pt-10">
           
           {/* NEW RESPONSIVE GRID FOR SCORE + SIMULATOR */}
