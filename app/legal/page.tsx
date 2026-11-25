@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ArrowLeft, Shield, FileText, Scale, AlertTriangle, Database } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { BackButton } from "@/components/back-button";
 
 export default function LegalHubPage() {
   const router = useRouter();
@@ -42,13 +43,11 @@ export default function LegalHubPage() {
 
   return (
     <main className="min-h-screen bg-background text-foreground pb-20">
-      <div className="bg-card border-b border-border/80">
-        <div className="max-w-3xl mx-auto px-6 py-4">
-          <Link href="/profile" className="flex items-center text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-            <ArrowLeft className="mr-2 size-4" /> Back to Profile
-          </Link>
-        </div>
-      </div>
+    <div className="bg-card border-b border-border/80">
+  <div className="max-w-3xl mx-auto px-6 py-4">
+    <BackButton fallbackHref="/profile" label="Back" />
+  </div>
+</div>
 
       <div className="max-w-3xl mx-auto px-6 pt-12 space-y-8">
         <div>
