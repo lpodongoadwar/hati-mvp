@@ -100,8 +100,19 @@ export default function ApplyPage() {
     }
 
     setIsSubmitting(true);
+
+    // 1. Get the current user securely
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+       alert("You must be logged in to submit.");
+       setIsSubmitting(false);
+       return;
+    }
+
+    // 2. Insert idea with the secure user_id
     const { error } = await supabase.from("ideas").insert([
       {
+        user_id: user.id, // <--- CRITICAL: Links pitch to the logged-in user
         founder_name: formData.fullName,
         startup_name: formData.startupName,
         category: formData.category,
@@ -110,6 +121,7 @@ export default function ApplyPage() {
         votes: 0,
       },
     ]);
+    
     setIsSubmitting(false);
     if (error) {
       console.error(error);
