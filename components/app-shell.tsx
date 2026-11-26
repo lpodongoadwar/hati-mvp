@@ -1,25 +1,39 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { Menu, X, User, Home, ShieldCheck, Scale, LogOut, TrendingUp, Trophy, Lightbulb } from "lucide-react";
+import { Menu, X, User, Home, ShieldCheck, Scale, LogOut, TrendingUp, Trophy, Lightbulb, Star } from "lucide-react";
 import { createClient } from "@/lib/db";
 
 const logoSource = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/file_0000000026b481f4ac4092f29fa586e7%20%281%29.png-aEG4UagFYjCgRKM7hpezKdtI5qDLCJ.jpeg';
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [role, setRole] = useState("user");
   const supabase = createClient();
   const router = useRouter();
   const pathname = usePathname();
+
+  // Fetch user role dynamically
+  useEffect(() => {
+    async function getRole() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data } = await supabase.from("profiles").select("role").eq("id", user.id).single();
+        if (data) setRole(data.role);
+      }
+    }
+    getRole();
+  }, [supabase]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
     router.push("/login");
   };
 
+  // Build nav links dynamically
   const navLinks = [
     { name: "Dashboard", href: "/dashboard", icon: Home },
     { name: "Score", href: "/participate", icon: TrendingUp },
@@ -27,6 +41,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     { name: "Ideator Pipeline", href: "/ideator", icon: Lightbulb },
     { name: "Profile", href: "/profile", icon: User },
   ];
+
+  if (role === 'jury' || role === 'admin') {
+    navLinks.push({ name: "Jury Portal", href: "/jury", icon: Star });
+  }
+  if (role === 'admin') {
+    navLinks.push({ name: "Admin Panel", href: "/admin", icon: ShieldCheck });
+  }
 
   // Hide the header on public/auth pages
   const isAuthPage = pathname === "/" || pathname === "/login" || pathname.startsWith("/auth");
