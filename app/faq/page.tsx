@@ -40,7 +40,7 @@ export default function FAQPage() {
           <section id="is-it-free" className="bg-card p-6 rounded-xl border border-border/80 shadow-sm">
             <h2 className="text-xl font-semibold text-[#1b4a3a] mb-2">Is Hati free to use?</h2>
             <p className="text-gray-700 leading-relaxed">
-              Yes. The core Hati platform, including your credit score dashboard and financial literacy modules, is completely free. We generate revenue through enterprise partnerships, vendor transaction fees, and credit pulls (when banks pay to see your score). We do not charge students or individuals to build their financial identity.
+              The core Hati platform, including your credit score dashboard and financial literacy modules, is completely free. However, we charge an annual subscription fee of UGX 5,000 in order to fund the operational costs of storing and maintaining your credit data. 
             </p>
           </section>
 
