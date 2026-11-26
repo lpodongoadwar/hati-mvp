@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import { ArrowLeft, ChevronDown, ChevronUp, MessageCircle } from "lucide-react";
+import { ChevronDown, ChevronUp, MessageCircle } from "lucide-react";
+import { BackButton } from "@/components/back-button";
 
 export default function HelpCenterPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
@@ -34,9 +34,7 @@ export default function HelpCenterPage() {
     <main className="min-h-screen bg-background text-foreground pb-20 font-sans">
       <div className="bg-card border-b border-border/80">
         <div className="max-w-3xl mx-auto px-6 py-4">
-          <Link href="/dashboard" className="flex items-center text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-            <ArrowLeft className="mr-2 size-4" /> Back to Dashboard
-          </Link>
+          <BackButton fallbackHref="/profile" label="Back" />
         </div>
       </div>
 
