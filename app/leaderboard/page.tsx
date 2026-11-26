@@ -185,7 +185,7 @@ export default function LeaderboardPage() {
                   representing the most committed and financially disciplined students in Uganda.
                 </p>
                 <p className="text-sm text-gray-700 leading-relaxed mt-2">
-                  Our <strong>Jury of Industry Experts</strong> (comprising professional bodies like HRMAU and ULS, top executives, 
+                  Our <strong>Jury of Industry Experts</strong> (comprising professional bodies like HRMAU, ULS & ICPAU, top executives, 
                   and institutional partners) then reviews these 500 pitches. Selection is purely on merit. 
                   Your idea must stand on its own. From this review, the Jury selects the <strong>Top 100</strong>.
                 </p>
