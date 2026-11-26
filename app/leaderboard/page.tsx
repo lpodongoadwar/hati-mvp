@@ -206,7 +206,7 @@ export default function LeaderboardPage() {
                 <h4 className="font-semibold text-[#1b4a3a]">3. The Incubation</h4>
                 <p className="text-sm text-gray-700 leading-relaxed mt-1">
                   Down to business. Following the Gala, the Top 100 winners will enter a structured incubation 
-                  phase. This is the "After" of the Startup Show. Winners will meet with the founders, professionals, 
+                  phase. Winners will meet with the founders, professionals, 
                   and institutions they saw in the pre-series. They will get legal information, tax guidance, mentorship 
                   and other corporate support to formalize their businesses and track their genesis journeys. 
                   This is where the funding moves from cheque to real-world impact.
