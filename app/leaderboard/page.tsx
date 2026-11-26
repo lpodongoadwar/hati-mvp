@@ -166,25 +166,22 @@ export default function LeaderboardPage() {
           <div className="bg-[#fcfaf6] p-5 rounded-xl border border-[#e5e1d8] space-y-3">
             <h3 className="font-semibold text-[#1b4a3a]">The Hati Startup Show</h3>
             <p className="text-sm text-gray-700 leading-relaxed">
-              The Startup Show is our flagship event where the best Ideators pitch live to a panel of Venture Capitalists and Angel Investors. They will deploy up to <strong>$2M in funding</strong> across the top 20 pitches. To get there, you must be nominated by your by your university. Your pitches then go through the Jury Selection process where the industry's finest across the public and private sector will select the top 50 pitches to appear on the Startup Show, from which 20 will be funded. 
+              The Startup Show is our flagship event where the best Ideators submit their pitches to be evaluated by our Jury of Industry Experts. They will select the best pitches that qualify for <strong>$10K in funding each</strong> out of the pool of <strong>$1M</strong>. To get there, you must be nominated by your by your university. Your pitches then go through the Jury Selection process where the industry's finest across the public and private sector will select the top 500 pitches to appear on the Startup Show, from which 100 will be funded. 
             </p>
             <p className="text-sm text-gray-700 leading-relaxed">
             <strong>The University Draft:</strong> The top 3 universities on the leaderboard earn the right to present their nominees to the Jury.
             </p>
             <p className="text-sm text-gray-700 leading-relaxed">
-              <strong>University #1 gets:</strong> 30 slots
+              <strong>University #1 gets:</strong> 250 slots
             </p>
             <p className="text-sm text-gray-700 leading-relaxed">
-              <strong>University #2 gets:</strong> 15 slots
+              <strong>University #2 gets:</strong> 150 slots
             </p>
             <p className="text-sm text-gray-700 leading-relaxed">
-              <strong>University #3 gets:</strong> 5 slots
+              <strong>University #3 gets:</strong> 100 slots
             </p>
             <p className="text-sm text-gray-700 leading-relaxed">
-              <strong>The next best 30 candidates:</strong> These will get to pitch to Angel Investors under dynamic terms.
-            </p>
-             <p className="text-sm text-gray-700 leading-relaxed">
-            <strong>The Startup Draft:</strong> The funded startups  select junior partners to join their teams from among the top Mobilizers on the individual leaderboards. These are the ones who have demonstrated the strongest mobilization skills and shared the sharpest ideas on how to address bottlenecks in financial literacy, inlusion and credit empowerment. They join the funded startups for the opportunity to learn from the best and to build their own startups.
+            <strong>The Final Draft:</strong> The final 100 pitches are selected on merit by the Jury of Industry Experts and will receive their funding at the Hati Gala 2027.
             </p>
             <div className="pt-2">
               <Link 
