@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, CheckCircle2, ChevronRight, XCircle, AlertCircle } from "lucide-react";
+import { CheckCircle2, ChevronRight, XCircle, AlertCircle } from "lucide-react";
 import { createClient } from "@/lib/db";
+import { BackButton } from "@/components/back-button";
 
 export default function ApplyPage() {
   const supabase = createClient();
@@ -143,9 +144,7 @@ export default function ApplyPage() {
     <main className="min-h-screen bg-background text-foreground pb-20 font-sans">
       <div className="bg-card border-b border-border/80">
         <div className="max-w-3xl mx-auto px-6 py-4">
-          <Link href="/leaderboard" className="flex items-center text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-            <ArrowLeft className="mr-2 size-4" /> Back to Leaderboard
-          </Link>
+          <BackButton fallbackHref="/profile" label="Back" />
         </div>
       </div>
 
