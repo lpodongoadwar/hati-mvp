@@ -54,9 +54,9 @@ export default function FAQPage() {
 
           {/* Question 5 */}
           <section id="startup-show" className="bg-card p-6 rounded-xl border border-border/80 shadow-sm">
-            <h2 className="text-xl font-semibold text-[#1b4a3a] mb-2">How do I get VC funding on the Startup Show?</h2>
+            <h2 className="text-xl font-semibold text-[#1b4a3a] mb-2">How do I get startup funding?</h2>
             <p className="text-gray-700 leading-relaxed">
-              To pitch for VC funding, you must first build your Hati Trust Score and qualify as an Ideator. Once qualified, you submit a 1-minute video pitch. The top pitches are selected by the community and our judges to appear on the Hati Startup Show, where they pitch live to top Venture Capitalists and Angel Investors for up to $2M in funding.
+              To pitch for startup funding, you must first build your Hati Trust Score and qualify as an Ideator by mobilizing your network and demonstrating financial literacy by completing the surveys. Once qualified, you submit a 1-minute video pitch. The top pitches are selected by the Jury of Industry Experts for up to $10K in funding out of the $1M pool.
             </p>
           </section>
 
