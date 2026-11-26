@@ -177,6 +177,11 @@ export default function PartnerPage() {
           </a>
         </div>
       </div>
+      <footer className="max-w-7xl mx-auto px-6 mt-20">
+        <div className="flex flex-col items-center justify-between gap-4 border-t border-border/40 pt-8 text-xs md:flex-row">
+          <p>© 2026 Hati, Inc. All Rights Reserved.</p>
+        </div>
+      </footer>
     </main>
   );
 }
