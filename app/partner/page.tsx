@@ -1,8 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Check, Mail, Building, Car, Hotel, Zap, Shield } from "lucide-react";
-import { BackButton } from "@/components/back-button";
+import { ArrowLeft, Check, Mail, Building, Car, Hotel, Zap, Tv, Shield } from "lucide-react";
 
 export default function PartnerPage() {
   const tiers = [
@@ -56,6 +55,7 @@ export default function PartnerPage() {
     { name: "Official Hospitality Partner", target: "Luxury Hotels & Resorts", value: "3 months accommodation & bulk VC rates", icon: Hotel },
     { name: "Official Logistics Partner", target: "Automotive Dealers", value: "Branded vehicles for field teams & VCs", icon: Car },
     { name: "Official Energy Partner", target: "Oil & Gas Companies", value: "Fuel for film crew & field operations", icon: Zap },
+    { name: "Official Media Partner", target: "Broadcast & Print Media", value: "Media coverage for events & Gala", icon: Tv },
     { name: "Official Beverage Partner", target: "Beverage Manufacturers", value: "Drinks for all campus activations & Gala", icon: Building },
     { name: "Official Insurance Partner", target: "Insurance Providers", value: "Event insurance & micro-insure integration", icon: Shield },
   ];
@@ -65,7 +65,9 @@ export default function PartnerPage() {
       {/* Top Navigation */}
       <div className="bg-white border-b border-[#e5e1d8]">
         <div className="max-w-6xl mx-auto px-6 py-4">
-          <BackButton fallbackHref="/dashboard" label="Back to Dashboard" />
+          <Link href="/dashboard" className="flex items-center text-sm font-medium text-gray-500 hover:text-[#1b4a3a] transition-colors">
+            <ArrowLeft className="mr-2 size-4" /> Back to Dashboard
+          </Link>
         </div>
       </div>
 
