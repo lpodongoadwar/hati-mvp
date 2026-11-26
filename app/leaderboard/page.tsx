@@ -153,10 +153,10 @@ export default function LeaderboardPage() {
               The Hati Ambassadors Program is built on one core belief: <strong>financial literacy without capital is just an opinion.</strong> We are here to promote financial inclusion by helping you build a verified credit score, unlock access to formal credit, and learn how to manage wealth. 
             </p>
             <p className="text-sm text-gray-700 leading-relaxed">
-              But this is bigger than individual success. This is a battle for the future job opportunities and economic empowerment.
+              But this is bigger than individual success. This is a battle for the future of job opportunities and economic empowerment.
             </p>
             <p className="text-sm text-gray-700 leading-relaxed">
-             By climbing the Mobilizer leaderboard, you are not just earning rewards—you are proving your financial discipline and expanding the network of the creditworthy. More importantly, you are fighting to put your university at the top of the national standings. The universities with the highest number of active, mobilized students earn the most slots for their nominees to pitch for serious funding. 
+             By climbing the Mobilizer leaderboard, you are not just earning rewards—you are proving your financial discipline and expanding the network of the creditworthy. Additionally, you are fighting to put your university at the top of the national standings as a beacon of academic and economic excellence. The universities with the highest number of active, mobilized students earn the most slots for their nominees to pitch for serious funding. 
              </p>
               <p className="text-sm text-gray-700 leading-relaxed">
             The message is simple: University education must lead to employment and the creation of massive jobs. Mobilize your peers, prove you have the best solutions to the credit challenges facing your sector, and ensure that when the funding arrives, it flows through your institution.
