@@ -173,7 +173,8 @@ export default function DashboardPage() {
              <ul className="space-y-2 text-xs">
                 <li><Link href="/about" className="transition-colors hover:text-[#1b4a3a]">About Hati</Link></li>
                 <li><Link href="/team" className="transition-colors hover:text-[#1b4a3a]">Our Team</Link></li>
-                <li><Link href="/help" className="transition-colors hover:text-[#1b4a3a]">FAQs</Link></li>
+                <li><Link href="/help" className="transition-colors hover:text-[#1b4a3a]">Help Center</Link></li>
+                <li><Link href="/faq" className="transition-colors hover:text-[#1b4a3a]">FAQs</Link></li>
                 <li><Link href="/partner" className="transition-colors hover:text-[#1b4a3a]">Become A Partner</Link></li>
               </ul>
             </div>
