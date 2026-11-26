@@ -3,9 +3,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
 import { Menu, X, User, Home, ShieldCheck, Scale, LogOut, TrendingUp, Trophy, Lightbulb } from "lucide-react";
 import { createClient } from "@/lib/db";
-import { useRouter } from "next/navigation";
 
 const logoSource = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/file_0000000026b481f4ac4092f29fa586e7%20%281%29.png-aEG4UagFYjCgRKM7hpezKdtI5qDLCJ.jpeg';
 
@@ -13,6 +13,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const supabase = createClient();
   const router = useRouter();
+  const pathname = usePathname();
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -26,6 +27,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     { name: "Ideator Pipeline", href: "/ideator", icon: Lightbulb },
     { name: "Profile", href: "/profile", icon: User },
   ];
+
+  // Hide the header on public/auth pages
+  const isAuthPage = pathname === "/" || pathname === "/login" || pathname.startsWith("/auth");
+  
+  if (isAuthPage) {
+    return <main className="min-h-screen bg-background text-foreground">{children}</main>;
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
