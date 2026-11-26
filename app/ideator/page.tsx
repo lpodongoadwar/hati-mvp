@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, CheckCircle2, ChevronRight } from "lucide-react";
+import { ArrowLeft, CheckCircle2, ChevronRight, XCircle, AlertCircle } from "lucide-react";
 import { createClient } from "@/lib/db";
 
 export default function ApplyPage() {
@@ -12,15 +12,22 @@ export default function ApplyPage() {
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [userScore, setUserScore] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
+
+  // Qualification State
+  const [qualifications, setQualifications] = useState({
+    score: 0,
+    hasScore: false,
+    hasSurveys: false,
+    hasReferrals: false,
+    isQualified: false,
+  });
 
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
     phone: "",
     socialHandle: "",
-    track: "club", // Default
     startupName: "",
     category: "Agritech",
     tagline: "",
@@ -34,18 +41,50 @@ export default function ApplyPage() {
     spendFirst: "",
   });
 
-  // Fetch the user's score to determine allowed tracks
+  // Check User Qualifications on Mount
   useEffect(() => {
-    async function fetchScore() {
+    async function checkQualifications() {
       const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data } = await supabase.from('profiles').select('score').eq('id', user.id).single();
-        setUserScore(data?.score || 0);
+      
+      if (!user) {
+        router.replace("/login");
+        return;
       }
+
+      // Fetch Profile Data (Score & Referrals)
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("score, referral_count, completed_modules")
+        .eq("id", user.id)
+        .single();
+
+      const score = profile?.score || 0;
+      const referrals = profile?.referral_count || 0;
+      const completedModules = profile?.completed_modules || [];
+
+      // Check Surveys (Assuming surveys are stored in a 'surveys' table or as specific module IDs)
+      // For this example, we will assume the user needs to have completed specific survey IDs
+      // Replace these IDs with your actual survey identifiers
+      const requiredSurveys = ["hati_survey", "mtn_survey", "airtel_survey", "bank_survey"];
+      const hasSurveys = requiredSurveys.every(survey => completedModules.includes(survey));
+
+      const hasScore = score >= 650;
+      const hasReferrals = referrals >= 5;
+      const isQualified = hasScore && hasSurveys && hasReferrals;
+
+      setQualifications({
+        score,
+        hasScore,
+        hasSurveys,
+        hasReferrals,
+        isQualified,
+      });
+      
       setLoading(false);
     }
-    fetchScore();
-  }, [supabase]);
+    
+    checkQualifications();
+  }, [supabase, router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -54,9 +93,8 @@ export default function ApplyPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Safety check: Ensure they aren't trying to submit as Individual without Tier III
-    if (formData.track === 'individual' && (userScore === null || userScore < 650)) {
-      alert("You must reach Tier III (Score 650+) to pitch as an Individual. Please join a Club Track.");
+    if (!qualifications.isQualified) {
+      alert("You must meet all qualification criteria before submitting.");
       return;
     }
 
@@ -81,7 +119,7 @@ export default function ApplyPage() {
   };
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading your profile...</div>;
+    return <div className="min-h-screen flex items-center justify-center">Checking your eligibility...</div>;
   }
 
   if (isSuccess) {
@@ -117,7 +155,52 @@ export default function ApplyPage() {
           <p className="mt-2 text-gray-600">Fill out all sections to complete your submission.</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-8">
+        {/* QUALIFICATION STATUS CARD */}
+        <div className={`p-6 rounded-2xl border mb-8 ${qualifications.isQualified ? 'bg-green-50 border-green-200' : 'bg-yellow-50 border-yellow-200'}`}>
+          <div className="flex items-start gap-4">
+            {qualifications.isQualified ? (
+              <CheckCircle2 className="size-6 text-green-600 shrink-0 mt-0.5" />
+            ) : (
+              <AlertCircle className="size-6 text-yellow-600 shrink-0 mt-0.5" />
+            )}
+            <div className="space-y-2 w-full">
+              <h2 className={`font-semibold text-lg ${qualifications.isQualified ? 'text-green-800' : 'text-yellow-800'}`}>
+                {qualifications.isQualified ? "You Qualify to Pitch!" : "Complete the Following Tasks to Qualify"}
+              </h2>
+              
+              {!qualifications.isQualified && (
+                <ul className="space-y-2 text-sm mt-2">
+                  <li className="flex items-center gap-2">
+                    {qualifications.hasScore ? <CheckCircle2 className="size-4 text-green-600" /> : <XCircle className="size-4 text-red-500" />}
+                    <span className={qualifications.hasScore ? "text-green-700" : "text-gray-700"}>
+                      Reach a Hati Trust Score of 650+ (Current: {qualifications.score})
+                    </span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    {qualifications.hasSurveys ? <CheckCircle2 className="size-4 text-green-600" /> : <XCircle className="size-4 text-red-500" />}
+                    <span className={qualifications.hasSurveys ? "text-green-700" : "text-gray-700"}>
+                      Complete all 4 primary surveys (Hati, MTN, Airtel, Bank)
+                    </span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    {qualifications.hasReferrals ? <CheckCircle2 className="size-4 text-green-600" /> : <XCircle className="size-4 text-red-500" />}
+                    <span className={qualifications.hasReferrals ? "text-green-700" : "text-gray-700"}>
+                      Refer at least 5 people to the platform
+                    </span>
+                  </li>
+                </ul>
+              )}
+              
+              {qualifications.isQualified && (
+                <p className="text-sm text-green-700 mt-1">
+                  You have met all criteria. The form below is now unlocked. Good luck!
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-8 opacity-100 transition-opacity">
           
           {/* Section 1: The Founder */}
           <section className="bg-card p-8 rounded-2xl border border-border/80 shadow-sm space-y-6">
@@ -129,27 +212,6 @@ export default function ApplyPage() {
               <p className="text-sm text-muted-foreground mt-1">Tell us about yourself.</p>
             </div>
             
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">Select Your Track</label>
-              <select 
-                name="track" 
-                onChange={handleChange} 
-                defaultValue="club"
-                className="w-full h-11 px-3 rounded-md border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-[#1b4a3a] focus:border-transparent transition-all"
-              >
-                <option value="club">Club Track (University Students & Alumni)</option>
-                <option 
-                  value="individual" 
-                  disabled={userScore !== null && userScore < 650}
-                >
-                  Individual Track (Tier III Solo Founders) {userScore !== null && userScore < 650 ? "- Requires Score 650+" : ""}
-                </option>
-              </select>
-              {userScore !== null && userScore < 650 && (
-                <p className="text-xs text-red-600">Your current score is {userScore}. You must reach Tier III (650+) or join a Club to pitch.</p>
-              )}
-            </div>
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-foreground">Full Name</label>
@@ -265,8 +327,12 @@ export default function ApplyPage() {
 
           <button 
             type="submit" 
-            disabled={isSubmitting}
-            className="w-full bg-[#1b4a3a] text-white text-lg font-semibold py-4 rounded-xl hover:bg-[#153a2e] transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-md"
+            disabled={isSubmitting || !qualifications.isQualified}
+            className={`w-full text-lg font-semibold py-4 rounded-xl flex items-center justify-center gap-2 shadow-md transition-colors ${
+              qualifications.isQualified 
+                ? "bg-[#1b4a3a] text-white hover:bg-[#153a2e] cursor-pointer" 
+                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+            } disabled:opacity-70`}
           >
             {isSubmitting ? "Submitting..." : "Submit Application"} <ChevronRight className="size-5" />
           </button>
