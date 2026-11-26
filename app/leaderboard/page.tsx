@@ -108,7 +108,7 @@ export default function LeaderboardPage() {
     }
     
     fetchData();
-  }, [supabase]); // <--- This closing bracket is now correct
+  }, [supabase]);
   const handleShare = async () => {
     if (!userId) return alert("Please log in to share your link.");
     
@@ -163,27 +163,58 @@ export default function LeaderboardPage() {
             </p>
           </div>
 
-          <div className="bg-[#fcfaf6] p-5 rounded-xl border border-[#e5e1d8] space-y-3">
-            <h3 className="font-semibold text-[#1b4a3a]">The Hati Startup Show</h3>
-            <p className="text-sm text-gray-700 leading-relaxed">
-              The Startup Show is our flagship event where the best Ideators submit their pitches to be evaluated by our Jury of Industry Experts. They will select the best pitches that qualify for <strong>$10K in funding each</strong> out of the pool of <strong>$1M</strong>. To get there, you must be nominated by your by your university. Your pitches then go through the Jury Selection process where the industry's finest across the public and private sector will select the top 500 pitches to appear on the Startup Show, from which 100 will be funded. 
+          {/* UPDATED STARTUP SHOW BLOCK */}
+          <div className="bg-[#fcfaf6] p-5 rounded-xl border border-[#e5e1d8]">
+            <h3 className="font-semibold text-[#1b4a3a] mb-4">The Hati Startup Show</h3>
+            
+            <p className="text-sm text-gray-700 leading-relaxed mb-4">
+              The Hati Startup Show is a structured, data-driven pipeline to identify, 
+              fund, and incubate Uganda's next generation of entrepreneurs. Our goal is to prove to financiers 
+              that Hati can deploy capital responsibly, transparently, and with measurable impact.
             </p>
-            <p className="text-sm text-gray-700 leading-relaxed">
-            <strong>The University Draft:</strong> The top 3 universities on the leaderboard earn the right to present their nominees to the Jury.
-            </p>
-            <p className="text-sm text-gray-700 leading-relaxed">
-              <strong>University #1 gets:</strong> 250 slots
-            </p>
-            <p className="text-sm text-gray-700 leading-relaxed">
-              <strong>University #2 gets:</strong> 150 slots
-            </p>
-            <p className="text-sm text-gray-700 leading-relaxed">
-              <strong>University #3 gets:</strong> 100 slots
-            </p>
-            <p className="text-sm text-gray-700 leading-relaxed">
-            <strong>The Final Draft:</strong> The final 100 pitches are selected on merit by the Jury of Industry Experts and will receive their funding at the Hati Gala 2027.
-            </p>
-            <div className="pt-2">
+
+            <div className="space-y-6">
+              
+              {/* How 500 become 100 */}
+              <div>
+                <h4 className="font-semibold text-[#1b4a3a]">1. How the 500 become 100</h4>
+                <p className="text-sm text-gray-700 leading-relaxed mt-1">
+                  By the end of the Campus Blitz, we will have a pool of applicants. Using an internal 
+                  Hati Screening Algorithm, we will rank users based on their platform activity—mobilization, 
+                  Hati Trust Score, and survey completion. This yields the <strong>Top 500 applicants</strong>, 
+                  representing the most committed and financially disciplined students in Uganda.
+                </p>
+                <p className="text-sm text-gray-700 leading-relaxed mt-2">
+                  Our <strong>Jury of Industry Experts</strong> (comprising professional bodies like HRMAU and ULS, top executives, 
+                  and institutional partners) then reviews these 500 pitches. Selection is purely on merit. 
+                  Your idea must stand on its own. From this review, the Jury selects the <strong>Top 100</strong>.
+                </p>
+              </div>
+
+              {/* The Announcement */}
+              <div>
+                <h4 className="font-semibold text-[#1b4a3a]">2. The Announcement</h4>
+                <p className="text-sm text-gray-700 leading-relaxed mt-1">
+                  This is a black-tie, broadcast live TV event held at our official hospitality partner's venue. 
+                  The Jury members, DFI representatives, and institutional partners will be in attendance, the winners 
+                  will not be, they will receive their actual funding cheques at the Hati Gala. The evening will feature keynote speeches & the announcement of the Top 100.
+                </p>
+              </div>
+
+              {/* The Incubation */}
+              <div>
+                <h4 className="font-semibold text-[#1b4a3a]">3. The Incubation</h4>
+                <p className="text-sm text-gray-700 leading-relaxed mt-1">
+                  Down to business. Following the Gala, the Top 100 winners will enter a structured incubation 
+                  phase. This is the "After" of the Startup Show. Winners will meet with the founders, professionals, 
+                  and institutions they saw in the pre-series. They will get legal information, tax guidance, mentorship 
+                  and other corporate support to formalize their businesses and track their genesis journeys. 
+                  This is where the funding moves from cheque to real-world impact.
+                </p>
+              </div>
+            </div>
+
+            <div className="pt-6">
               <Link 
                 href="/ideator" 
                 className="inline-flex items-center justify-center rounded-md bg-[#1b4a3a] px-5 py-2.5 text-sm font-medium text-white hover:bg-[#153a2e] transition-colors"
