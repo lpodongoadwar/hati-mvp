@@ -8,6 +8,7 @@ import { createClient } from "@/lib/db";
 type Profile = {
   id: string;
   full_name: string;
+  email: string; // Added email for verification notification
   phone: string;
   team: string;
   referral_count: number;
@@ -97,17 +98,32 @@ export function AdminClient() {
     setUpdatingId(null);
   };
 
-  const handleVerifyUser = async (userId: string) => {
+  // Updated Verify Function with Email Trigger
+  const handleVerifyUser = async (userId: string, userEmail: string, userName: string) => {
+    // 1. Update Database
     const { error } = await supabase
       .from('profiles')
       .update({ kyc_status: 'Verified' })
       .eq('id', userId);
 
-    if (!error) {
-      loadAdminData();
-    } else {
-      alert("Error verifying user");
+    if (error) {
+      alert("Error verifying user in database");
+      return;
     }
+
+    // 2. Trigger Email
+    try {
+      await fetch('/api/send-verification-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: userEmail, name: userName }),
+      });
+    } catch (emailError) {
+      console.error("Database updated, but email failed to send:", emailError);
+    }
+
+    // 3. Refresh the table
+    loadAdminData();
   };
 
   // --- RENDER STATES ---
@@ -336,7 +352,7 @@ export function AdminClient() {
                           </span>
                         ) : (
                           <button
-                            onClick={() => handleVerifyUser(profile.id)}
+                            onClick={() => handleVerifyUser(profile.id, profile.email || "", profile.full_name || "Student")}
                             className="bg-blue-100 text-blue-700 px-3 py-1 rounded text-xs font-medium hover:bg-blue-200 transition-colors"
                           >
                             Approve KYC
